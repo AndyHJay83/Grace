@@ -9,8 +9,23 @@
 </head>
 <body>
     <div class="container">
+        <div class="mode-toggle">
+            <span class="mode-label">STANDARD</span>
+            <label class="switch">
+                <input type="checkbox" id="modeToggle">
+                <span class="slider round"></span>
+            </label>
+            <span class="mode-label">EXPERT</span>
+        </div>
         <div class="search-container" id="searchContainer">
-            <input type="text" id="searchInput" placeholder="Type a word...">
+            <div class="standard-mode" id="standardMode">
+                <input type="text" id="searchInput" placeholder="Type a word...">
+            </div>
+            <div class="expert-mode" id="expertMode" style="display: none;">
+                <input type="text" id="expertInput1" placeholder="First character...">
+                <input type="text" id="expertInput2" placeholder="Second character...">
+                <input type="text" id="expertInput3" placeholder="Third character...">
+            </div>
             <button id="searchButton">SEARCH</button>
         </div>
         <div class="word-count" id="wordCount">Total words: 0</div>

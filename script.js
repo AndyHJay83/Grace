@@ -1,5 +1,6 @@
 let wordList = [];
 let totalWords = 0;
+let isExpertMode = false;
 
 // Function to load the word list
 async function loadWordList() {
@@ -19,12 +20,26 @@ function updateWordCount(count) {
     document.getElementById('wordCount').textContent = `Total words: ${count}`;
 }
 
-// Function to filter words
-function filterWords(searchWord) {
+// Function to filter words in standard mode
+function filterWordsStandard(searchWord) {
     const searchChars = searchWord.toLowerCase().split('');
     const filteredWords = wordList.filter(word => {
         const firstThreeChars = word.toLowerCase().substring(0, 3);
         return searchChars.some(char => firstThreeChars.includes(char));
+    });
+    return filteredWords;
+}
+
+// Function to filter words in expert mode
+function filterWordsExpert(inputs) {
+    const filteredWords = wordList.filter(word => {
+        const wordLower = word.toLowerCase();
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i] && !inputs[i].toLowerCase().includes(wordLower[i])) {
+                return false;
+            }
+        }
+        return true;
     });
     return filteredWords;
 }
@@ -49,27 +64,63 @@ function resetApp() {
     document.getElementById('searchContainer').style.display = 'flex';
     document.getElementById('resultsContainer').innerHTML = '';
     document.getElementById('searchInput').value = '';
+    document.getElementById('expertInput1').value = '';
+    document.getElementById('expertInput2').value = '';
+    document.getElementById('expertInput3').value = '';
     updateWordCount(totalWords);
+}
+
+// Function to toggle between modes
+function toggleMode() {
+    isExpertMode = document.getElementById('modeToggle').checked;
+    document.getElementById('standardMode').style.display = isExpertMode ? 'none' : 'flex';
+    document.getElementById('expertMode').style.display = isExpertMode ? 'flex' : 'none';
+    resetApp();
 }
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     loadWordList();
     
+    // Mode toggle listener
+    document.getElementById('modeToggle').addEventListener('change', toggleMode);
+    
+    // Search button listener
     document.getElementById('searchButton').addEventListener('click', () => {
-        const searchWord = document.getElementById('searchInput').value.trim();
-        if (searchWord) {
-            const filteredWords = filterWords(searchWord);
-            document.getElementById('searchContainer').style.display = 'none';
-            displayResults(filteredWords);
+        if (isExpertMode) {
+            const inputs = [
+                document.getElementById('expertInput1').value.trim(),
+                document.getElementById('expertInput2').value.trim(),
+                document.getElementById('expertInput3').value.trim()
+            ].filter(input => input !== '');
+            
+            if (inputs.length > 0) {
+                const filteredWords = filterWordsExpert(inputs);
+                document.getElementById('searchContainer').style.display = 'none';
+                displayResults(filteredWords);
+            }
+        } else {
+            const searchWord = document.getElementById('searchInput').value.trim();
+            if (searchWord) {
+                const filteredWords = filterWordsStandard(searchWord);
+                document.getElementById('searchContainer').style.display = 'none';
+                displayResults(filteredWords);
+            }
         }
     });
     
-    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+    // Enter key listeners for all inputs
+    const handleEnter = (e) => {
         if (e.key === 'Enter') {
             document.getElementById('searchButton').click();
         }
-    });
+    };
     
+    document.getElementById('searchInput').addEventListener('keypress', handleEnter);
+    document.getElementById('expertInput1').addEventListener('keypress', handleEnter);
+    document.getElementById('expertInput2').addEventListener('keypress', handleEnter);
+    document.getElementById('expertInput3').addEventListener('keypress', handleEnter);
+    
+    // Reset button listener
     document.getElementById('resetButton').addEventListener('click', resetApp);
 }); 
