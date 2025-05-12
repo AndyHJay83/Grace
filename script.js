@@ -77,7 +77,7 @@ function filterWordsByShape(words, position, category) {
 
 // Function to update LEXICON display
 function updateLexiconDisplay(words, isSecondLexicon = false) {
-    const lexiconDisplay = document.getElementById(isSecondLexicon ? 'lexiconDisplay2' : 'lexiconDisplay');
+    const lexiconDisplay = document.getElementById('lexiconDisplay');
     
     if (!isShapeMode || words.length === 0) {
         lexiconDisplay.style.display = 'none';
@@ -126,6 +126,7 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
                 } else {
                     currentFilteredWords = filteredWords;
                     displayResults(filteredWords);
+                    // Instead of showing second lexicon, update the first one with second lexicon data
                     updateLexiconDisplay(filteredWords, true);
                 }
             });
@@ -209,7 +210,6 @@ function resetApp() {
     document.getElementById('expertInput2').value = '';
     document.getElementById('expertInput3').value = '';
     document.getElementById('lexiconDisplay').style.display = 'none';
-    document.getElementById('lexiconDisplay2').style.display = 'none';
     updateWordCount(totalWords);
     currentFilteredWords = [];
     currentPosition = -1;
