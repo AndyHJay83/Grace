@@ -239,9 +239,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // Focus input fields on tap
     const inputs = document.querySelectorAll('input[type="text"]');
     inputs.forEach(input => {
-        input.addEventListener('click', () => {
+        // Remove any existing click listeners
+        input.removeEventListener('click', () => {});
+        
+        // Add new click listener
+        input.addEventListener('click', (e) => {
+            e.preventDefault();
             input.focus();
+            // Force keyboard to appear on iOS
+            input.setAttribute('readonly', 'readonly');
+            setTimeout(() => {
+                input.removeAttribute('readonly');
+            }, 100);
         });
+
+        // Add touchstart listener
+        input.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            input.focus();
+            // Force keyboard to appear on iOS
+            input.setAttribute('readonly', 'readonly');
+            setTimeout(() => {
+                input.removeAttribute('readonly');
+            }, 100);
+        }, { passive: false });
     });
 
     // Prevent default touch behavior on buttons
