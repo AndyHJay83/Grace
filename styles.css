@@ -209,12 +209,13 @@ input:checked + .slider:before {
     gap: 5px;
     flex-wrap: wrap;
     margin-top: 10px;
+    width: 100%;
 }
 
 .category-button {
     flex: 1;
     min-width: 80px;
-    padding: 8px 12px;
+    padding: 12px 8px;
     border: none;
     border-radius: 4px;
     background-color: #007bff;
@@ -266,12 +267,29 @@ input:checked + .slider:before {
 
     .lexicon-display {
         min-width: 150px;
-        max-width: 250px;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .category-buttons {
+        gap: 8px;
+    }
+
+    .category-button {
+        min-width: 0;
+        flex: 1 1 calc(33.333% - 8px);
+        padding: 15px 8px;
+        font-size: 16px;
     }
 
     .bottom-controls {
         left: 10px;
         right: 10px;
         bottom: 10px;
+    }
+
+    .position-display {
+        font-size: 20px;
+        padding: 8px;
     }
 } 
