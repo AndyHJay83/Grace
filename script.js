@@ -3,6 +3,7 @@ let totalWords = 0;
 let isExpertMode = false;
 let isShapeMode = false;
 let currentFilteredWords = [];
+let currentPosition = -1;
 
 // Letter shape categories
 const letterShapes = {
@@ -38,41 +39,90 @@ function analyzePositionShapes(words, position) {
         }
     });
     
-    return {
-        straight: shapes.straight.size,
-        mixed: shapes.mixed.size,
-        curved: shapes.curved.size
-    };
+    return shapes;
 }
 
-// Function to find least variance position and category
-function findLeastVariance(words) {
+// Function to find position with least variance
+function findLeastVariancePosition(words) {
     let minVariance = Infinity;
-    let result = { position: -1, category: '' };
+    let result = -1;
     
     for (let pos = 0; pos < 3; pos++) {
         const shapes = analyzePositionShapes(words, pos);
-        const totalShapes = Object.values(shapes).reduce((a, b) => a + b, 0);
+        const totalShapes = Object.values(shapes).reduce((a, b) => a + b.size, 0);
         
-        if (totalShapes > 0) {
-            Object.entries(shapes).forEach(([category, count]) => {
-                if (count > 0 && count < minVariance) {
-                    minVariance = count;
-                    result = { position: pos + 1, category };
-                }
-            });
+        if (totalShapes > 0 && totalShapes < minVariance) {
+            minVariance = totalShapes;
+            result = pos;
         }
     }
     
     return result;
 }
 
-// Function to filter words by shape
-function filterWordsByShape(words, position, category) {
+// Function to filter words by letter
+function filterWordsByLetter(words, position, letter) {
     return words.filter(word => {
-        if (word.length <= position - 1) return false;
-        const letter = word[position - 1];
-        return getLetterShape(letter) === category;
+        if (word.length <= position) return false;
+        return word[position].toUpperCase() === letter;
+    });
+}
+
+// Function to update LEXICON display
+function updateLexiconDisplay(words) {
+    if (!isShapeMode || words.length === 0) {
+        document.getElementById('lexiconDisplay').style.display = 'none';
+        return;
+    }
+
+    const position = findLeastVariancePosition(words);
+    if (position === -1) {
+        document.getElementById('lexiconDisplay').style.display = 'none';
+        return;
+    }
+
+    currentPosition = position;
+    const shapes = analyzePositionShapes(words, position);
+    
+    // Update position display
+    const positionDisplay = document.querySelector('.position-display');
+    positionDisplay.textContent = `Position ${position + 1}`;
+    
+    // Update category buttons
+    const categoryButtons = document.querySelector('.category-buttons');
+    categoryButtons.innerHTML = '';
+    
+    Object.entries(shapes).forEach(([category, letters]) => {
+        if (letters.size > 0) {
+            const button = document.createElement('button');
+            button.className = 'category-button';
+            button.textContent = category.toUpperCase();
+            button.addEventListener('click', () => showLetterButtons(letters));
+            categoryButtons.appendChild(button);
+        }
+    });
+    
+    // Clear letter buttons
+    document.querySelector('.letter-buttons').innerHTML = '';
+    
+    // Show the LEXICON display
+    document.getElementById('lexiconDisplay').style.display = 'block';
+}
+
+// Function to show letter buttons
+function showLetterButtons(letters) {
+    const letterButtons = document.querySelector('.letter-buttons');
+    letterButtons.innerHTML = '';
+    
+    Array.from(letters).sort().forEach(letter => {
+        const button = document.createElement('button');
+        button.className = 'letter-button';
+        button.textContent = letter;
+        button.addEventListener('click', () => {
+            const filteredWords = filterWordsByLetter(currentFilteredWords, currentPosition, letter);
+            displayResults(filteredWords);
+        });
+        letterButtons.appendChild(button);
     });
 }
 
@@ -136,17 +186,7 @@ function displayResults(words) {
     });
     
     updateWordCount(words.length);
-    
-    if (isShapeMode && words.length > 0) {
-        const { position, category } = findLeastVariance(words);
-        if (position !== -1) {
-            const lexiconDisplay = document.getElementById('lexiconDisplay');
-            lexiconDisplay.textContent = `${category.toUpperCase()} (${position})`;
-            lexiconDisplay.style.display = 'block';
-        }
-    } else {
-        document.getElementById('lexiconDisplay').style.display = 'none';
-    }
+    updateLexiconDisplay(words);
 }
 
 // Function to reset the app
@@ -160,6 +200,7 @@ function resetApp() {
     document.getElementById('lexiconDisplay').style.display = 'none';
     updateWordCount(totalWords);
     currentFilteredWords = [];
+    currentPosition = -1;
 }
 
 // Function to toggle between modes
@@ -175,6 +216,8 @@ function toggleShapeMode() {
     isShapeMode = document.getElementById('shapeToggle').checked;
     if (currentFilteredWords.length > 0) {
         displayResults(currentFilteredWords);
+    } else {
+        document.getElementById('lexiconDisplay').style.display = 'none';
     }
 }
 
@@ -223,17 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('expertInput1').addEventListener('keypress', handleEnter);
     document.getElementById('expertInput2').addEventListener('keypress', handleEnter);
     document.getElementById('expertInput3').addEventListener('keypress', handleEnter);
-    
-    // Lexicon display click listener
-    document.getElementById('lexiconDisplay').addEventListener('click', () => {
-        if (isShapeMode && currentFilteredWords.length > 0) {
-            const { position, category } = findLeastVariance(currentFilteredWords);
-            if (position !== -1) {
-                const filteredWords = filterWordsByShape(currentFilteredWords, position, category);
-                displayResults(filteredWords);
-            }
-        }
-    });
     
     // Reset button listener
     document.getElementById('resetButton').addEventListener('click', resetApp);

@@ -167,22 +167,68 @@ input:checked + .slider:before {
     right: 20px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .lexicon-display {
+    background-color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    min-width: 200px;
+    max-width: 300px;
+}
+
+.position-display {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.category-buttons {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.category-button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
     background-color: #007bff;
     color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     transition: background-color 0.3s;
 }
 
-.lexicon-display:hover {
+.category-button:hover {
     background-color: #0056b3;
+}
+
+.letter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.letter-button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #e9ecef;
+    color: #333;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.letter-button:hover {
+    background-color: #007bff;
+    color: white;
 }
 
 .reset-button {
