@@ -177,6 +177,7 @@ input:checked + .slider:before {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     min-width: 200px;
     max-width: 300px;
+    display: none; /* Will be shown via JavaScript when needed */
 }
 
 .position-display {
@@ -185,16 +186,21 @@ input:checked + .slider:before {
     color: #333;
     margin-bottom: 10px;
     text-align: center;
+    padding: 5px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
 }
 
 .category-buttons {
     display: flex;
     gap: 5px;
+    flex-wrap: wrap;
 }
 
 .category-button {
     flex: 1;
-    padding: 8px;
+    min-width: 80px;
+    padding: 8px 12px;
     border: none;
     border-radius: 4px;
     background-color: #007bff;
@@ -202,6 +208,8 @@ input:checked + .slider:before {
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s;
+    text-align: center;
+    font-size: 14px;
 }
 
 .category-button:hover {

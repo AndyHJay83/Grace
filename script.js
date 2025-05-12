@@ -71,14 +71,16 @@ function filterWordsByShape(words, position, category) {
 
 // Function to update LEXICON display
 function updateLexiconDisplay(words) {
+    const lexiconDisplay = document.getElementById('lexiconDisplay');
+    
     if (!isShapeMode || words.length === 0) {
-        document.getElementById('lexiconDisplay').style.display = 'none';
+        lexiconDisplay.style.display = 'none';
         return;
     }
 
     const position = findLeastVariancePosition(words);
     if (position === -1) {
-        document.getElementById('lexiconDisplay').style.display = 'none';
+        lexiconDisplay.style.display = 'none';
         return;
     }
 
@@ -107,7 +109,7 @@ function updateLexiconDisplay(words) {
     });
     
     // Show the LEXICON display
-    document.getElementById('lexiconDisplay').style.display = 'block';
+    lexiconDisplay.style.display = 'block';
 }
 
 // Function to load the word list
