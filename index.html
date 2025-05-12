@@ -7,6 +7,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#f0f0f0">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-touch-fullscreen" content="yes">
     <title>Word Filter</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -33,7 +35,7 @@
         <div class="search-container" id="searchContainer">
             <div class="standard-mode" id="standardMode">
                 <div class="input-with-focus">
-                    <input type="text" id="searchInput" placeholder="Type a word..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                    <input type="search" id="searchInput" placeholder="Type a word..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
                     <button class="focus-button" onclick="document.getElementById('searchInput').focus()">
                         <i class="fas fa-keyboard"></i>
                     </button>
@@ -43,7 +45,7 @@
                 <div class="expert-input-group">
                     <label for="expertInput1">Position 1</label>
                     <div class="input-with-focus">
-                        <input type="text" id="expertInput1" placeholder="First position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                        <input type="search" id="expertInput1" placeholder="First position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
                         <button class="focus-button" onclick="document.getElementById('expertInput1').focus()">
                             <i class="fas fa-keyboard"></i>
                         </button>
@@ -52,7 +54,7 @@
                 <div class="expert-input-group">
                     <label for="expertInput2">Position 2</label>
                     <div class="input-with-focus">
-                        <input type="text" id="expertInput2" placeholder="Second position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                        <input type="search" id="expertInput2" placeholder="Second position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
                         <button class="focus-button" onclick="document.getElementById('expertInput2').focus()">
                             <i class="fas fa-keyboard"></i>
                         </button>
@@ -61,7 +63,7 @@
                 <div class="expert-input-group">
                     <label for="expertInput3">Position 3</label>
                     <div class="input-with-focus">
-                        <input type="text" id="expertInput3" placeholder="Third position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                        <input type="search" id="expertInput3" placeholder="Third position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
                         <button class="focus-button" onclick="document.getElementById('expertInput3').focus()">
                             <i class="fas fa-keyboard"></i>
                         </button>
@@ -70,7 +72,7 @@
             </div>
             <button id="searchButton">SEARCH</button>
         </div>
-        <div class="word-count" id="wordCount">Total words: 0</div>
+        <div class="word-count" id="wordCount">0</div>
         <div class="results-container" id="resultsContainer"></div>
         <div class="bottom-controls">
             <div class="lexicon-container">
@@ -99,6 +101,16 @@
                 e.preventDefault();
             }
         }, { passive: false });
+
+        // Force keyboard on input focus
+        document.querySelectorAll('input[type="search"]').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.setAttribute('readonly', 'readonly');
+                setTimeout(() => {
+                    this.removeAttribute('readonly');
+                }, 100);
+            });
+        });
     </script>
 </body>
 </html> 
