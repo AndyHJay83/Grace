@@ -168,6 +168,8 @@ input:checked + .slider:before {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 20px;
+    z-index: 1000;
 }
 
 .lexicon-display {
@@ -178,6 +180,7 @@ input:checked + .slider:before {
     min-width: 200px;
     max-width: 300px;
     display: none; /* Will be shown via JavaScript when needed */
+    margin-right: auto; /* Push to the left */
 }
 
 .position-display {
@@ -195,6 +198,7 @@ input:checked + .slider:before {
     display: flex;
     gap: 5px;
     flex-wrap: wrap;
+    margin-top: 10px;
 }
 
 .category-button {
@@ -210,6 +214,7 @@ input:checked + .slider:before {
     transition: background-color 0.3s;
     text-align: center;
     font-size: 14px;
+    white-space: nowrap;
 }
 
 .category-button:hover {
@@ -229,6 +234,7 @@ input:checked + .slider:before {
     justify-content: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     transition: background-color 0.3s;
+    margin-left: auto; /* Push to the right */
 }
 
 .reset-button:hover {
