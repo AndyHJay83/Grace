@@ -1,6 +1,80 @@
 let wordList = [];
 let totalWords = 0;
 let isExpertMode = false;
+let isShapeMode = false;
+let currentFilteredWords = [];
+
+// Letter shape categories
+const letterShapes = {
+    straight: new Set(['A', 'E', 'F', 'H', 'I', 'K', 'L', 'M', 'N', 'T', 'V', 'W', 'X', 'Y', 'Z', 'É', 'À', 'Â', 'Ã', 'Á', 'Ä', 'Å', 'Ă', 'Î', 'Ț', 'Ê', 'Ŵ', 'Ŷ', 'Ï', 'Í', 'È', 'Æ', 'Ë', 'Ÿ', 'Ẽ', 'Ĩ', 'Ỹ', 'Ñ']),
+    mixed: new Set(['B', 'D', 'G', 'J', 'P', 'Q', 'R', 'U', 'Ú', 'Ü', 'ß', 'Û', 'Œ', 'Ù', 'Ũ', 'G̃', 'Ø']),
+    curved: new Set(['C', 'O', 'S', 'G', 'O', 'Q', 'S', 'U', 'Ç', 'Ö', 'Õ', 'Ș', 'Ô', 'Ó', 'Ò', 'Ş'])
+};
+
+// Function to get letter shape
+function getLetterShape(letter) {
+    letter = letter.toUpperCase();
+    if (letterShapes.straight.has(letter)) return 'straight';
+    if (letterShapes.mixed.has(letter)) return 'mixed';
+    if (letterShapes.curved.has(letter)) return 'curved';
+    return null;
+}
+
+// Function to analyze position shapes
+function analyzePositionShapes(words, position) {
+    const shapes = {
+        straight: new Set(),
+        mixed: new Set(),
+        curved: new Set()
+    };
+    
+    words.forEach(word => {
+        if (word.length > position) {
+            const letter = word[position];
+            const shape = getLetterShape(letter);
+            if (shape) {
+                shapes[shape].add(letter);
+            }
+        }
+    });
+    
+    return {
+        straight: shapes.straight.size,
+        mixed: shapes.mixed.size,
+        curved: shapes.curved.size
+    };
+}
+
+// Function to find least variance position and category
+function findLeastVariance(words) {
+    let minVariance = Infinity;
+    let result = { position: -1, category: '' };
+    
+    for (let pos = 0; pos < 3; pos++) {
+        const shapes = analyzePositionShapes(words, pos);
+        const totalShapes = Object.values(shapes).reduce((a, b) => a + b, 0);
+        
+        if (totalShapes > 0) {
+            Object.entries(shapes).forEach(([category, count]) => {
+                if (count > 0 && count < minVariance) {
+                    minVariance = count;
+                    result = { position: pos + 1, category };
+                }
+            });
+        }
+    }
+    
+    return result;
+}
+
+// Function to filter words by shape
+function filterWordsByShape(words, position, category) {
+    return words.filter(word => {
+        if (word.length <= position - 1) return false;
+        const letter = word[position - 1];
+        return getLetterShape(letter) === category;
+    });
+}
 
 // Function to load the word list
 async function loadWordList() {
@@ -34,12 +108,10 @@ function filterWordsStandard(searchWord) {
 function filterWordsExpert(inputs) {
     const filteredWords = wordList.filter(word => {
         const wordLower = word.toLowerCase();
-        // Check each position that has input
         for (let i = 0; i < inputs.length; i++) {
             if (inputs[i]) {
                 const inputChars = inputs[i].toLowerCase().split('');
                 const wordChar = wordLower[i];
-                // If the word's character at this position doesn't match any character in the input
                 if (!inputChars.includes(wordChar)) {
                     return false;
                 }
@@ -52,6 +124,7 @@ function filterWordsExpert(inputs) {
 
 // Function to display results
 function displayResults(words) {
+    currentFilteredWords = words;
     const resultsContainer = document.getElementById('resultsContainer');
     resultsContainer.innerHTML = '';
     
@@ -63,6 +136,17 @@ function displayResults(words) {
     });
     
     updateWordCount(words.length);
+    
+    if (isShapeMode && words.length > 0) {
+        const { position, category } = findLeastVariance(words);
+        if (position !== -1) {
+            const lexiconDisplay = document.getElementById('lexiconDisplay');
+            lexiconDisplay.textContent = `${category.toUpperCase()} (${position})`;
+            lexiconDisplay.style.display = 'block';
+        }
+    } else {
+        document.getElementById('lexiconDisplay').style.display = 'none';
+    }
 }
 
 // Function to reset the app
@@ -73,7 +157,9 @@ function resetApp() {
     document.getElementById('expertInput1').value = '';
     document.getElementById('expertInput2').value = '';
     document.getElementById('expertInput3').value = '';
+    document.getElementById('lexiconDisplay').style.display = 'none';
     updateWordCount(totalWords);
+    currentFilteredWords = [];
 }
 
 // Function to toggle between modes
@@ -84,12 +170,23 @@ function toggleMode() {
     resetApp();
 }
 
+// Function to toggle shape mode
+function toggleShapeMode() {
+    isShapeMode = document.getElementById('shapeToggle').checked;
+    if (currentFilteredWords.length > 0) {
+        displayResults(currentFilteredWords);
+    }
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     loadWordList();
     
     // Mode toggle listener
     document.getElementById('modeToggle').addEventListener('change', toggleMode);
+    
+    // Shape toggle listener
+    document.getElementById('shapeToggle').addEventListener('change', toggleShapeMode);
     
     // Search button listener
     document.getElementById('searchButton').addEventListener('click', () => {
@@ -100,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('expertInput3').value.trim()
             ];
             
-            // Only proceed if at least one input has a value
             if (inputs.some(input => input !== '')) {
                 const filteredWords = filterWordsExpert(inputs);
                 document.getElementById('searchContainer').style.display = 'none';
@@ -127,6 +223,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('expertInput1').addEventListener('keypress', handleEnter);
     document.getElementById('expertInput2').addEventListener('keypress', handleEnter);
     document.getElementById('expertInput3').addEventListener('keypress', handleEnter);
+    
+    // Lexicon display click listener
+    document.getElementById('lexiconDisplay').addEventListener('click', () => {
+        if (isShapeMode && currentFilteredWords.length > 0) {
+            const { position, category } = findLeastVariance(currentFilteredWords);
+            if (position !== -1) {
+                const filteredWords = filterWordsByShape(currentFilteredWords, position, category);
+                displayResults(filteredWords);
+            }
+        }
+    });
     
     // Reset button listener
     document.getElementById('resetButton').addEventListener('click', resetApp);

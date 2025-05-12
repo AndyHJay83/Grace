@@ -9,13 +9,22 @@
 </head>
 <body>
     <div class="container">
-        <div class="mode-toggle">
-            <span class="mode-label">STANDARD</span>
-            <label class="switch">
-                <input type="checkbox" id="modeToggle">
-                <span class="slider round"></span>
-            </label>
-            <span class="mode-label">EXPERT</span>
+        <div class="toggles-container">
+            <div class="mode-toggle">
+                <span class="mode-label">STANDARD</span>
+                <label class="switch">
+                    <input type="checkbox" id="modeToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span class="mode-label">EXPERT</span>
+            </div>
+            <div class="shape-toggle">
+                <span class="mode-label">SHAPE</span>
+                <label class="switch">
+                    <input type="checkbox" id="shapeToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
         </div>
         <div class="search-container" id="searchContainer">
             <div class="standard-mode" id="standardMode">
@@ -39,9 +48,12 @@
         </div>
         <div class="word-count" id="wordCount">Total words: 0</div>
         <div class="results-container" id="resultsContainer"></div>
-        <button id="resetButton" class="reset-button">
-            <i class="fas fa-redo"></i>
-        </button>
+        <div class="bottom-controls">
+            <div id="lexiconDisplay" class="lexicon-display"></div>
+            <button id="resetButton" class="reset-button">
+                <i class="fas fa-redo"></i>
+            </button>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
