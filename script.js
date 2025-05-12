@@ -239,48 +239,42 @@ document.addEventListener('DOMContentLoaded', () => {
     // Focus input fields on tap
     const inputs = document.querySelectorAll('input[type="text"]');
     inputs.forEach(input => {
-        // Remove any existing listeners
-        input.removeEventListener('click', () => {});
-        input.removeEventListener('touchstart', () => {});
-        
-        // Function to handle input focus
-        const handleInputFocus = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Force focus and keyboard
+        // Function to force keyboard
+        const forceKeyboard = () => {
+            // First try to focus
             input.focus();
             
-            // Workaround for iOS standalone mode
-            if (window.navigator.standalone) {
-                input.setAttribute('readonly', 'readonly');
-                setTimeout(() => {
-                    input.removeAttribute('readonly');
-                    input.focus();
-                }, 100);
-            }
+            // Then try the readonly trick
+            input.setAttribute('readonly', 'readonly');
+            setTimeout(() => {
+                input.removeAttribute('readonly');
+                input.focus();
+            }, 100);
+            
+            // If that doesn't work, try clicking
+            input.click();
+            
+            // One more focus attempt
+            setTimeout(() => {
+                input.focus();
+            }, 200);
         };
 
-        // Add multiple event listeners to ensure keyboard appears
-        input.addEventListener('click', handleInputFocus, { passive: false });
-        input.addEventListener('touchstart', handleInputFocus, { passive: false });
-        input.addEventListener('focus', () => {
-            // Ensure keyboard stays open
-            if (window.navigator.standalone) {
-                input.setAttribute('readonly', 'readonly');
-                setTimeout(() => {
-                    input.removeAttribute('readonly');
-                }, 100);
-            }
+        // Add multiple event listeners
+        ['click', 'touchstart', 'touchend'].forEach(eventType => {
+            input.addEventListener(eventType, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                forceKeyboard();
+            }, { passive: false });
         });
 
-        // Prevent blur on standalone mode
-        if (window.navigator.standalone) {
-            input.addEventListener('blur', (e) => {
-                e.preventDefault();
-                input.focus();
-            });
-        }
+        // Also try to force keyboard on focus
+        input.addEventListener('focus', () => {
+            if (window.navigator.standalone) {
+                forceKeyboard();
+            }
+        });
     });
 
     // Prevent default touch behavior on buttons
