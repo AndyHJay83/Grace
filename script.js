@@ -60,11 +60,12 @@ function findLeastVariancePosition(words) {
     return result;
 }
 
-// Function to filter words by letter
-function filterWordsByLetter(words, position, letter) {
+// Function to filter words by shape category
+function filterWordsByShape(words, position, category) {
     return words.filter(word => {
         if (word.length <= position) return false;
-        return word[position].toUpperCase() === letter;
+        const letter = word[position];
+        return getLetterShape(letter) === category;
     });
 }
 
@@ -97,33 +98,16 @@ function updateLexiconDisplay(words) {
             const button = document.createElement('button');
             button.className = 'category-button';
             button.textContent = category.toUpperCase();
-            button.addEventListener('click', () => showLetterButtons(letters));
+            button.addEventListener('click', () => {
+                const filteredWords = filterWordsByShape(currentFilteredWords, currentPosition, category);
+                displayResults(filteredWords);
+            });
             categoryButtons.appendChild(button);
         }
     });
     
-    // Clear letter buttons
-    document.querySelector('.letter-buttons').innerHTML = '';
-    
     // Show the LEXICON display
     document.getElementById('lexiconDisplay').style.display = 'block';
-}
-
-// Function to show letter buttons
-function showLetterButtons(letters) {
-    const letterButtons = document.querySelector('.letter-buttons');
-    letterButtons.innerHTML = '';
-    
-    Array.from(letters).sort().forEach(letter => {
-        const button = document.createElement('button');
-        button.className = 'letter-button';
-        button.textContent = letter;
-        button.addEventListener('click', () => {
-            const filteredWords = filterWordsByLetter(currentFilteredWords, currentPosition, letter);
-            displayResults(filteredWords);
-        });
-        letterButtons.appendChild(button);
-    });
 }
 
 // Function to load the word list
