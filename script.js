@@ -153,7 +153,7 @@ async function loadWordList() {
 
 // Function to update word count display
 function updateWordCount(count) {
-    document.getElementById('wordCount').textContent = `Total words: ${count}`;
+    document.getElementById('wordCount').textContent = count;
 }
 
 // Function to filter words in standard mode
