@@ -35,8 +35,8 @@
         <div class="search-container" id="searchContainer">
             <div class="standard-mode" id="standardMode">
                 <div class="input-with-focus">
-                    <input type="search" id="searchInput" placeholder="Type a word..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
-                    <button class="focus-button" onclick="document.getElementById('searchInput').focus()">
+                    <input type="text" id="searchInput" placeholder="Type a word..." readonly>
+                    <button class="focus-button" onclick="showCustomKeyboard('searchInput')">
                         <i class="fas fa-keyboard"></i>
                     </button>
                 </div>
@@ -45,8 +45,8 @@
                 <div class="expert-input-group">
                     <label for="expertInput1">Position 1</label>
                     <div class="input-with-focus">
-                        <input type="search" id="expertInput1" placeholder="First position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
-                        <button class="focus-button" onclick="document.getElementById('expertInput1').focus()">
+                        <input type="text" id="expertInput1" placeholder="First position..." readonly>
+                        <button class="focus-button" onclick="showCustomKeyboard('expertInput1')">
                             <i class="fas fa-keyboard"></i>
                         </button>
                     </div>
@@ -54,8 +54,8 @@
                 <div class="expert-input-group">
                     <label for="expertInput2">Position 2</label>
                     <div class="input-with-focus">
-                        <input type="search" id="expertInput2" placeholder="Second position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
-                        <button class="focus-button" onclick="document.getElementById('expertInput2').focus()">
+                        <input type="text" id="expertInput2" placeholder="Second position..." readonly>
+                        <button class="focus-button" onclick="showCustomKeyboard('expertInput2')">
                             <i class="fas fa-keyboard"></i>
                         </button>
                     </div>
@@ -63,8 +63,8 @@
                 <div class="expert-input-group">
                     <label for="expertInput3">Position 3</label>
                     <div class="input-with-focus">
-                        <input type="search" id="expertInput3" placeholder="Third position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
-                        <button class="focus-button" onclick="document.getElementById('expertInput3').focus()">
+                        <input type="text" id="expertInput3" placeholder="Third position..." readonly>
+                        <button class="focus-button" onclick="showCustomKeyboard('expertInput3')">
                             <i class="fas fa-keyboard"></i>
                         </button>
                     </div>
@@ -86,6 +86,56 @@
             </button>
         </div>
     </div>
+
+    <!-- Custom Keyboard -->
+    <div id="customKeyboard" class="custom-keyboard">
+        <div class="keyboard-header">
+            <span id="keyboardTitle">Enter Text</span>
+            <button onclick="hideCustomKeyboard()" class="keyboard-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="keyboard-keys">
+            <div class="keyboard-row">
+                <button class="key">Q</button>
+                <button class="key">W</button>
+                <button class="key">E</button>
+                <button class="key">R</button>
+                <button class="key">T</button>
+                <button class="key">Y</button>
+                <button class="key">U</button>
+                <button class="key">I</button>
+                <button class="key">O</button>
+                <button class="key">P</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key">A</button>
+                <button class="key">S</button>
+                <button class="key">D</button>
+                <button class="key">F</button>
+                <button class="key">G</button>
+                <button class="key">H</button>
+                <button class="key">J</button>
+                <button class="key">K</button>
+                <button class="key">L</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key">Z</button>
+                <button class="key">X</button>
+                <button class="key">C</button>
+                <button class="key">V</button>
+                <button class="key">B</button>
+                <button class="key">N</button>
+                <button class="key">M</button>
+                <button class="key backspace"><i class="fas fa-backspace"></i></button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key space">SPACE</button>
+                <button class="key done">DONE</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script>
         // Hide address bar on mobile
@@ -102,14 +152,44 @@
             }
         }, { passive: false });
 
-        // Force keyboard on input focus
-        document.querySelectorAll('input[type="search"]').forEach(input => {
-            input.addEventListener('focus', function() {
-                this.setAttribute('readonly', 'readonly');
-                setTimeout(() => {
-                    this.removeAttribute('readonly');
-                }, 100);
+        // Custom Keyboard Functions
+        let activeInput = null;
+
+        function showCustomKeyboard(inputId) {
+            activeInput = document.getElementById(inputId);
+            document.getElementById('keyboardTitle').textContent = activeInput.placeholder;
+            document.getElementById('customKeyboard').style.display = 'block';
+        }
+
+        function hideCustomKeyboard() {
+            document.getElementById('customKeyboard').style.display = 'none';
+            activeInput = null;
+        }
+
+        // Add click handlers for keyboard keys
+        document.querySelectorAll('.keyboard-keys .key').forEach(key => {
+            key.addEventListener('click', function() {
+                if (!activeInput) return;
+
+                if (this.classList.contains('backspace')) {
+                    activeInput.value = activeInput.value.slice(0, -1);
+                } else if (this.classList.contains('space')) {
+                    activeInput.value += ' ';
+                } else if (this.classList.contains('done')) {
+                    hideCustomKeyboard();
+                } else {
+                    activeInput.value += this.textContent;
+                }
             });
+        });
+
+        // Close keyboard when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.custom-keyboard') && 
+                !e.target.closest('.focus-button') && 
+                !e.target.closest('input')) {
+                hideCustomKeyboard();
+            }
         });
     </script>
 </body>
