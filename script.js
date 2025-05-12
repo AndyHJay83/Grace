@@ -239,30 +239,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // Focus input fields on tap
     const inputs = document.querySelectorAll('input[type="text"]');
     inputs.forEach(input => {
-        // Remove any existing click listeners
+        // Remove any existing listeners
         input.removeEventListener('click', () => {});
+        input.removeEventListener('touchstart', () => {});
         
-        // Add new click listener
-        input.addEventListener('click', (e) => {
+        // Function to handle input focus
+        const handleInputFocus = (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            
+            // Force focus and keyboard
             input.focus();
-            // Force keyboard to appear on iOS
-            input.setAttribute('readonly', 'readonly');
-            setTimeout(() => {
-                input.removeAttribute('readonly');
-            }, 100);
+            
+            // Workaround for iOS standalone mode
+            if (window.navigator.standalone) {
+                input.setAttribute('readonly', 'readonly');
+                setTimeout(() => {
+                    input.removeAttribute('readonly');
+                    input.focus();
+                }, 100);
+            }
+        };
+
+        // Add multiple event listeners to ensure keyboard appears
+        input.addEventListener('click', handleInputFocus, { passive: false });
+        input.addEventListener('touchstart', handleInputFocus, { passive: false });
+        input.addEventListener('focus', () => {
+            // Ensure keyboard stays open
+            if (window.navigator.standalone) {
+                input.setAttribute('readonly', 'readonly');
+                setTimeout(() => {
+                    input.removeAttribute('readonly');
+                }, 100);
+            }
         });
 
-        // Add touchstart listener
-        input.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            input.focus();
-            // Force keyboard to appear on iOS
-            input.setAttribute('readonly', 'readonly');
-            setTimeout(() => {
-                input.removeAttribute('readonly');
-            }, 100);
-        }, { passive: false });
+        // Prevent blur on standalone mode
+        if (window.navigator.standalone) {
+            input.addEventListener('blur', (e) => {
+                e.preventDefault();
+                input.focus();
+            });
+        }
     });
 
     // Prevent default touch behavior on buttons
