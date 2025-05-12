@@ -236,6 +236,24 @@ function toggleShapeMode() {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
+    // Focus input fields on tap
+    const inputs = document.querySelectorAll('input[type="text"]');
+    inputs.forEach(input => {
+        input.addEventListener('click', () => {
+            input.focus();
+        });
+    });
+
+    // Prevent default touch behavior on buttons
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            button.click();
+        }, { passive: false });
+    });
+
+    // Rest of your existing DOMContentLoaded code...
     loadWordList();
     
     // Mode toggle listener
