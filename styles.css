@@ -172,6 +172,12 @@ input:checked + .slider:before {
     z-index: 1000;
 }
 
+.lexicon-container {
+    display: flex;
+    gap: 20px;
+    margin-right: auto;
+}
+
 .lexicon-display {
     background-color: white;
     padding: 15px;
@@ -180,7 +186,14 @@ input:checked + .slider:before {
     min-width: 200px;
     max-width: 300px;
     display: none; /* Will be shown via JavaScript when needed - updated comment */
-    margin-right: auto; /* Push to the left */
+}
+
+.lexicon-display:first-child {
+    border-left: 4px solid #007bff;
+}
+
+.lexicon-display:last-child {
+    border-left: 4px solid #28a745;
 }
 
 .position-display {

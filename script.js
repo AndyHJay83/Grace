@@ -4,6 +4,7 @@ let isExpertMode = false;
 let isShapeMode = false;
 let currentFilteredWords = [];
 let currentPosition = -1;
+let currentPosition2 = -1;
 
 // Letter shape categories
 const letterShapes = {
@@ -43,11 +44,11 @@ function analyzePositionShapes(words, position) {
 }
 
 // Function to find position with least variance
-function findLeastVariancePosition(words) {
+function findLeastVariancePosition(words, startPos, endPos) {
     let minVariance = Infinity;
     let result = -1;
     
-    for (let pos = 0; pos < 3; pos++) {
+    for (let pos = startPos; pos < endPos; pos++) {
         const shapes = analyzePositionShapes(words, pos);
         const totalShapes = Object.values(shapes).reduce((a, b) => a + b.size, 0);
         
@@ -60,6 +61,11 @@ function findLeastVariancePosition(words) {
     return result;
 }
 
+// Function to get shortest word length in list
+function getShortestWordLength(words) {
+    return Math.min(...words.map(word => word.length));
+}
+
 // Function to filter words by shape category
 function filterWordsByShape(words, position, category) {
     return words.filter(word => {
@@ -70,29 +76,38 @@ function filterWordsByShape(words, position, category) {
 }
 
 // Function to update LEXICON display
-function updateLexiconDisplay(words) {
-    const lexiconDisplay = document.getElementById('lexiconDisplay');
+function updateLexiconDisplay(words, isSecondLexicon = false) {
+    const lexiconDisplay = document.getElementById(isSecondLexicon ? 'lexiconDisplay2' : 'lexiconDisplay');
     
     if (!isShapeMode || words.length === 0) {
         lexiconDisplay.style.display = 'none';
         return;
     }
 
-    const position = findLeastVariancePosition(words);
+    // For second lexicon, only analyze positions 4-7 up to shortest word length
+    const startPos = isSecondLexicon ? 3 : 0;
+    const endPos = isSecondLexicon ? Math.min(7, getShortestWordLength(words)) : 3;
+
+    const position = findLeastVariancePosition(words, startPos, endPos);
     if (position === -1) {
         lexiconDisplay.style.display = 'none';
         return;
     }
 
-    currentPosition = position;
+    if (isSecondLexicon) {
+        currentPosition2 = position;
+    } else {
+        currentPosition = position;
+    }
+
     const shapes = analyzePositionShapes(words, position);
     
     // Update position display
-    const positionDisplay = document.querySelector('.position-display');
+    const positionDisplay = lexiconDisplay.querySelector('.position-display');
     positionDisplay.textContent = `Position ${position + 1}`;
     
     // Update category buttons
-    const categoryButtons = document.querySelector('.category-buttons');
+    const categoryButtons = lexiconDisplay.querySelector('.category-buttons');
     categoryButtons.innerHTML = '';
     
     Object.entries(shapes).forEach(([category, letters]) => {
@@ -101,8 +116,18 @@ function updateLexiconDisplay(words) {
             button.className = 'category-button';
             button.textContent = category.toUpperCase();
             button.addEventListener('click', () => {
-                const filteredWords = filterWordsByShape(currentFilteredWords, currentPosition, category);
-                displayResults(filteredWords);
+                const filteredWords = filterWordsByShape(
+                    isSecondLexicon ? currentFilteredWords : words,
+                    isSecondLexicon ? currentPosition2 : currentPosition,
+                    category
+                );
+                if (isSecondLexicon) {
+                    displayResults(filteredWords);
+                } else {
+                    currentFilteredWords = filteredWords;
+                    displayResults(filteredWords);
+                    updateLexiconDisplay(filteredWords, true);
+                }
             });
             categoryButtons.appendChild(button);
         }
@@ -184,9 +209,11 @@ function resetApp() {
     document.getElementById('expertInput2').value = '';
     document.getElementById('expertInput3').value = '';
     document.getElementById('lexiconDisplay').style.display = 'none';
+    document.getElementById('lexiconDisplay2').style.display = 'none';
     updateWordCount(totalWords);
     currentFilteredWords = [];
     currentPosition = -1;
+    currentPosition2 = -1;
 }
 
 // Function to toggle between modes
