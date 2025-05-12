@@ -179,7 +179,7 @@ input:checked + .slider:before {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     min-width: 200px;
     max-width: 300px;
-    display: none; /* Will be shown via JavaScript when needed */
+    display: none; /* Will be shown via JavaScript when needed - updated comment */
     margin-right: auto; /* Push to the left */
 }
 
