@@ -125,12 +125,44 @@ input:checked + .slider:before {
     font-weight: bold;
 }
 
+.input-with-focus {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.focus-button {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #007bff;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.focus-button i {
+    font-size: 20px;
+}
+
+.focus-button:active {
+    color: #0056b3;
+}
+
 #searchInput, #expertInput1, #expertInput2, #expertInput3 {
-    padding: 10px;
+    padding: 15px;
+    padding-right: 45px; /* Make room for the focus button */
     font-size: 16px;
     border: 2px solid #ccc;
     border-radius: 5px;
     width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 #searchButton {
@@ -313,11 +345,16 @@ input:checked + .slider:before {
         padding: 8px;
     }
 
-    /* Ensure inputs are properly sized for mobile */
+    .focus-button {
+        padding: 10px;
+    }
+
+    .focus-button i {
+        font-size: 24px;
+    }
+
     #searchInput, #expertInput1, #expertInput2, #expertInput3 {
         padding: 15px;
-        font-size: 16px;
-        -webkit-appearance: none;
-        appearance: none;
+        padding-right: 50px;
     }
 } 

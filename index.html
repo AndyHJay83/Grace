@@ -32,20 +32,40 @@
         </div>
         <div class="search-container" id="searchContainer">
             <div class="standard-mode" id="standardMode">
-                <input type="text" id="searchInput" placeholder="Type a word..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                <div class="input-with-focus">
+                    <input type="text" id="searchInput" placeholder="Type a word..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                    <button class="focus-button" onclick="document.getElementById('searchInput').focus()">
+                        <i class="fas fa-keyboard"></i>
+                    </button>
+                </div>
             </div>
             <div class="expert-mode" id="expertMode" style="display: none;">
                 <div class="expert-input-group">
                     <label for="expertInput1">Position 1</label>
-                    <input type="text" id="expertInput1" placeholder="First position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                    <div class="input-with-focus">
+                        <input type="text" id="expertInput1" placeholder="First position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                        <button class="focus-button" onclick="document.getElementById('expertInput1').focus()">
+                            <i class="fas fa-keyboard"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="expert-input-group">
                     <label for="expertInput2">Position 2</label>
-                    <input type="text" id="expertInput2" placeholder="Second position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                    <div class="input-with-focus">
+                        <input type="text" id="expertInput2" placeholder="Second position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                        <button class="focus-button" onclick="document.getElementById('expertInput2').focus()">
+                            <i class="fas fa-keyboard"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="expert-input-group">
                     <label for="expertInput3">Position 3</label>
-                    <input type="text" id="expertInput3" placeholder="Third position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                    <div class="input-with-focus">
+                        <input type="text" id="expertInput3" placeholder="Third position..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" pattern=".*" enterkeyhint="done">
+                        <button class="focus-button" onclick="document.getElementById('expertInput3').focus()">
+                            <i class="fas fa-keyboard"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <button id="searchButton">SEARCH</button>
