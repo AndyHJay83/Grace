@@ -22,9 +22,18 @@
                 <input type="text" id="searchInput" placeholder="Type a word...">
             </div>
             <div class="expert-mode" id="expertMode" style="display: none;">
-                <input type="text" id="expertInput1" placeholder="First character...">
-                <input type="text" id="expertInput2" placeholder="Second character...">
-                <input type="text" id="expertInput3" placeholder="Third character...">
+                <div class="expert-input-group">
+                    <label for="expertInput1">Position 1</label>
+                    <input type="text" id="expertInput1" placeholder="First position...">
+                </div>
+                <div class="expert-input-group">
+                    <label for="expertInput2">Position 2</label>
+                    <input type="text" id="expertInput2" placeholder="Second position...">
+                </div>
+                <div class="expert-input-group">
+                    <label for="expertInput3">Position 3</label>
+                    <input type="text" id="expertInput3" placeholder="Third position...">
+                </div>
             </div>
             <button id="searchButton">SEARCH</button>
         </div>

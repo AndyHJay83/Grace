@@ -94,16 +94,28 @@ input:checked + .slider:before {
     gap: 10px;
 }
 
-.expert-mode input {
-    flex: 1;
+.expert-mode {
+    flex-direction: column;
+}
+
+.expert-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.expert-input-group label {
+    font-size: 14px;
+    color: #666;
+    font-weight: bold;
 }
 
 #searchInput, #expertInput1, #expertInput2, #expertInput3 {
-    flex: 1;
     padding: 10px;
     font-size: 16px;
     border: 2px solid #ccc;
     border-radius: 5px;
+    width: 100%;
 }
 
 #searchButton {
@@ -115,6 +127,7 @@ input:checked + .slider:before {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    align-self: flex-end;
 }
 
 #searchButton:hover {

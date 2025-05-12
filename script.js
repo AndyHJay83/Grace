@@ -34,9 +34,15 @@ function filterWordsStandard(searchWord) {
 function filterWordsExpert(inputs) {
     const filteredWords = wordList.filter(word => {
         const wordLower = word.toLowerCase();
+        // Check each position that has input
         for (let i = 0; i < inputs.length; i++) {
-            if (inputs[i] && !inputs[i].toLowerCase().includes(wordLower[i])) {
-                return false;
+            if (inputs[i]) {
+                const inputChars = inputs[i].toLowerCase().split('');
+                const wordChar = wordLower[i];
+                // If the word's character at this position doesn't match any character in the input
+                if (!inputChars.includes(wordChar)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -92,9 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('expertInput1').value.trim(),
                 document.getElementById('expertInput2').value.trim(),
                 document.getElementById('expertInput3').value.trim()
-            ].filter(input => input !== '');
+            ];
             
-            if (inputs.length > 0) {
+            // Only proceed if at least one input has a value
+            if (inputs.some(input => input !== '')) {
                 const filteredWords = filterWordsExpert(inputs);
                 document.getElementById('searchContainer').style.display = 'none';
                 displayResults(filteredWords);
