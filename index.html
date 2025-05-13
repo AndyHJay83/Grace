@@ -9,6 +9,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Word Filter">
+    <meta name="HandheldFriendly" content="true">
     <title>Word Filter</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -126,6 +128,18 @@
 
     <script src="script.js"></script>
     <script>
+        // Prevent double-tap zoom
+        document.addEventListener('touchend', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // Prevent double-tap zoom on specific elements
+        document.querySelectorAll('input, button, .key, .results-container').forEach(element => {
+            element.addEventListener('touchend', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+        });
+
         // Hide address bar on mobile
         window.addEventListener('load', function() {
             setTimeout(function() {
