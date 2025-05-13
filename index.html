@@ -17,22 +17,27 @@
 </head>
 <body>
     <div class="container">
-        <div class="toggles-container">
-            <div class="mode-toggle">
-                <span class="mode-label">STANDARD</span>
-                <label class="switch">
-                    <input type="checkbox" id="modeToggle">
-                    <span class="slider round"></span>
-                </label>
-                <span class="mode-label">EXPERT</span>
+        <div class="header">
+            <div class="toggles-container">
+                <div class="mode-toggle">
+                    <span class="mode-label">STANDARD</span>
+                    <label class="switch">
+                        <input type="checkbox" id="modeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="mode-label">EXPERT</span>
+                </div>
+                <div class="shape-toggle">
+                    <span class="mode-label">LEXICON</span>
+                    <label class="switch">
+                        <input type="checkbox" id="shapeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
             </div>
-            <div class="shape-toggle">
-                <span class="mode-label">LEXICON</span>
-                <label class="switch">
-                    <input type="checkbox" id="shapeToggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>
+            <button id="settingsButton" class="settings-button">
+                <i class="fas fa-cog"></i>
+            </button>
         </div>
         <div class="search-container" id="searchContainer">
             <div class="standard-mode" id="standardMode">
@@ -41,47 +46,6 @@
                 </div>
             </div>
             <div class="expert-mode" id="expertMode" style="display: none;">
-                <div class="position-config">
-                    <div class="position-selector">
-                        <label>Position 1:</label>
-                        <select id="position1" class="position-select">
-                            <option value="1">1st</option>
-                            <option value="2">2nd</option>
-                            <option value="3">3rd</option>
-                            <option value="4">4th</option>
-                            <option value="5">5th</option>
-                            <option value="6">6th</option>
-                            <option value="7">7th</option>
-                            <option value="8">8th</option>
-                        </select>
-                    </div>
-                    <div class="position-selector">
-                        <label>Position 2:</label>
-                        <select id="position2" class="position-select">
-                            <option value="1">1st</option>
-                            <option value="2" selected>2nd</option>
-                            <option value="3">3rd</option>
-                            <option value="4">4th</option>
-                            <option value="5">5th</option>
-                            <option value="6">6th</option>
-                            <option value="7">7th</option>
-                            <option value="8">8th</option>
-                        </select>
-                    </div>
-                    <div class="position-selector">
-                        <label>Position 3:</label>
-                        <select id="position3" class="position-select">
-                            <option value="1">1st</option>
-                            <option value="2">2nd</option>
-                            <option value="3" selected>3rd</option>
-                            <option value="4">4th</option>
-                            <option value="5">5th</option>
-                            <option value="6">6th</option>
-                            <option value="7">7th</option>
-                            <option value="8">8th</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="expert-input-group">
                     <label for="expertInput1">Position <span id="position1Label">1</span></label>
                     <div class="input-with-focus">
@@ -115,6 +79,64 @@
             <button id="resetButton" class="reset-button">
                 <i class="fas fa-redo"></i>
             </button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-button" onclick="hideSettings()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>Expert Mode Positions</h3>
+                    <div class="position-config">
+                        <div class="position-selector">
+                            <label>Position 1:</label>
+                            <select id="position1" class="position-select">
+                                <option value="1">1st</option>
+                                <option value="2">2nd</option>
+                                <option value="3">3rd</option>
+                                <option value="4">4th</option>
+                                <option value="5">5th</option>
+                                <option value="6">6th</option>
+                                <option value="7">7th</option>
+                                <option value="8">8th</option>
+                            </select>
+                        </div>
+                        <div class="position-selector">
+                            <label>Position 2:</label>
+                            <select id="position2" class="position-select">
+                                <option value="1">1st</option>
+                                <option value="2" selected>2nd</option>
+                                <option value="3">3rd</option>
+                                <option value="4">4th</option>
+                                <option value="5">5th</option>
+                                <option value="6">6th</option>
+                                <option value="7">7th</option>
+                                <option value="8">8th</option>
+                            </select>
+                        </div>
+                        <div class="position-selector">
+                            <label>Position 3:</label>
+                            <select id="position3" class="position-select">
+                                <option value="1">1st</option>
+                                <option value="2">2nd</option>
+                                <option value="3" selected>3rd</option>
+                                <option value="4">4th</option>
+                                <option value="5">5th</option>
+                                <option value="6">6th</option>
+                                <option value="7">7th</option>
+                                <option value="8">8th</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -195,17 +217,35 @@
             }
         }, { passive: false });
 
+        // Settings Modal Functions
+        function showSettings() {
+            document.getElementById('settingsModal').style.display = 'block';
+        }
+
+        function hideSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        // Close settings when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('settingsModal');
+            if (event.target === modal) {
+                hideSettings();
+            }
+        }
+
+        // Settings button click handler
+        document.getElementById('settingsButton').addEventListener('click', showSettings);
+
         // Custom Keyboard Functions
         let activeInput = null;
         let lastKeyPressTime = 0;
-        const KEY_PRESS_DELAY = 100; // Minimum time between key presses in milliseconds
+        const KEY_PRESS_DELAY = 100;
 
         function showCustomKeyboard(inputId) {
             activeInput = document.getElementById(inputId);
             document.getElementById('keyboardTitle').textContent = activeInput.placeholder;
             document.getElementById('customKeyboard').style.display = 'block';
-            
-            // Force layout recalculation
             document.body.offsetHeight;
         }
 
@@ -217,7 +257,7 @@
         function handleKeyPress(key) {
             const now = Date.now();
             if (now - lastKeyPressTime < KEY_PRESS_DELAY) {
-                return; // Ignore rapid successive presses
+                return;
             }
             lastKeyPressTime = now;
 
@@ -237,7 +277,7 @@
         // Add touch handlers for keyboard keys
         document.querySelectorAll('.keyboard-keys .key').forEach(key => {
             key.addEventListener('touchstart', function(e) {
-                e.preventDefault(); // Prevent default touch behavior
+                e.preventDefault();
                 handleKeyPress(this);
             }, { passive: false });
         });
@@ -252,19 +292,9 @@
 
         // Handle orientation changes
         window.addEventListener('orientationchange', function() {
-            // Force layout recalculation
             document.body.offsetHeight;
-            
-            // Hide keyboard on orientation change
             hideCustomKeyboard();
         });
-
-        // Prevent zoom on double tap
-        document.addEventListener('touchend', function(e) {
-            if (e.target.closest('.key')) {
-                e.preventDefault();
-            }
-        }, { passive: false });
     </script>
 </body>
 </html> 

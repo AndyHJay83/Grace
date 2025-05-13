@@ -267,18 +267,23 @@ function filterWords() {
     let filteredWords = [];
 
     if (isExpertMode) {
-        const pos1 = document.getElementById('position1').value;
-        const pos2 = document.getElementById('position2').value;
-        const pos3 = document.getElementById('position3').value;
+        const pos1 = parseInt(document.getElementById('position1').value);
+        const pos2 = parseInt(document.getElementById('position2').value);
+        const pos3 = parseInt(document.getElementById('position3').value);
         const input1 = document.getElementById('expertInput1').value.toLowerCase();
         const input2 = document.getElementById('expertInput2').value.toLowerCase();
         const input3 = document.getElementById('expertInput3').value.toLowerCase();
 
         filteredWords = wordList.filter(word => {
             const wordLower = word.toLowerCase();
-            const match1 = !input1 || (wordLower.length >= pos1 && wordLower[pos1 - 1] === input1);
-            const match2 = !input2 || (wordLower.length >= pos2 && wordLower[pos2 - 1] === input2);
-            const match3 = !input3 || (wordLower.length >= pos3 && wordLower[pos3 - 1] === input3);
+            // Check if word is long enough for all positions
+            if (wordLower.length < Math.max(pos1, pos2, pos3)) {
+                return false;
+            }
+            // Check each position match
+            const match1 = !input1 || wordLower[pos1 - 1] === input1;
+            const match2 = !input2 || wordLower[pos2 - 1] === input2;
+            const match3 = !input3 || wordLower[pos3 - 1] === input3;
             return match1 && match2 && match3;
         });
     } else {
