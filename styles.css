@@ -498,4 +498,63 @@ input:checked + .slider:before {
     .expert-input-group label {
         padding: 0 10px;
     }
+}
+
+.position-config {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+.position-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.position-selector label {
+    font-size: 14px;
+    color: #666;
+    font-weight: bold;
+    min-width: 80px;
+}
+
+.position-select {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.position-select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Media Queries for Mobile */
+@media (max-width: 600px) {
+    .position-config {
+        padding: 0 10px;
+    }
+
+    .position-selector {
+        gap: 5px;
+    }
+
+    .position-selector label {
+        min-width: 70px;
+        font-size: 13px;
+    }
+
+    .position-select {
+        padding: 12px 8px;
+        font-size: 16px;
+    }
 } 

@@ -234,6 +234,64 @@ function toggleShapeMode() {
     }
 }
 
+// Position configuration
+document.getElementById('position1').addEventListener('change', updatePositionLabels);
+document.getElementById('position2').addEventListener('change', updatePositionLabels);
+document.getElementById('position3').addEventListener('change', updatePositionLabels);
+
+function updatePositionLabels() {
+    const pos1 = document.getElementById('position1').value;
+    const pos2 = document.getElementById('position2').value;
+    const pos3 = document.getElementById('position3').value;
+
+    document.getElementById('position1Label').textContent = pos1;
+    document.getElementById('position2Label').textContent = pos2;
+    document.getElementById('position3Label').textContent = pos3;
+
+    // Update input placeholders
+    document.getElementById('expertInput1').placeholder = `${getOrdinal(pos1)} position...`;
+    document.getElementById('expertInput2').placeholder = `${getOrdinal(pos2)} position...`;
+    document.getElementById('expertInput3').placeholder = `${getOrdinal(pos3)} position...`;
+}
+
+function getOrdinal(n) {
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+// Update the filterWords function to use the selected positions
+function filterWords() {
+    const isExpertMode = document.getElementById('modeToggle').checked;
+    const isShapeMode = document.getElementById('shapeToggle').checked;
+    let filteredWords = [];
+
+    if (isExpertMode) {
+        const pos1 = document.getElementById('position1').value;
+        const pos2 = document.getElementById('position2').value;
+        const pos3 = document.getElementById('position3').value;
+        const input1 = document.getElementById('expertInput1').value.toLowerCase();
+        const input2 = document.getElementById('expertInput2').value.toLowerCase();
+        const input3 = document.getElementById('expertInput3').value.toLowerCase();
+
+        filteredWords = wordList.filter(word => {
+            const wordLower = word.toLowerCase();
+            const match1 = !input1 || (wordLower.length >= pos1 && wordLower[pos1 - 1] === input1);
+            const match2 = !input2 || (wordLower.length >= pos2 && wordLower[pos2 - 1] === input2);
+            const match3 = !input3 || (wordLower.length >= pos3 && wordLower[pos3 - 1] === input3);
+            return match1 && match2 && match3;
+        });
+    } else {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        filteredWords = wordList.filter(word => 
+            word.toLowerCase().includes(searchInput)
+        );
+    }
+
+    currentFilteredWords = filteredWords;
+    displayResults(filteredWords, isShapeMode);
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Focus input fields on tap

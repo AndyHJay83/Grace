@@ -27,7 +27,7 @@
                 <span class="mode-label">EXPERT</span>
             </div>
             <div class="shape-toggle">
-                <span class="mode-label">SHAPE</span>
+                <span class="mode-label">LEXICON</span>
                 <label class="switch">
                     <input type="checkbox" id="shapeToggle">
                     <span class="slider round"></span>
@@ -41,20 +41,61 @@
                 </div>
             </div>
             <div class="expert-mode" id="expertMode" style="display: none;">
+                <div class="position-config">
+                    <div class="position-selector">
+                        <label>Position 1:</label>
+                        <select id="position1" class="position-select">
+                            <option value="1">1st</option>
+                            <option value="2">2nd</option>
+                            <option value="3">3rd</option>
+                            <option value="4">4th</option>
+                            <option value="5">5th</option>
+                            <option value="6">6th</option>
+                            <option value="7">7th</option>
+                            <option value="8">8th</option>
+                        </select>
+                    </div>
+                    <div class="position-selector">
+                        <label>Position 2:</label>
+                        <select id="position2" class="position-select">
+                            <option value="1">1st</option>
+                            <option value="2" selected>2nd</option>
+                            <option value="3">3rd</option>
+                            <option value="4">4th</option>
+                            <option value="5">5th</option>
+                            <option value="6">6th</option>
+                            <option value="7">7th</option>
+                            <option value="8">8th</option>
+                        </select>
+                    </div>
+                    <div class="position-selector">
+                        <label>Position 3:</label>
+                        <select id="position3" class="position-select">
+                            <option value="1">1st</option>
+                            <option value="2">2nd</option>
+                            <option value="3" selected>3rd</option>
+                            <option value="4">4th</option>
+                            <option value="5">5th</option>
+                            <option value="6">6th</option>
+                            <option value="7">7th</option>
+                            <option value="8">8th</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="expert-input-group">
-                    <label for="expertInput1">Position 1</label>
+                    <label for="expertInput1">Position <span id="position1Label">1</span></label>
                     <div class="input-with-focus">
                         <input type="text" id="expertInput1" placeholder="First position..." readonly onclick="showCustomKeyboard('expertInput1')">
                     </div>
                 </div>
                 <div class="expert-input-group">
-                    <label for="expertInput2">Position 2</label>
+                    <label for="expertInput2">Position <span id="position2Label">2</span></label>
                     <div class="input-with-focus">
                         <input type="text" id="expertInput2" placeholder="Second position..." readonly onclick="showCustomKeyboard('expertInput2')">
                     </div>
                 </div>
                 <div class="expert-input-group">
-                    <label for="expertInput3">Position 3</label>
+                    <label for="expertInput3">Position <span id="position3Label">3</span></label>
                     <div class="input-with-focus">
                         <input type="text" id="expertInput3" placeholder="Third position..." readonly onclick="showCustomKeyboard('expertInput3')">
                     </div>
