@@ -297,55 +297,96 @@ function filterWords() {
     displayResults(filteredWords, isShapeMode);
 }
 
-// Event Listeners
+// Function to force keyboard
+function forceKeyboard(input) {
+    // Remove readonly temporarily
+    input.removeAttribute('readonly');
+    
+    // Focus the input
+    input.focus();
+    
+    // Force the keyboard to appear
+    input.click();
+    
+    // Add back readonly after a short delay
+    setTimeout(() => {
+        input.setAttribute('readonly', 'readonly');
+    }, 100);
+}
+
+// Function to handle input focus
+function handleInputFocus(input) {
+    if (window.navigator.standalone) {
+        forceKeyboard(input);
+    }
+}
+
+// Update the showCustomKeyboard function
+function showCustomKeyboard(inputId) {
+    const input = document.getElementById(inputId);
+    activeInput = input;
+    document.getElementById('keyboardTitle').textContent = input.placeholder;
+    document.getElementById('customKeyboard').style.display = 'block';
+    
+    // Force layout recalculation
+    document.body.offsetHeight;
+    
+    // Ensure input is focused
+    handleInputFocus(input);
+}
+
+// Add touch event listeners for inputs
 document.addEventListener('DOMContentLoaded', () => {
-    // Focus input fields on tap
+    // Add touch handlers for all inputs
     const inputs = document.querySelectorAll('input[type="text"]');
     inputs.forEach(input => {
-        // Function to force keyboard
-        const forceKeyboard = () => {
-            // First try to focus
-            input.focus();
-            
-            // Then try the readonly trick
-            input.setAttribute('readonly', 'readonly');
-            setTimeout(() => {
-                input.removeAttribute('readonly');
-                input.focus();
-            }, 100);
-            
-            // If that doesn't work, try clicking
-            input.click();
-            
-            // One more focus attempt
-            setTimeout(() => {
-                input.focus();
-            }, 200);
-        };
+        // Touch start handler
+        input.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleInputFocus(input);
+        }, { passive: false });
 
-        // Add multiple event listeners
-        ['click', 'touchstart', 'touchend'].forEach(eventType => {
-            input.addEventListener(eventType, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                forceKeyboard();
-            }, { passive: false });
-        });
+        // Touch end handler
+        input.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleInputFocus(input);
+        }, { passive: false });
 
-        // Also try to force keyboard on focus
-        input.addEventListener('focus', () => {
-            if (window.navigator.standalone) {
-                forceKeyboard();
-            }
-        });
+        // Click handler
+        input.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleInputFocus(input);
+        }, { passive: false });
     });
 
-    // Prevent default touch behavior on buttons
+    // Add touch handlers for buttons
     const buttons = document.querySelectorAll('button');
     buttons.forEach(button => {
         button.addEventListener('touchstart', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             button.click();
+        }, { passive: false });
+    });
+
+    // Add touch handlers for position selects
+    const selects = document.querySelectorAll('select');
+    selects.forEach(select => {
+        select.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            select.click();
+        }, { passive: false });
+    });
+
+    // Prevent double-tap zoom on interactive elements
+    const interactiveElements = document.querySelectorAll('button, input, select, .key');
+    interactiveElements.forEach(element => {
+        element.addEventListener('touchend', (e) => {
+            e.preventDefault();
         }, { passive: false });
     });
 
