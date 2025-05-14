@@ -2,55 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, minimal-ui">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#f0f0f0">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Word Filter">
+    <meta name="HandheldFriendly" content="true">
     <title>Word Filter</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <div class="toggles-container">
-            <div class="mode-toggle">
-                <span class="mode-label">STANDARD</span>
-                <label class="switch">
-                    <input type="checkbox" id="modeToggle">
-                    <span class="slider round"></span>
-                </label>
-                <span class="mode-label">EXPERT</span>
+        <div class="header">
+            <div class="toggles-container">
+                <div class="mode-toggle">
+                    <span class="mode-label">STANDARD</span>
+                    <label class="switch">
+                        <input type="checkbox" id="modeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="mode-label">EXPERT</span>
+                </div>
+                <div class="shape-toggle">
+                    <span class="mode-label">LEXICON</span>
+                    <label class="switch">
+                        <input type="checkbox" id="shapeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
             </div>
-            <div class="shape-toggle">
-                <span class="mode-label">SHAPE</span>
-                <label class="switch">
-                    <input type="checkbox" id="shapeToggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>
+            <button id="settingsButton" class="settings-button">
+                <i class="fas fa-cog"></i>
+            </button>
         </div>
         <div class="search-container" id="searchContainer">
             <div class="standard-mode" id="standardMode">
-                <input type="text" id="searchInput" placeholder="Type a word...">
+                <div class="input-with-focus">
+                    <input type="text" id="searchInput" placeholder="Type a word..." readonly onclick="showCustomKeyboard('searchInput')">
+                </div>
             </div>
             <div class="expert-mode" id="expertMode" style="display: none;">
                 <div class="expert-input-group">
-                    <label for="expertInput1">Position 1</label>
-                    <input type="text" id="expertInput1" placeholder="First position...">
+                    <label for="expertInput1">Position <span id="position1Label">1</span></label>
+                    <div class="input-with-focus">
+                        <input type="text" id="expertInput1" placeholder="First position..." readonly onclick="showCustomKeyboard('expertInput1')">
+                    </div>
                 </div>
                 <div class="expert-input-group">
-                    <label for="expertInput2">Position 2</label>
-                    <input type="text" id="expertInput2" placeholder="Second position...">
+                    <label for="expertInput2">Position <span id="position2Label">2</span></label>
+                    <div class="input-with-focus">
+                        <input type="text" id="expertInput2" placeholder="Second position..." readonly onclick="showCustomKeyboard('expertInput2')">
+                    </div>
                 </div>
                 <div class="expert-input-group">
-                    <label for="expertInput3">Position 3</label>
-                    <input type="text" id="expertInput3" placeholder="Third position...">
+                    <label for="expertInput3">Position <span id="position3Label">3</span></label>
+                    <div class="input-with-focus">
+                        <input type="text" id="expertInput3" placeholder="Third position..." readonly onclick="showCustomKeyboard('expertInput3')">
+                    </div>
                 </div>
             </div>
             <button id="searchButton">SEARCH</button>
         </div>
-        <div class="word-count" id="wordCount">Total words: 0</div>
+        <div class="word-count" id="wordCount">0</div>
         <div class="results-container" id="resultsContainer"></div>
         <div class="bottom-controls">
             <div class="lexicon-container">
@@ -64,8 +81,128 @@
             </button>
         </div>
     </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-button" onclick="hideSettings()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>Expert Mode Positions</h3>
+                    <div class="position-config">
+                        <div class="position-selector">
+                            <label>Position 1:</label>
+                            <select id="position1" class="position-select">
+                                <option value="1">1st</option>
+                                <option value="2">2nd</option>
+                                <option value="3">3rd</option>
+                                <option value="4">4th</option>
+                                <option value="5">5th</option>
+                                <option value="6">6th</option>
+                                <option value="7">7th</option>
+                                <option value="8">8th</option>
+                            </select>
+                        </div>
+                        <div class="position-selector">
+                            <label>Position 2:</label>
+                            <select id="position2" class="position-select">
+                                <option value="1">1st</option>
+                                <option value="2" selected>2nd</option>
+                                <option value="3">3rd</option>
+                                <option value="4">4th</option>
+                                <option value="5">5th</option>
+                                <option value="6">6th</option>
+                                <option value="7">7th</option>
+                                <option value="8">8th</option>
+                            </select>
+                        </div>
+                        <div class="position-selector">
+                            <label>Position 3:</label>
+                            <select id="position3" class="position-select">
+                                <option value="1">1st</option>
+                                <option value="2">2nd</option>
+                                <option value="3" selected>3rd</option>
+                                <option value="4">4th</option>
+                                <option value="5">5th</option>
+                                <option value="6">6th</option>
+                                <option value="7">7th</option>
+                                <option value="8">8th</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Keyboard -->
+    <div id="customKeyboard" class="custom-keyboard">
+        <div class="keyboard-header">
+            <span id="keyboardTitle">Enter Text</span>
+            <button onclick="hideCustomKeyboard()" class="keyboard-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="keyboard-keys">
+            <div class="keyboard-row">
+                <button class="key">Q</button>
+                <button class="key">W</button>
+                <button class="key">E</button>
+                <button class="key">R</button>
+                <button class="key">T</button>
+                <button class="key">Y</button>
+                <button class="key">U</button>
+                <button class="key">I</button>
+                <button class="key">O</button>
+                <button class="key">P</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key">A</button>
+                <button class="key">S</button>
+                <button class="key">D</button>
+                <button class="key">F</button>
+                <button class="key">G</button>
+                <button class="key">H</button>
+                <button class="key">J</button>
+                <button class="key">K</button>
+                <button class="key">L</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key">Z</button>
+                <button class="key">X</button>
+                <button class="key">C</button>
+                <button class="key">V</button>
+                <button class="key">B</button>
+                <button class="key">N</button>
+                <button class="key">M</button>
+                <button class="key backspace"><i class="fas fa-backspace"></i></button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key space">SPACE</button>
+                <button class="key done">DONE</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script>
+        // Prevent double-tap zoom
+        document.addEventListener('touchend', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // Prevent double-tap zoom on specific elements
+        document.querySelectorAll('input, button, .key, .results-container').forEach(element => {
+            element.addEventListener('touchend', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+        });
+
         // Hide address bar on mobile
         window.addEventListener('load', function() {
             setTimeout(function() {
@@ -79,6 +216,85 @@
                 e.preventDefault();
             }
         }, { passive: false });
+
+        // Settings Modal Functions
+        function showSettings() {
+            document.getElementById('settingsModal').style.display = 'block';
+        }
+
+        function hideSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        // Close settings when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('settingsModal');
+            if (event.target === modal) {
+                hideSettings();
+            }
+        }
+
+        // Settings button click handler
+        document.getElementById('settingsButton').addEventListener('click', showSettings);
+
+        // Custom Keyboard Functions
+        let activeInput = null;
+        let lastKeyPressTime = 0;
+        const KEY_PRESS_DELAY = 100;
+
+        function showCustomKeyboard(inputId) {
+            activeInput = document.getElementById(inputId);
+            document.getElementById('keyboardTitle').textContent = activeInput.placeholder;
+            document.getElementById('customKeyboard').style.display = 'block';
+            document.body.offsetHeight;
+        }
+
+        function hideCustomKeyboard() {
+            document.getElementById('customKeyboard').style.display = 'none';
+            activeInput = null;
+        }
+
+        function handleKeyPress(key) {
+            const now = Date.now();
+            if (now - lastKeyPressTime < KEY_PRESS_DELAY) {
+                return;
+            }
+            lastKeyPressTime = now;
+
+            if (!activeInput) return;
+
+            if (key.classList.contains('backspace')) {
+                activeInput.value = activeInput.value.slice(0, -1);
+            } else if (key.classList.contains('space')) {
+                activeInput.value += ' ';
+            } else if (key.classList.contains('done')) {
+                hideCustomKeyboard();
+            } else {
+                activeInput.value += key.textContent;
+            }
+        }
+
+        // Add touch handlers for keyboard keys
+        document.querySelectorAll('.keyboard-keys .key').forEach(key => {
+            key.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                handleKeyPress(this);
+            }, { passive: false });
+        });
+
+        // Close keyboard when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.custom-keyboard') && 
+                !e.target.closest('input')) {
+                hideCustomKeyboard();
+            }
+        });
+
+        // Handle orientation changes
+        window.addEventListener('orientationchange', function() {
+            document.body.offsetHeight;
+            hideCustomKeyboard();
+        });
     </script>
 </body>
 </html> 
