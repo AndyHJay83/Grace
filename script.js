@@ -310,27 +310,11 @@ function filterWords() {
     displayResults(filteredWords, isShapeMode);
 }
 
-// Function to force keyboard
-function forceKeyboard(input) {
-    // Remove readonly temporarily
-    input.removeAttribute('readonly');
-    
-    // Focus the input
-    input.focus();
-    
-    // Force the keyboard to appear
-    input.click();
-    
-    // Add back readonly after a short delay
-    setTimeout(() => {
-        input.setAttribute('readonly', 'readonly');
-    }, 100);
-}
-
 // Function to handle input focus
 function handleInputFocus(input) {
     if (window.navigator.standalone) {
-        forceKeyboard(input);
+        // Only show custom keyboard in standalone mode
+        showCustomKeyboard(input.id);
     }
 }
 
@@ -343,9 +327,6 @@ function showCustomKeyboard(inputId) {
     
     // Force layout recalculation
     document.body.offsetHeight;
-    
-    // Ensure input is focused
-    handleInputFocus(input);
 }
 
 // Event Listeners
@@ -376,6 +357,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.stopPropagation();
             handleInputFocus(input);
         }, { passive: false });
+
+        // Focus handler
+        input.addEventListener('focus', () => {
+            handleInputFocus(input);
+        });
     });
 
     // Add touch handlers for buttons
