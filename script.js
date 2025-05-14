@@ -261,23 +261,25 @@ function getConsonants(str) {
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
 
-    // Position 1: Check first 3 characters (consonants only)
+    // Position 1: Check characters 2-5 (consonants only)
     if (inputs[0]) {
         const inputConsonants = getConsonants(inputs[0]);
         filteredWords = filteredWords.filter(word => {
-            const firstThreeChars = word.toLowerCase().substring(0, 3);
-            const firstThreeConsonants = getConsonants(firstThreeChars);
-            return inputConsonants.some(consonant => firstThreeConsonants.includes(consonant));
+            if (word.length < 5) return false; // Word must be at least 5 chars long
+            const chars2to5 = word.toLowerCase().substring(1, 5); // Get chars 2-5
+            const consonants2to5 = getConsonants(chars2to5);
+            return inputConsonants.some(consonant => consonants2to5.includes(consonant));
         });
     }
 
-    // Position 2: Also check first 3 characters (consonants only), but on the filtered list
+    // Position 2: Check last 4 characters (excluding last char) (consonants only)
     if (inputs[1]) {
         const inputConsonants = getConsonants(inputs[1]);
         filteredWords = filteredWords.filter(word => {
-            const firstThreeChars = word.toLowerCase().substring(0, 3);
-            const firstThreeConsonants = getConsonants(firstThreeChars);
-            return inputConsonants.some(consonant => firstThreeConsonants.includes(consonant));
+            if (word.length < 5) return false; // Word must be at least 5 chars long
+            const lastFourChars = word.toLowerCase().slice(-5, -1); // Get last 4 chars excluding last
+            const lastFourConsonants = getConsonants(lastFourChars);
+            return inputConsonants.some(consonant => lastFourConsonants.includes(consonant));
         });
     }
 
