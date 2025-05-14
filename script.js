@@ -338,15 +338,33 @@ function handleInputFocus(input) {
     }
 }
 
-// Update the showCustomKeyboard function
+// Function to show custom keyboard
 function showCustomKeyboard(inputId) {
     const input = document.getElementById(inputId);
     activeInput = input;
     document.getElementById('keyboardTitle').textContent = input.placeholder;
     document.getElementById('customKeyboard').style.display = 'block';
-    
-    // Force layout recalculation
-    document.body.offsetHeight;
+}
+
+// Function to hide custom keyboard
+function hideCustomKeyboard() {
+    document.getElementById('customKeyboard').style.display = 'none';
+    activeInput = null;
+}
+
+// Function to handle key press
+function handleKeyPress(key) {
+    if (!activeInput) return;
+
+    if (key.classList.contains('backspace')) {
+        activeInput.value = activeInput.value.slice(0, -1);
+    } else if (key.classList.contains('space')) {
+        activeInput.value += ' ';
+    } else if (key.classList.contains('done')) {
+        hideCustomKeyboard();
+    } else {
+        activeInput.value += key.textContent;
+    }
 }
 
 // Event Listeners
@@ -456,4 +474,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Reset button listener
     document.getElementById('resetButton').addEventListener('click', resetApp);
+
+    // Add keyboard key handlers
+    document.querySelectorAll('.keyboard-keys .key').forEach(key => {
+        key.addEventListener('click', () => handleKeyPress(key));
+        key.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleKeyPress(key);
+        }, { passive: false });
+    });
 }); 
