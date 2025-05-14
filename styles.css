@@ -216,16 +216,14 @@ input:checked + .slider:before {
 .lexicon-container {
     flex: 1;
     margin-right: 10px;
-    min-width: 250px;
 }
 
 .lexicon-display {
     background: #fff;
     border-radius: 10px;
-    padding: 15px;
+    padding: 10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: none;
-    min-width: 250px;
 }
 
 .lexicon-display.visible {
@@ -233,38 +231,34 @@ input:checked + .slider:before {
 }
 
 .position-display {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: #333;
-    padding: 5px 0;
 }
 
 .category-buttons {
     display: flex;
-    gap: 8px;
+    gap: 5px;
     flex-wrap: wrap;
 }
 
 .category-button {
-    background: #007bff;
-    color: white;
+    background: #f0f0f0;
     border: none;
     border-radius: 5px;
-    padding: 8px 15px;
-    font-size: 14px;
+    padding: 5px 10px;
+    font-size: 12px;
     cursor: pointer;
     transition: background-color 0.2s;
-    min-width: 80px;
-    text-align: center;
 }
 
 .category-button:hover {
-    background: #0056b3;
+    background: #e0e0e0;
 }
 
 .category-button:active {
-    background: #004494;
+    background: #d0d0d0;
 }
 
 .reset-button {
@@ -417,25 +411,29 @@ input:checked + .slider:before {
     }
 
     .lexicon-display {
-        min-width: 200px;
-        padding: 12px;
+        min-width: 150px;
+        max-width: 100%;
+        width: 100%;
+        margin-bottom: 70px; /* Add space for the reset button */
+    }
+
+    .category-buttons {
+        gap: 8px;
     }
 
     .category-button {
-        padding: 12px 15px;
-        font-size: 16px;
-        min-width: 90px;
-    }
-
-    .position-display {
-        font-size: 18px;
-        margin-bottom: 12px;
+        padding: 20px 8px; /* Increased touch target */
     }
 
     .bottom-controls {
         left: 10px;
         right: 10px;
         bottom: 10px;
+    }
+
+    .position-display {
+        font-size: 20px;
+        padding: 8px;
     }
 
     .focus-button {
