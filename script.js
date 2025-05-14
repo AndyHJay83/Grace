@@ -141,21 +141,45 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
 // Function to load the word list
 async function loadWordList() {
     try {
+        console.log('Attempting to load word list...');
         const response = await fetch('words/ENUK-Long words Noun.txt');
+        console.log('Fetch response status:', response.status);
+        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
         const text = await response.text();
+        console.log('Raw text length:', text.length);
+        
+        // Split by newlines and filter out empty lines
         wordList = text.split('\n')
             .map(word => word.trim())
             .filter(word => word !== '');
+            
+        console.log('Processed word list length:', wordList.length);
+        
+        if (wordList.length === 0) {
+            throw new Error('No words found in the file');
+        }
+        
         totalWords = wordList.length;
-        console.log(`Loaded ${totalWords} words`); // Debug log
+        console.log(`Successfully loaded ${totalWords} words`);
         updateWordCount(totalWords);
+        
+        // Log first few words for debugging
+        console.log('First few words:', wordList.slice(0, 5));
+        
     } catch (error) {
         console.error('Error loading word list:', error);
-        // Show error to user
         document.getElementById('wordCount').textContent = 'Error loading words';
+        
+        // Show more detailed error information
+        const errorDetails = document.createElement('div');
+        errorDetails.style.color = 'red';
+        errorDetails.style.padding = '10px';
+        errorDetails.textContent = `Error details: ${error.message}`;
+        document.getElementById('wordCount').parentNode.appendChild(errorDetails);
     }
 }
 
