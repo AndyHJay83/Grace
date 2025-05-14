@@ -5,7 +5,6 @@ let isShapeMode = false;
 let currentFilteredWords = [];
 let currentPosition = -1;
 let currentPosition2 = -1;
-let currentCategory = 'ENUK-Long words Noun.txt'; // Default category
 
 // Letter shape categories
 const letterShapes = {
@@ -142,55 +141,21 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
 // Function to load the word list
 async function loadWordList() {
     try {
-        const filePath = `words/${currentCategory}`;
-        console.log(`Attempting to load words from: ${filePath}`);
-        
-        const response = await fetch(filePath);
-        console.log('Fetch response status:', response.status);
-        console.log('Fetch response ok:', response.ok);
-        
+        const response = await fetch('words/ENUK-Long words Noun.txt');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
         const text = await response.text();
-        console.log('Raw text length:', text.length);
-        console.log('Raw text first 100 chars:', text.substring(0, 100));
-        
-        // Handle different line endings and split into words
-        const lines = text
-            .replace(/\r\n/g, '\n')  // Convert Windows line endings to Unix
-            .replace(/\r/g, '\n')    // Convert old Mac line endings to Unix
-            .split('\n');            // Split into lines
-            
-        console.log('Number of lines before processing:', lines.length);
-        
-        wordList = lines
-            .map(word => word.trim()) // Trim whitespace
-            .filter(word => word !== ''); // Remove empty lines
-            
-        console.log('Number of lines after processing:', wordList.length);
-        console.log('First few words loaded:', wordList.slice(0, 5));
-        
+        wordList = text.split('\n')
+            .map(word => word.trim())
+            .filter(word => word !== '');
         totalWords = wordList.length;
-        console.log(`Loaded ${totalWords} words from ${currentCategory}`);
-        
-        if (totalWords === 0) {
-            console.error('No words found in file. Raw text:', text);
-            throw new Error('No words found in file');
-        }
-        
+        console.log(`Loaded ${totalWords} words`); // Debug log
         updateWordCount(totalWords);
     } catch (error) {
         console.error('Error loading word list:', error);
-        console.error('Error details:', {
-            message: error.message,
-            stack: error.stack,
-            category: currentCategory
-        });
-        document.getElementById('wordCount').textContent = `Error: ${error.message}`;
-        wordList = [];
-        totalWords = 0;
+        // Show error to user
+        document.getElementById('wordCount').textContent = 'Error loading words';
     }
 }
 
@@ -216,24 +181,20 @@ function filterWordsStandard(searchWord) {
 
 // Function to filter words in expert mode
 function filterWordsExpert(inputs) {
-    const pos1 = parseInt(document.getElementById('position1').value);
-    const pos2 = parseInt(document.getElementById('position2').value);
-    const pos3 = parseInt(document.getElementById('position3').value);
-    
-    return wordList.filter(word => {
+    const filteredWords = wordList.filter(word => {
         const wordLower = word.toLowerCase();
-        // Check if word is long enough for all positions
-        if (wordLower.length < Math.max(pos1, pos2, pos3)) {
-            return false;
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i]) {
+                const inputChars = inputs[i].toLowerCase().split('');
+                const wordChar = wordLower[i];
+                if (!inputChars.includes(wordChar)) {
+                    return false;
+                }
+            }
         }
-        
-        // Check each position match
-        const match1 = !inputs[0] || wordLower[pos1 - 1] === inputs[0].toLowerCase();
-        const match2 = !inputs[1] || wordLower[pos2 - 1] === inputs[1].toLowerCase();
-        const match3 = !inputs[2] || wordLower[pos3 - 1] === inputs[2].toLowerCase();
-        
-        return match1 && match2 && match3;
+        return true;
     });
+    return filteredWords;
 }
 
 // Function to display results
@@ -368,37 +329,10 @@ function showCustomKeyboard(inputId) {
     document.body.offsetHeight;
 }
 
-// Function to handle category change
-async function handleCategoryChange() {
-    const categorySelect = document.getElementById('wordCategory');
-    const newCategory = categorySelect.value;
-    console.log('Category changing from', currentCategory, 'to', newCategory);
-    
-    if (newCategory !== currentCategory) {
-        currentCategory = newCategory;
-        console.log('Loading new category:', currentCategory);
-        try {
-            await loadWordList();
-            console.log('Word list loaded successfully');
-            resetApp();
-        } catch (error) {
-            console.error('Failed to load word list:', error);
-        }
-    }
-}
-
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async () => {
-    // Set initial category
-    const categorySelect = document.getElementById('wordCategory');
-    currentCategory = categorySelect.value;
-    console.log('Initial category:', currentCategory);
-    
     // Load word list first
     await loadWordList();
-    
-    // Add category change listener
-    categorySelect.addEventListener('change', handleCategoryChange);
     
     // Add touch handlers for all inputs
     const inputs = document.querySelectorAll('input[type="text"]');
