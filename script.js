@@ -272,45 +272,29 @@ function findNextConsonant(word, startPos) {
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
 
-    // Position 1: Check characters 2-5 (consonants only)
+    // Position 1: Check middle 5 characters for odd length words, middle 6 for even length (consonants only)
     if (inputs[0]) {
         const inputConsonants = getConsonants(inputs[0]);
         filteredWords = filteredWords.filter(word => {
-            if (word.length < 5) return false; // Word must be at least 5 chars long
-            const chars2to5 = word.toLowerCase().substring(1, 5); // Get chars 2-5
-            const consonants2to5 = getConsonants(chars2to5);
-            return inputConsonants.some(consonant => consonants2to5.includes(consonant));
+            const wordLength = word.length;
+            if (wordLength < 5) return false; // Word must be at least 5 chars long
+            
+            // Determine middle section length (5 for odd, 6 for even)
+            const middleLength = wordLength % 2 === 0 ? 6 : 5;
+            const start = Math.floor((wordLength - middleLength) / 2);
+            const middleChars = word.toLowerCase().substring(start, start + middleLength);
+            const middleConsonants = getConsonants(middleChars);
+            return inputConsonants.some(consonant => middleConsonants.includes(consonant));
         });
     }
 
-    // Position 2: Check next consonant after the matched consonant from Position 1
-    if (inputs[1]) {
-        const inputConsonants = getConsonants(inputs[1]);
-        filteredWords = filteredWords.filter(word => {
-            if (word.length < 5) return false;
-            
-            // Find the first consonant match from Position 1
-            const chars2to5 = word.toLowerCase().substring(1, 5);
-            const consonants2to5 = getConsonants(chars2to5);
-            const firstMatch = consonants2to5.find(consonant => 
-                getConsonants(inputs[0]).includes(consonant)
-            );
-            
-            if (!firstMatch) return false;
-            
-            // Find the position of the first match
-            const firstMatchPos = word.toLowerCase().indexOf(firstMatch, 1);
-            if (firstMatchPos === -1) return false;
-            
-            // Find the next consonant after the first match
-            const nextConsonantPos = findNextConsonant(word, firstMatchPos);
-            if (nextConsonantPos === -1) return false;
-            
-            // Check if the next consonant matches any from Position 2 input
-            const nextConsonant = word[nextConsonantPos].toLowerCase();
-            return inputConsonants.includes(nextConsonant);
-        });
-    }
+    // Position 2: Currently ignored
+    // if (inputs[1]) {
+    //     const inputConsonants = getConsonants(inputs[1]);
+    //     filteredWords = filteredWords.filter(word => {
+    //         // Position 2 logic here
+    //     });
+    // }
 
     // Position 3: Currently ignored
     // if (inputs[2]) {
