@@ -365,7 +365,7 @@ function showNextVowel() {
     const vowelDisplay = document.getElementById('vowelDisplay');
     const vowelLetter = vowelDisplay.querySelector('.vowel-letter');
     
-    if (currentVowelIndex < uniqueVowels.length) {
+    if (uniqueVowels.length > 0) {
         // Find the least common vowel in the current filtered word list
         const leastCommonVowel = findLeastCommonVowel(currentFilteredWordsForVowels, uniqueVowels);
         vowelLetter.textContent = leastCommonVowel.toUpperCase();
@@ -390,10 +390,11 @@ function handleVowelSelection(includeVowel) {
             !word.toLowerCase().includes(currentVowel)
         );
     }
-    displayResults(currentFilteredWordsForVowels);
     
-    // Move to next vowel
-    currentVowelIndex++;
+    // Remove the processed vowel from uniqueVowels array
+    uniqueVowels = uniqueVowels.filter(v => v !== currentVowel);
+    
+    displayResults(currentFilteredWordsForVowels);
     showNextVowel();
 }
 
@@ -410,6 +411,7 @@ function toggleVowelMode() {
     } else {
         vowelDisplay.style.display = 'none';
         currentVowelIndex = 0;
+        uniqueVowels = []; // Clear unique vowels when toggling off
     }
 }
 
