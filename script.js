@@ -194,7 +194,7 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
 async function loadWordList() {
     try {
         console.log('Attempting to load word list...');
-        const response = await fetch('words/ENUK-Long words Noun.txt');
+        const response = await fetch('./words/ENUK-Long words Noun.txt');
         console.log('Fetch response status:', response.status);
         
         if (!response.ok) {
@@ -240,6 +240,7 @@ function updateWordCount(count) {
     const wordCountElement = document.getElementById('wordCount');
     if (wordCountElement) {
         wordCountElement.textContent = count;
+        console.log('Updated word count to:', count);
     } else {
         console.error('Word count element not found');
     }
