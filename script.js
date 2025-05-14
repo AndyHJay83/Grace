@@ -235,7 +235,6 @@ function displayResults(words) {
     });
     
     updateWordCount(words.length);
-    updateLexiconDisplay(words);
 }
 
 // Function to reset the app
@@ -246,11 +245,8 @@ function resetApp() {
     document.getElementById('expertInput1').value = '';
     document.getElementById('expertInput2').value = '';
     document.getElementById('expertInput3').value = '';
-    document.getElementById('lexiconDisplay').style.display = 'none';
     updateWordCount(totalWords);
     currentFilteredWords = [];
-    currentPosition = -1;
-    currentPosition2 = -1;
 }
 
 // Function to toggle between modes
