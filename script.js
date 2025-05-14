@@ -9,6 +9,7 @@ let isVowelMode = true;
 let currentVowelIndex = 0;
 let uniqueVowels = [];
 let currentFilteredWordsForVowels = [];
+let originalFilteredWords = [];
 
 // Letter shape categories with more comprehensive letter sets
 const letterShapes = {
@@ -366,8 +367,8 @@ function showNextVowel() {
     const vowelLetter = vowelDisplay.querySelector('.vowel-letter');
     
     if (uniqueVowels.length > 0) {
-        // Find the least common vowel in the current filtered word list
-        const leastCommonVowel = findLeastCommonVowel(currentFilteredWordsForVowels, uniqueVowels);
+        // Find the least common vowel in the original filtered word list
+        const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
         vowelLetter.textContent = leastCommonVowel.toUpperCase();
         vowelDisplay.style.display = 'block';
     } else {
@@ -405,6 +406,7 @@ function toggleVowelMode() {
     
     if (isVowelMode && currentFilteredWords.length > 0) {
         currentFilteredWordsForVowels = [...currentFilteredWords];
+        originalFilteredWords = [...currentFilteredWords]; // Store original filtered words
         uniqueVowels = getUniqueVowels(document.getElementById('expertInput1').value);
         currentVowelIndex = 0;
         showNextVowel();
@@ -412,6 +414,7 @@ function toggleVowelMode() {
         vowelDisplay.style.display = 'none';
         currentVowelIndex = 0;
         uniqueVowels = []; // Clear unique vowels when toggling off
+        originalFilteredWords = []; // Clear original filtered words
     }
 }
 
