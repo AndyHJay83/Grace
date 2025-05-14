@@ -272,7 +272,7 @@ function findNextConsonant(word, startPos) {
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
 
-    // Position 1: Check middle 5 characters for odd length words, middle 6 for even length (consonants only)
+    // Position 1: Check middle 5/6 characters for at least 2 consonant matches
     if (inputs[0]) {
         const inputConsonants = getConsonants(inputs[0]);
         filteredWords = filteredWords.filter(word => {
@@ -284,7 +284,14 @@ function filterWordsExpert(inputs) {
             const start = Math.floor((wordLength - middleLength) / 2);
             const middleChars = word.toLowerCase().substring(start, start + middleLength);
             const middleConsonants = getConsonants(middleChars);
-            return inputConsonants.some(consonant => middleConsonants.includes(consonant));
+            
+            // Count how many input consonants are found in the middle section
+            const matches = inputConsonants.filter(consonant => 
+                middleConsonants.includes(consonant)
+            );
+            
+            // Return true if at least 2 consonants match
+            return matches.length >= 2;
         });
     }
 
