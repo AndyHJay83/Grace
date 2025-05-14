@@ -264,12 +264,12 @@ function filterWordsExpert(inputs) {
         });
     }
 
-    // Position 2: Check last 4 characters
+    // Position 2: Also check first 4 characters, but on the filtered list
     if (inputs[1]) {
         const inputChars = inputs[1].toLowerCase().split('');
         filteredWords = filteredWords.filter(word => {
-            const lastFourChars = word.toLowerCase().slice(-4);
-            return inputChars.some(char => lastFourChars.includes(char));
+            const firstFourChars = word.toLowerCase().substring(0, 4);
+            return inputChars.some(char => firstFourChars.includes(char));
         });
     }
 
