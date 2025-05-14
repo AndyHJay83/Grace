@@ -261,23 +261,23 @@ function getConsonants(str) {
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
 
-    // Position 1: Check first 4 characters (consonants only)
+    // Position 1: Check first 6 characters (consonants only)
     if (inputs[0]) {
         const inputConsonants = getConsonants(inputs[0]);
         filteredWords = filteredWords.filter(word => {
-            const firstFourChars = word.toLowerCase().substring(0, 4);
-            const firstFourConsonants = getConsonants(firstFourChars);
-            return inputConsonants.some(consonant => firstFourConsonants.includes(consonant));
+            const firstSixChars = word.toLowerCase().substring(0, 6);
+            const firstSixConsonants = getConsonants(firstSixChars);
+            return inputConsonants.some(consonant => firstSixConsonants.includes(consonant));
         });
     }
 
-    // Position 2: Also check first 4 characters (consonants only), but on the filtered list
+    // Position 2: Also check first 6 characters (consonants only), but on the filtered list
     if (inputs[1]) {
         const inputConsonants = getConsonants(inputs[1]);
         filteredWords = filteredWords.filter(word => {
-            const firstFourChars = word.toLowerCase().substring(0, 4);
-            const firstFourConsonants = getConsonants(firstFourChars);
-            return inputConsonants.some(consonant => firstFourConsonants.includes(consonant));
+            const firstSixChars = word.toLowerCase().substring(0, 6);
+            const firstSixConsonants = getConsonants(firstSixChars);
+            return inputConsonants.some(consonant => firstSixConsonants.includes(consonant));
         });
     }
 
