@@ -142,20 +142,36 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
 // Function to load the word list
 async function loadWordList() {
     try {
+        console.log(`Attempting to load words from: words/${currentCategory}`);
         const response = await fetch(`words/${currentCategory}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const text = await response.text();
-        wordList = text.split('\n')
-            .map(word => word.trim())
-            .filter(word => word !== '');
+        console.log('Raw text loaded:', text.substring(0, 100) + '...'); // Log first 100 chars
+        
+        // Handle different line endings and split into words
+        wordList = text
+            .replace(/\r\n/g, '\n')  // Convert Windows line endings to Unix
+            .replace(/\r/g, '\n')    // Convert old Mac line endings to Unix
+            .split('\n')             // Split into lines
+            .map(word => word.trim()) // Trim whitespace
+            .filter(word => word !== ''); // Remove empty lines
+            
+        console.log('First few words loaded:', wordList.slice(0, 5)); // Log first 5 words
         totalWords = wordList.length;
         console.log(`Loaded ${totalWords} words from ${currentCategory}`);
+        
+        if (totalWords === 0) {
+            throw new Error('No words found in file');
+        }
+        
         updateWordCount(totalWords);
     } catch (error) {
         console.error('Error loading word list:', error);
-        document.getElementById('wordCount').textContent = 'Error loading words';
+        document.getElementById('wordCount').textContent = `Error: ${error.message}`;
+        wordList = [];
+        totalWords = 0;
     }
 }
 
@@ -337,6 +353,7 @@ function showCustomKeyboard(inputId) {
 async function handleCategoryChange() {
     const categorySelect = document.getElementById('wordCategory');
     currentCategory = categorySelect.value;
+    console.log('Category changed to:', currentCategory);
     await loadWordList();
     resetApp();
 }
