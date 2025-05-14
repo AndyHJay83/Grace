@@ -6,6 +6,10 @@ let currentFilteredWords = [];
 let currentPosition = -1;
 let currentPosition2 = -1;
 let activeInput = null;
+let isVowelMode = false;
+let currentVowelIndex = 0;
+let uniqueVowels = [];
+let currentFilteredWordsForVowels = [];
 
 // Letter shape categories with more comprehensive letter sets
 const letterShapes = {
@@ -314,6 +318,62 @@ function filterWordsExpert(inputs) {
     return filteredWords;
 }
 
+// Function to get unique vowels from a string
+function getUniqueVowels(str) {
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+    const uniqueVowels = new Set();
+    str.toLowerCase().split('').forEach(char => {
+        if (vowels.has(char)) {
+            uniqueVowels.add(char);
+        }
+    });
+    return Array.from(uniqueVowels);
+}
+
+// Function to show next vowel
+function showNextVowel() {
+    const vowelDisplay = document.getElementById('vowelDisplay');
+    const vowelLetter = vowelDisplay.querySelector('.vowel-letter');
+    
+    if (currentVowelIndex < uniqueVowels.length) {
+        vowelLetter.textContent = uniqueVowels[currentVowelIndex].toUpperCase();
+        vowelDisplay.style.display = 'block';
+    } else {
+        vowelDisplay.style.display = 'none';
+        currentVowelIndex = 0;
+    }
+}
+
+// Function to handle vowel selection
+function handleVowelSelection(includeVowel) {
+    if (includeVowel) {
+        const currentVowel = uniqueVowels[currentVowelIndex];
+        currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
+            word.toLowerCase().includes(currentVowel)
+        );
+        displayResults(currentFilteredWordsForVowels);
+    }
+    
+    currentVowelIndex++;
+    showNextVowel();
+}
+
+// Function to toggle vowel mode
+function toggleVowelMode() {
+    isVowelMode = document.getElementById('vowelToggle').checked;
+    const vowelDisplay = document.getElementById('vowelDisplay');
+    
+    if (isVowelMode && currentFilteredWords.length > 0) {
+        currentFilteredWordsForVowels = [...currentFilteredWords];
+        uniqueVowels = getUniqueVowels(document.getElementById('expertInput1').value);
+        currentVowelIndex = 0;
+        showNextVowel();
+    } else {
+        vowelDisplay.style.display = 'none';
+        currentVowelIndex = 0;
+    }
+}
+
 // Function to display results
 function displayResults(words) {
     currentFilteredWords = words;
@@ -329,6 +389,11 @@ function displayResults(words) {
     
     updateWordCount(words.length);
     updateLexiconDisplay(words);
+    
+    // If in vowel mode, update the filtered words for vowel processing
+    if (isVowelMode) {
+        currentFilteredWordsForVowels = [...words];
+    }
 }
 
 // Function to reset the app
@@ -585,4 +650,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             handleKeyPress(key);
         }, { passive: false });
     });
+
+    // Add vowel toggle listener
+    document.getElementById('vowelToggle').addEventListener('change', toggleVowelMode);
+    
+    // Add vowel button listeners
+    document.querySelector('.yes-btn').addEventListener('click', () => handleVowelSelection(true));
+    document.querySelector('.no-btn').addEventListener('click', () => handleVowelSelection(false));
 }); 

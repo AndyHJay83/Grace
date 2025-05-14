@@ -34,6 +34,13 @@
                         <span class="slider round"></span>
                     </label>
                 </div>
+                <div class="toggle-container">
+                    <label class="switch">
+                        <input type="checkbox" id="vowelToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="toggle-label">VOWEL</span>
+                </div>
             </div>
             <button id="settingsButton" class="settings-button">
                 <i class="fas fa-cog"></i>
@@ -185,6 +192,17 @@
             <div class="keyboard-row">
                 <button class="key space">SPACE</button>
                 <button class="key done">DONE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this for the vowel selection UI -->
+    <div id="vowelDisplay" class="vowel-display" style="display: none;">
+        <div class="vowel-content">
+            <span class="vowel-letter"></span>
+            <div class="vowel-buttons">
+                <button class="vowel-btn yes-btn">YES</button>
+                <button class="vowel-btn no-btn">NO</button>
             </div>
         </div>
     </div>

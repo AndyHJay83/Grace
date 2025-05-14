@@ -686,4 +686,60 @@ input:checked + .slider:before {
     .modal-body {
         padding: 15px;
     }
+}
+
+.vowel-display {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.vowel-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.vowel-letter {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.vowel-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.vowel-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.yes-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.yes-btn:hover {
+    background: #45a049;
+}
+
+.no-btn {
+    background: #f44336;
+    color: white;
+}
+
+.no-btn:hover {
+    background: #da190b;
 } 
