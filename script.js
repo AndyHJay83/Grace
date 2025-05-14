@@ -442,6 +442,15 @@ function handleKeyPress(key) {
     }
 }
 
+// Settings Modal Functions
+function showSettings() {
+    document.getElementById('settingsModal').style.display = 'block';
+}
+
+function hideSettings() {
+    document.getElementById('settingsModal').style.display = 'none';
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM Content Loaded');
@@ -611,13 +620,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.body.offsetHeight;
         hideCustomKeyboard();
     });
-});
-
-// Settings Modal Functions
-function showSettings() {
-    document.getElementById('settingsModal').style.display = 'block';
-}
-
-function hideSettings() {
-    document.getElementById('settingsModal').style.display = 'none';
-} 
+}); 
