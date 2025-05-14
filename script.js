@@ -142,33 +142,52 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
 // Function to load the word list
 async function loadWordList() {
     try {
-        console.log(`Attempting to load words from: words/${currentCategory}`);
-        const response = await fetch(`words/${currentCategory}`);
+        const filePath = `words/${currentCategory}`;
+        console.log(`Attempting to load words from: ${filePath}`);
+        
+        const response = await fetch(filePath);
+        console.log('Fetch response status:', response.status);
+        console.log('Fetch response ok:', response.ok);
+        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
         const text = await response.text();
-        console.log('Raw text loaded:', text.substring(0, 100) + '...'); // Log first 100 chars
+        console.log('Raw text length:', text.length);
+        console.log('Raw text first 100 chars:', text.substring(0, 100));
         
         // Handle different line endings and split into words
-        wordList = text
+        const lines = text
             .replace(/\r\n/g, '\n')  // Convert Windows line endings to Unix
             .replace(/\r/g, '\n')    // Convert old Mac line endings to Unix
-            .split('\n')             // Split into lines
+            .split('\n');            // Split into lines
+            
+        console.log('Number of lines before processing:', lines.length);
+        
+        wordList = lines
             .map(word => word.trim()) // Trim whitespace
             .filter(word => word !== ''); // Remove empty lines
             
-        console.log('First few words loaded:', wordList.slice(0, 5)); // Log first 5 words
+        console.log('Number of lines after processing:', wordList.length);
+        console.log('First few words loaded:', wordList.slice(0, 5));
+        
         totalWords = wordList.length;
         console.log(`Loaded ${totalWords} words from ${currentCategory}`);
         
         if (totalWords === 0) {
+            console.error('No words found in file. Raw text:', text);
             throw new Error('No words found in file');
         }
         
         updateWordCount(totalWords);
     } catch (error) {
         console.error('Error loading word list:', error);
+        console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            category: currentCategory
+        });
         document.getElementById('wordCount').textContent = `Error: ${error.message}`;
         wordList = [];
         totalWords = 0;
@@ -358,8 +377,13 @@ async function handleCategoryChange() {
     if (newCategory !== currentCategory) {
         currentCategory = newCategory;
         console.log('Loading new category:', currentCategory);
-        await loadWordList();
-        resetApp();
+        try {
+            await loadWordList();
+            console.log('Word list loaded successfully');
+            resetApp();
+        } catch (error) {
+            console.error('Failed to load word list:', error);
+        }
     }
 }
 
