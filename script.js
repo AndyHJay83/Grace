@@ -346,13 +346,19 @@ function showNextVowel() {
 
 // Function to handle vowel selection
 function handleVowelSelection(includeVowel) {
+    const currentVowel = uniqueVowels[currentVowelIndex];
     if (includeVowel) {
-        const currentVowel = uniqueVowels[currentVowelIndex];
+        // Filter to only include words with the vowel
         currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
             word.toLowerCase().includes(currentVowel)
         );
-        displayResults(currentFilteredWordsForVowels);
+    } else {
+        // Filter to exclude words with the vowel
+        currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
+            !word.toLowerCase().includes(currentVowel)
+        );
     }
+    displayResults(currentFilteredWordsForVowels);
     
     currentVowelIndex++;
     showNextVowel();
@@ -616,6 +622,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const filteredWords = filterWordsExpert(inputs);
                 document.getElementById('searchContainer').style.display = 'none';
                 displayResults(filteredWords);
+                
+                // Show vowel selection UI if vowel mode is on
+                if (isVowelMode) {
+                    currentFilteredWordsForVowels = [...filteredWords];
+                    uniqueVowels = getUniqueVowels(inputs[0]);
+                    currentVowelIndex = 0;
+                    showNextVowel();
+                }
             }
         } else {
             const searchWord = document.getElementById('searchInput').value.trim();
@@ -623,6 +637,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const filteredWords = filterWordsStandard(searchWord);
                 document.getElementById('searchContainer').style.display = 'none';
                 displayResults(filteredWords);
+                
+                // Show vowel selection UI if vowel mode is on
+                if (isVowelMode) {
+                    currentFilteredWordsForVowels = [...filteredWords];
+                    uniqueVowels = getUniqueVowels(searchWord);
+                    currentVowelIndex = 0;
+                    showNextVowel();
+                }
             }
         }
     });
