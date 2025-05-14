@@ -352,19 +352,29 @@ function showCustomKeyboard(inputId) {
 // Function to handle category change
 async function handleCategoryChange() {
     const categorySelect = document.getElementById('wordCategory');
-    currentCategory = categorySelect.value;
-    console.log('Category changed to:', currentCategory);
-    await loadWordList();
-    resetApp();
+    const newCategory = categorySelect.value;
+    console.log('Category changing from', currentCategory, 'to', newCategory);
+    
+    if (newCategory !== currentCategory) {
+        currentCategory = newCategory;
+        console.log('Loading new category:', currentCategory);
+        await loadWordList();
+        resetApp();
+    }
 }
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async () => {
+    // Set initial category
+    const categorySelect = document.getElementById('wordCategory');
+    currentCategory = categorySelect.value;
+    console.log('Initial category:', currentCategory);
+    
     // Load word list first
     await loadWordList();
     
     // Add category change listener
-    document.getElementById('wordCategory').addEventListener('change', handleCategoryChange);
+    categorySelect.addEventListener('change', handleCategoryChange);
     
     // Add touch handlers for all inputs
     const inputs = document.querySelectorAll('input[type="text"]');
