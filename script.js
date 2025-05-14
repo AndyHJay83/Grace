@@ -331,7 +331,7 @@ function filterWords() {
     }
 
     currentFilteredWords = filteredWords;
-    displayResults(filteredWords, isShapeMode);
+    displayResults(filteredWords);
 }
 
 // Function to handle input focus
