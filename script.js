@@ -5,6 +5,9 @@ let isShapeMode = false;
 let currentFilteredWords = [];
 let currentPosition = -1;
 let currentPosition2 = -1;
+let activeInput = null;
+let lastKeyPressTime = 0;
+const KEY_PRESS_DELAY = 100;
 
 // Letter shape categories with more comprehensive letter sets
 const letterShapes = {
@@ -406,10 +409,10 @@ function handleInputFocus(input) {
 
 // Function to show custom keyboard
 function showCustomKeyboard(inputId) {
-    const input = document.getElementById(inputId);
-    activeInput = input;
-    document.getElementById('keyboardTitle').textContent = input.placeholder;
+    activeInput = document.getElementById(inputId);
+    document.getElementById('keyboardTitle').textContent = activeInput.placeholder;
     document.getElementById('customKeyboard').style.display = 'block';
+    document.body.offsetHeight;
 }
 
 // Function to hide custom keyboard
@@ -420,6 +423,12 @@ function hideCustomKeyboard() {
 
 // Function to handle key press
 function handleKeyPress(key) {
+    const now = Date.now();
+    if (now - lastKeyPressTime < KEY_PRESS_DELAY) {
+        return;
+    }
+    lastKeyPressTime = now;
+
     if (!activeInput) return;
 
     if (key.classList.contains('backspace')) {
@@ -436,9 +445,47 @@ function handleKeyPress(key) {
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM Content Loaded');
+    
     // Load word list first
     await loadWordList();
     
+    // Prevent double-tap zoom
+    document.addEventListener('touchend', function(e) {
+        e.preventDefault();
+    }, { passive: false });
+
+    // Prevent double-tap zoom on specific elements
+    document.querySelectorAll('input, button, .key, .results-container').forEach(element => {
+        element.addEventListener('touchend', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    });
+
+    // Hide address bar on mobile
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            window.scrollTo(0, 1);
+        }, 0);
+    });
+
+    // Prevent bounce effect on iOS
+    document.body.addEventListener('touchmove', function(e) {
+        if (e.target.closest('.results-container') === null) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+
+    // Close settings when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('settingsModal');
+        if (event.target === modal) {
+            hideSettings();
+        }
+    }
+
+    // Settings button click handler
+    document.getElementById('settingsButton').addEventListener('click', showSettings);
+
     // Add touch handlers for all inputs
     const inputs = document.querySelectorAll('input[type="text"]');
     inputs.forEach(input => {
@@ -550,4 +597,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             handleKeyPress(key);
         }, { passive: false });
     });
-}); 
+
+    // Close keyboard when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-keyboard') && 
+            !e.target.closest('input')) {
+            hideCustomKeyboard();
+        }
+    });
+
+    // Handle orientation changes
+    window.addEventListener('orientationchange', function() {
+        document.body.offsetHeight;
+        hideCustomKeyboard();
+    });
+});
+
+// Settings Modal Functions
+function showSettings() {
+    document.getElementById('settingsModal').style.display = 'block';
+}
+
+function hideSettings() {
+    document.getElementById('settingsModal').style.display = 'none';
+} 
