@@ -5,6 +5,7 @@ let isShapeMode = false;
 let currentFilteredWords = [];
 let currentPosition = -1;
 let currentPosition2 = -1;
+let currentCategory = 'ENUK-Long words Noun.txt'; // Default category
 
 // Letter shape categories
 const letterShapes = {
@@ -141,7 +142,7 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
 // Function to load the word list
 async function loadWordList() {
     try {
-        const response = await fetch('words/ENUK-Long words Noun.txt');
+        const response = await fetch(`words/${currentCategory}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -150,11 +151,10 @@ async function loadWordList() {
             .map(word => word.trim())
             .filter(word => word !== '');
         totalWords = wordList.length;
-        console.log(`Loaded ${totalWords} words`); // Debug log
+        console.log(`Loaded ${totalWords} words from ${currentCategory}`);
         updateWordCount(totalWords);
     } catch (error) {
         console.error('Error loading word list:', error);
-        // Show error to user
         document.getElementById('wordCount').textContent = 'Error loading words';
     }
 }
@@ -329,10 +329,21 @@ function showCustomKeyboard(inputId) {
     document.body.offsetHeight;
 }
 
+// Function to handle category change
+async function handleCategoryChange() {
+    const categorySelect = document.getElementById('wordCategory');
+    currentCategory = categorySelect.value;
+    await loadWordList();
+    resetApp();
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async () => {
     // Load word list first
     await loadWordList();
+    
+    // Add category change listener
+    document.getElementById('wordCategory').addEventListener('change', handleCategoryChange);
     
     // Add touch handlers for all inputs
     const inputs = document.querySelectorAll('input[type="text"]');
