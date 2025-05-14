@@ -134,6 +134,7 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
     
     if (!isShapeMode || words.length === 0) {
         lexiconDisplay.style.display = 'none';
+        lexiconDisplay.classList.remove('visible');
         return;
     }
 
@@ -144,6 +145,7 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
     const position = findLeastVariancePosition(words, startPos, endPos);
     if (position === -1) {
         lexiconDisplay.style.display = 'none';
+        lexiconDisplay.classList.remove('visible');
         return;
     }
 
@@ -178,8 +180,6 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
                 );
                 currentFilteredWords = filteredWords;
                 displayResults(filteredWords);
-                // Continue showing lexicon for further filtering
-                updateLexiconDisplay(filteredWords, false);
             });
             categoryButtons.appendChild(button);
         }
@@ -289,7 +289,7 @@ function displayResults(words) {
     updateWordCount(words.length);
     
     // Always update lexicon display if shape mode is enabled
-    if (isShapeMode) {
+    if (isShapeMode && words.length > 0) {
         updateLexiconDisplay(words);
     }
 }
