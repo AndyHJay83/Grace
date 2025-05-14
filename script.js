@@ -261,37 +261,37 @@ function getConsonants(str) {
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
 
-    // Position 1: Check characters 2-5 (consonants only)
+    // Position 1: Check first 4 characters (consonants only)
     if (inputs[0]) {
         const inputConsonants = getConsonants(inputs[0]);
         filteredWords = filteredWords.filter(word => {
-            if (word.length < 5) return false; // Word must be at least 5 chars long
-            const chars2to5 = word.toLowerCase().substring(1, 5); // Get chars 2-5
-            const consonants2to5 = getConsonants(chars2to5);
-            return inputConsonants.some(consonant => consonants2to5.includes(consonant));
+            if (word.length < 4) return false; // Word must be at least 4 chars long
+            const firstFourChars = word.toLowerCase().substring(0, 4);
+            const firstFourConsonants = getConsonants(firstFourChars);
+            return inputConsonants.some(consonant => firstFourConsonants.includes(consonant));
         });
     }
 
-    // Position 2: Check last 4 characters (excluding last char) (consonants only)
+    // Position 2: Check last 4 characters (consonants only)
     if (inputs[1]) {
         const inputConsonants = getConsonants(inputs[1]);
         filteredWords = filteredWords.filter(word => {
-            if (word.length < 5) return false; // Word must be at least 5 chars long
-            const lastFourChars = word.toLowerCase().slice(-5, -1); // Get last 4 chars excluding last
+            if (word.length < 4) return false; // Word must be at least 4 chars long
+            const lastFourChars = word.toLowerCase().slice(-4);
             const lastFourConsonants = getConsonants(lastFourChars);
             return inputConsonants.some(consonant => lastFourConsonants.includes(consonant));
         });
     }
 
-    // Position 3: Check middle 6 characters (consonants only)
+    // Position 3: Check middle 4 characters (consonants only)
     if (inputs[2]) {
         const inputConsonants = getConsonants(inputs[2]);
         filteredWords = filteredWords.filter(word => {
-            if (word.length < 7) return false; // Word must be at least 7 chars long for middle 6
-            const start = Math.floor((word.length - 6) / 2); // Calculate start position for middle 6
-            const middleSixChars = word.toLowerCase().substring(start, start + 6);
-            const middleSixConsonants = getConsonants(middleSixChars);
-            return inputConsonants.some(consonant => middleSixConsonants.includes(consonant));
+            if (word.length < 5) return false; // Word must be at least 5 chars long for middle 4
+            const start = Math.floor((word.length - 4) / 2); // Calculate start position for middle 4
+            const middleFourChars = word.toLowerCase().substring(start, start + 4);
+            const middleFourConsonants = getConsonants(middleFourChars);
+            return inputConsonants.some(consonant => middleFourConsonants.includes(consonant));
         });
     }
 
