@@ -160,6 +160,7 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
     
     // Show the LEXICON display
     lexiconDisplay.style.display = 'block';
+    lexiconDisplay.classList.add('visible');
 }
 
 // Function to load the word list
@@ -270,7 +271,9 @@ function resetApp() {
     document.getElementById('expertInput1').value = '';
     document.getElementById('expertInput2').value = '';
     document.getElementById('expertInput3').value = '';
-    document.getElementById('lexiconDisplay').style.display = 'none';
+    const lexiconDisplay = document.getElementById('lexiconDisplay');
+    lexiconDisplay.style.display = 'none';
+    lexiconDisplay.classList.remove('visible');
     updateWordCount(totalWords);
     currentFilteredWords = [];
     currentPosition = -1;
@@ -288,10 +291,13 @@ function toggleMode() {
 // Function to toggle shape mode
 function toggleShapeMode() {
     isShapeMode = document.getElementById('shapeToggle').checked;
-    if (currentFilteredWords.length > 0) {
+    const lexiconDisplay = document.getElementById('lexiconDisplay');
+    
+    if (isShapeMode && currentFilteredWords.length > 0) {
         displayResults(currentFilteredWords);
     } else {
-        document.getElementById('lexiconDisplay').style.display = 'none';
+        lexiconDisplay.style.display = 'none';
+        lexiconDisplay.classList.remove('visible');
     }
 }
 
