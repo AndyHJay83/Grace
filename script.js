@@ -236,57 +236,6 @@ function toggleShapeMode() {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Focus input fields on tap
-    const inputs = document.querySelectorAll('input[type="text"]');
-    inputs.forEach(input => {
-        // Function to force keyboard
-        const forceKeyboard = () => {
-            // First try to focus
-            input.focus();
-            
-            // Then try the readonly trick
-            input.setAttribute('readonly', 'readonly');
-            setTimeout(() => {
-                input.removeAttribute('readonly');
-                input.focus();
-            }, 100);
-            
-            // If that doesn't work, try clicking
-            input.click();
-            
-            // One more focus attempt
-            setTimeout(() => {
-                input.focus();
-            }, 200);
-        };
-
-        // Add multiple event listeners
-        ['click', 'touchstart', 'touchend'].forEach(eventType => {
-            input.addEventListener(eventType, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                forceKeyboard();
-            }, { passive: false });
-        });
-
-        // Also try to force keyboard on focus
-        input.addEventListener('focus', () => {
-            if (window.navigator.standalone) {
-                forceKeyboard();
-            }
-        });
-    });
-
-    // Prevent default touch behavior on buttons
-    const buttons = document.querySelectorAll('button');
-    buttons.forEach(button => {
-        button.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            button.click();
-        }, { passive: false });
-    });
-
-    // Rest of your existing DOMContentLoaded code...
     loadWordList();
     
     // Mode toggle listener
