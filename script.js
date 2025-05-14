@@ -251,25 +251,33 @@ function filterWordsStandard(searchWord) {
     return filteredWords;
 }
 
+// Function to get consonants from a string
+function getConsonants(str) {
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+    return str.toLowerCase().split('').filter(char => !vowels.has(char));
+}
+
 // Function to filter words in expert mode
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
 
-    // Position 1: Check first 4 characters
+    // Position 1: Check first 4 characters (consonants only)
     if (inputs[0]) {
-        const inputChars = inputs[0].toLowerCase().split('');
+        const inputConsonants = getConsonants(inputs[0]);
         filteredWords = filteredWords.filter(word => {
             const firstFourChars = word.toLowerCase().substring(0, 4);
-            return inputChars.some(char => firstFourChars.includes(char));
+            const firstFourConsonants = getConsonants(firstFourChars);
+            return inputConsonants.some(consonant => firstFourConsonants.includes(consonant));
         });
     }
 
-    // Position 2: Also check first 4 characters, but on the filtered list
+    // Position 2: Also check first 4 characters (consonants only), but on the filtered list
     if (inputs[1]) {
-        const inputChars = inputs[1].toLowerCase().split('');
+        const inputConsonants = getConsonants(inputs[1]);
         filteredWords = filteredWords.filter(word => {
             const firstFourChars = word.toLowerCase().substring(0, 4);
-            return inputChars.some(char => firstFourChars.includes(char));
+            const firstFourConsonants = getConsonants(firstFourChars);
+            return inputConsonants.some(consonant => firstFourConsonants.includes(consonant));
         });
     }
 
