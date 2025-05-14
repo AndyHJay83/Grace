@@ -5,7 +5,6 @@ let isShapeMode = false;
 let currentFilteredWords = [];
 let currentPosition = -1;
 let currentPosition2 = -1;
-let activeInput = null;
 let isVowelMode = false;
 let currentVowelIndex = 0;
 let uniqueVowels = [];
@@ -503,43 +502,6 @@ function filterWords() {
     displayResults(filteredWords);
 }
 
-// Function to handle input focus
-function handleInputFocus(input) {
-    if (window.navigator.standalone) {
-        // Only show custom keyboard in standalone mode
-        showCustomKeyboard(input.id);
-    }
-}
-
-// Function to show custom keyboard
-function showCustomKeyboard(inputId) {
-    const input = document.getElementById(inputId);
-    activeInput = input;
-    document.getElementById('keyboardTitle').textContent = input.placeholder;
-    document.getElementById('customKeyboard').style.display = 'block';
-}
-
-// Function to hide custom keyboard
-function hideCustomKeyboard() {
-    document.getElementById('customKeyboard').style.display = 'none';
-    activeInput = null;
-}
-
-// Function to handle key press
-function handleKeyPress(key) {
-    if (!activeInput) return;
-
-    if (key.classList.contains('backspace')) {
-        activeInput.value = activeInput.value.slice(0, -1);
-    } else if (key.classList.contains('space')) {
-        activeInput.value += ' ';
-    } else if (key.classList.contains('done')) {
-        hideCustomKeyboard();
-    } else {
-        activeInput.value += key.textContent;
-    }
-}
-
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async () => {
     // Load word list first
@@ -552,27 +514,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         input.addEventListener('touchstart', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            handleInputFocus(input);
         }, { passive: false });
 
         // Touch end handler
         input.addEventListener('touchend', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            handleInputFocus(input);
         }, { passive: false });
 
         // Click handler
         input.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            handleInputFocus(input);
         }, { passive: false });
-
-        // Focus handler
-        input.addEventListener('focus', () => {
-            handleInputFocus(input);
-        });
     });
 
     // Add touch handlers for buttons
@@ -596,7 +550,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Prevent double-tap zoom on interactive elements
-    const interactiveElements = document.querySelectorAll('button, input, select, .key');
+    const interactiveElements = document.querySelectorAll('button, input, select');
     interactiveElements.forEach(element => {
         element.addEventListener('touchend', (e) => {
             e.preventDefault();
@@ -663,15 +617,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Reset button listener
     document.getElementById('resetButton').addEventListener('click', resetApp);
-
-    // Add keyboard key handlers
-    document.querySelectorAll('.keyboard-keys .key').forEach(key => {
-        key.addEventListener('click', () => handleKeyPress(key));
-        key.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            handleKeyPress(key);
-        }, { passive: false });
-    });
 
     // Add vowel toggle listener
     document.getElementById('vowelToggle').addEventListener('change', toggleVowelMode);
