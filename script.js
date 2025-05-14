@@ -550,4 +550,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, { passive: false });
     });
 }); 
-}); 
