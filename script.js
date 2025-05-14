@@ -283,14 +283,17 @@ function filterWordsExpert(inputs) {
         });
     }
 
-    // Position 3: Currently ignored
-    // if (inputs[2]) {
-    //     const inputChars = inputs[2].toLowerCase().split('');
-    //     filteredWords = filteredWords.filter(word => {
-    //         const wordChars = word.toLowerCase().split('');
-    //         return inputChars.some(char => wordChars.includes(char));
-    //     });
-    // }
+    // Position 3: Check middle 6 characters (consonants only)
+    if (inputs[2]) {
+        const inputConsonants = getConsonants(inputs[2]);
+        filteredWords = filteredWords.filter(word => {
+            if (word.length < 7) return false; // Word must be at least 7 chars long for middle 6
+            const start = Math.floor((word.length - 6) / 2); // Calculate start position for middle 6
+            const middleSixChars = word.toLowerCase().substring(start, start + 6);
+            const middleSixConsonants = getConsonants(middleSixChars);
+            return inputConsonants.some(consonant => middleSixConsonants.includes(consonant));
+        });
+    }
 
     return filteredWords;
 }
