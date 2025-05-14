@@ -234,159 +234,55 @@ function toggleShapeMode() {
     }
 }
 
-// Position configuration
-document.getElementById('position1').addEventListener('change', updatePositionLabels);
-document.getElementById('position2').addEventListener('change', updatePositionLabels);
-document.getElementById('position3').addEventListener('change', updatePositionLabels);
-
-function updatePositionLabels() {
-    const pos1 = document.getElementById('position1').value;
-    const pos2 = document.getElementById('position2').value;
-    const pos3 = document.getElementById('position3').value;
-
-    document.getElementById('position1Label').textContent = pos1;
-    document.getElementById('position2Label').textContent = pos2;
-    document.getElementById('position3Label').textContent = pos3;
-
-    // Update input placeholders
-    document.getElementById('expertInput1').placeholder = `${getOrdinal(pos1)} position...`;
-    document.getElementById('expertInput2').placeholder = `${getOrdinal(pos2)} position...`;
-    document.getElementById('expertInput3').placeholder = `${getOrdinal(pos3)} position...`;
-}
-
-function getOrdinal(n) {
-    const s = ['th', 'st', 'nd', 'rd'];
-    const v = n % 100;
-    return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
-
-// Update the filterWords function to use the selected positions
-function filterWords() {
-    const isExpertMode = document.getElementById('modeToggle').checked;
-    const isShapeMode = document.getElementById('shapeToggle').checked;
-    let filteredWords = [];
-
-    if (isExpertMode) {
-        const pos1 = parseInt(document.getElementById('position1').value);
-        const pos2 = parseInt(document.getElementById('position2').value);
-        const pos3 = parseInt(document.getElementById('position3').value);
-        const input1 = document.getElementById('expertInput1').value.toLowerCase();
-        const input2 = document.getElementById('expertInput2').value.toLowerCase();
-        const input3 = document.getElementById('expertInput3').value.toLowerCase();
-
-        filteredWords = wordList.filter(word => {
-            const wordLower = word.toLowerCase();
-            // Check if word is long enough for all positions
-            if (wordLower.length < Math.max(pos1, pos2, pos3)) {
-                return false;
-            }
-            // Check each position match
-            const match1 = !input1 || wordLower[pos1 - 1] === input1;
-            const match2 = !input2 || wordLower[pos2 - 1] === input2;
-            const match3 = !input3 || wordLower[pos3 - 1] === input3;
-            return match1 && match2 && match3;
-        });
-    } else {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        filteredWords = wordList.filter(word => 
-            word.toLowerCase().includes(searchInput)
-        );
-    }
-
-    currentFilteredWords = filteredWords;
-    displayResults(filteredWords, isShapeMode);
-}
-
-// Function to force keyboard
-function forceKeyboard(input) {
-    // Remove readonly temporarily
-    input.removeAttribute('readonly');
-    
-    // Focus the input
-    input.focus();
-    
-    // Force the keyboard to appear
-    input.click();
-    
-    // Add back readonly after a short delay
-    setTimeout(() => {
-        input.setAttribute('readonly', 'readonly');
-    }, 100);
-}
-
-// Function to handle input focus
-function handleInputFocus(input) {
-    if (window.navigator.standalone) {
-        forceKeyboard(input);
-    }
-}
-
-// Update the showCustomKeyboard function
-function showCustomKeyboard(inputId) {
-    const input = document.getElementById(inputId);
-    activeInput = input;
-    document.getElementById('keyboardTitle').textContent = input.placeholder;
-    document.getElementById('customKeyboard').style.display = 'block';
-    
-    // Force layout recalculation
-    document.body.offsetHeight;
-    
-    // Ensure input is focused
-    handleInputFocus(input);
-}
-
-// Add touch event listeners for inputs
+// Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Add touch handlers for all inputs
+    // Focus input fields on tap
     const inputs = document.querySelectorAll('input[type="text"]');
     inputs.forEach(input => {
-        // Touch start handler
-        input.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleInputFocus(input);
-        }, { passive: false });
+        // Function to force keyboard
+        const forceKeyboard = () => {
+            // First try to focus
+            input.focus();
+            
+            // Then try the readonly trick
+            input.setAttribute('readonly', 'readonly');
+            setTimeout(() => {
+                input.removeAttribute('readonly');
+                input.focus();
+            }, 100);
+            
+            // If that doesn't work, try clicking
+            input.click();
+            
+            // One more focus attempt
+            setTimeout(() => {
+                input.focus();
+            }, 200);
+        };
 
-        // Touch end handler
-        input.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleInputFocus(input);
-        }, { passive: false });
+        // Add multiple event listeners
+        ['click', 'touchstart', 'touchend'].forEach(eventType => {
+            input.addEventListener(eventType, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                forceKeyboard();
+            }, { passive: false });
+        });
 
-        // Click handler
-        input.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleInputFocus(input);
-        }, { passive: false });
+        // Also try to force keyboard on focus
+        input.addEventListener('focus', () => {
+            if (window.navigator.standalone) {
+                forceKeyboard();
+            }
+        });
     });
 
-    // Add touch handlers for buttons
+    // Prevent default touch behavior on buttons
     const buttons = document.querySelectorAll('button');
     buttons.forEach(button => {
         button.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            e.stopPropagation();
             button.click();
-        }, { passive: false });
-    });
-
-    // Add touch handlers for position selects
-    const selects = document.querySelectorAll('select');
-    selects.forEach(select => {
-        select.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            select.click();
-        }, { passive: false });
-    });
-
-    // Prevent double-tap zoom on interactive elements
-    const interactiveElements = document.querySelectorAll('button, input, select, .key');
-    interactiveElements.forEach(element => {
-        element.addEventListener('touchend', (e) => {
-            e.preventDefault();
         }, { passive: false });
     });
 
