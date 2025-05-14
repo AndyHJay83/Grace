@@ -181,20 +181,24 @@ function filterWordsStandard(searchWord) {
 
 // Function to filter words in expert mode
 function filterWordsExpert(inputs) {
-    const filteredWords = wordList.filter(word => {
+    const pos1 = parseInt(document.getElementById('position1').value);
+    const pos2 = parseInt(document.getElementById('position2').value);
+    const pos3 = parseInt(document.getElementById('position3').value);
+    
+    return wordList.filter(word => {
         const wordLower = word.toLowerCase();
-        for (let i = 0; i < inputs.length; i++) {
-            if (inputs[i]) {
-                const inputChars = inputs[i].toLowerCase().split('');
-                const wordChar = wordLower[i];
-                if (!inputChars.includes(wordChar)) {
-                    return false;
-                }
-            }
+        // Check if word is long enough for all positions
+        if (wordLower.length < Math.max(pos1, pos2, pos3)) {
+            return false;
         }
-        return true;
+        
+        // Check each position match
+        const match1 = !inputs[0] || wordLower[pos1 - 1] === inputs[0].toLowerCase();
+        const match2 = !inputs[1] || wordLower[pos2 - 1] === inputs[1].toLowerCase();
+        const match3 = !inputs[2] || wordLower[pos3 - 1] === inputs[2].toLowerCase();
+        
+        return match1 && match2 && match3;
     });
-    return filteredWords;
 }
 
 // Function to display results
