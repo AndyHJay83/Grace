@@ -22,7 +22,7 @@ function getLetterShape(letter) {
     return null;
 }
 
-// Function to analyze position shapes with improved variance calculation
+// Function to analyze position shapes with improved distribution analysis
 function analyzePositionShapes(words, position) {
     const shapes = {
         straight: new Set(),
@@ -31,6 +31,11 @@ function analyzePositionShapes(words, position) {
     };
     
     let totalLetters = 0;
+    const shapeCounts = {
+        straight: 0,
+        mixed: 0,
+        curved: 0
+    };
     
     words.forEach(word => {
         if (word.length > position) {
@@ -38,6 +43,7 @@ function analyzePositionShapes(words, position) {
             const shape = getLetterShape(letter);
             if (shape) {
                 shapes[shape].add(letter);
+                shapeCounts[shape]++;
                 totalLetters++;
             }
         }
@@ -45,22 +51,38 @@ function analyzePositionShapes(words, position) {
     
     // Calculate shape distribution
     const distribution = {
-        straight: shapes.straight.size / totalLetters,
-        mixed: shapes.mixed.size / totalLetters,
-        curved: shapes.curved.size / totalLetters
+        straight: shapeCounts.straight / totalLetters,
+        mixed: shapeCounts.mixed / totalLetters,
+        curved: shapeCounts.curved / totalLetters
     };
+    
+    // Calculate how uneven the distribution is
+    const values = Object.values(distribution);
+    const maxValue = Math.max(...values);
+    const minValue = Math.min(...values);
+    const distributionSpread = maxValue - minValue;
+    
+    // Calculate the potential for filtering
+    // We want positions where at least one category has very few words
+    const minCount = Math.min(...Object.values(shapeCounts));
+    const maxCount = Math.max(...Object.values(shapeCounts));
+    const filteringPotential = minCount / maxCount; // Lower is better (more filtering potential)
     
     return {
         shapes,
         distribution,
-        totalLetters
+        totalLetters,
+        shapeCounts,
+        distributionSpread,
+        filteringPotential
     };
 }
 
-// Function to find position with least variance
+// Function to find position with most filtering potential
 function findLeastVariancePosition(words, startPos, endPos) {
-    let maxVariance = -1;
-    let result = -1;
+    let bestPosition = -1;
+    let bestFilteringPotential = 1; // Start with worst case
+    let bestDistributionSpread = 0;
     
     for (let pos = startPos; pos < endPos; pos++) {
         const analysis = analyzePositionShapes(words, pos);
@@ -68,19 +90,28 @@ function findLeastVariancePosition(words, startPos, endPos) {
         // Skip positions with too few letters
         if (analysis.totalLetters < 10) continue;
         
-        // Calculate variance in distribution
-        const values = Object.values(analysis.distribution);
-        const mean = values.reduce((a, b) => a + b, 0) / values.length;
-        const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+        // We want positions that have:
+        // 1. A large spread in the distribution (uneven distribution)
+        // 2. A low filtering potential (at least one category has few words)
+        const combinedScore = analysis.distributionSpread * (1 - analysis.filteringPotential);
         
-        // We want positions with high variance (more distinct distribution)
-        if (variance > maxVariance) {
-            maxVariance = variance;
-            result = pos;
+        if (combinedScore > bestDistributionSpread) {
+            bestDistributionSpread = combinedScore;
+            bestFilteringPotential = analysis.filteringPotential;
+            bestPosition = pos;
         }
     }
     
-    return result;
+    // Log the analysis for debugging
+    if (bestPosition !== -1) {
+        const bestAnalysis = analyzePositionShapes(words, bestPosition);
+        console.log('Selected position:', bestPosition + 1);
+        console.log('Shape counts:', bestAnalysis.shapeCounts);
+        console.log('Distribution:', bestAnalysis.distribution);
+        console.log('Filtering potential:', bestAnalysis.filteringPotential);
+    }
+    
+    return bestPosition;
 }
 
 // Function to get shortest word length in list
@@ -137,7 +168,8 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
         if (letters.size > 0) {
             const button = document.createElement('button');
             button.className = 'category-button';
-            button.textContent = category.toUpperCase();
+            const count = analysis.shapeCounts[category];
+            button.textContent = `${category.toUpperCase()} (${count})`;
             button.addEventListener('click', () => {
                 const filteredWords = filterWordsByShape(
                     isSecondLexicon ? currentFilteredWords : words,
@@ -516,4 +548,5 @@ document.addEventListener('DOMContentLoaded', async () => {
             handleKeyPress(key);
         }, { passive: false });
     });
+}); 
 }); 
