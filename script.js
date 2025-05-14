@@ -5,9 +5,6 @@ let isShapeMode = false;
 let currentFilteredWords = [];
 let currentPosition = -1;
 let currentPosition2 = -1;
-let activeInput = null;
-let lastKeyPressTime = 0;
-const KEY_PRESS_DELAY = 100;
 
 // Letter shape categories with more comprehensive letter sets
 const letterShapes = {
@@ -137,7 +134,6 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
     
     if (!isShapeMode || words.length === 0) {
         lexiconDisplay.style.display = 'none';
-        lexiconDisplay.classList.remove('visible');
         return;
     }
 
@@ -148,7 +144,6 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
     const position = findLeastVariancePosition(words, startPos, endPos);
     if (position === -1) {
         lexiconDisplay.style.display = 'none';
-        lexiconDisplay.classList.remove('visible');
         return;
     }
 
@@ -183,6 +178,8 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
                 );
                 currentFilteredWords = filteredWords;
                 displayResults(filteredWords);
+                // Continue showing lexicon for further filtering
+                updateLexiconDisplay(filteredWords, false);
             });
             categoryButtons.appendChild(button);
         }
@@ -197,7 +194,7 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
 async function loadWordList() {
     try {
         console.log('Attempting to load word list...');
-        const response = await fetch('/words/ENUK-Long words Noun.txt');
+        const response = await fetch('words/ENUK-Long words Noun.txt');
         console.log('Fetch response status:', response.status);
         
         if (!response.ok) {
@@ -243,7 +240,6 @@ function updateWordCount(count) {
     const wordCountElement = document.getElementById('wordCount');
     if (wordCountElement) {
         wordCountElement.textContent = count;
-        console.log('Updated word count to:', count);
     } else {
         console.error('Word count element not found');
     }
@@ -293,7 +289,7 @@ function displayResults(words) {
     updateWordCount(words.length);
     
     // Always update lexicon display if shape mode is enabled
-    if (isShapeMode && words.length > 0) {
+    if (isShapeMode) {
         updateLexiconDisplay(words);
     }
 }
@@ -409,10 +405,10 @@ function handleInputFocus(input) {
 
 // Function to show custom keyboard
 function showCustomKeyboard(inputId) {
-    activeInput = document.getElementById(inputId);
-    document.getElementById('keyboardTitle').textContent = activeInput.placeholder;
+    const input = document.getElementById(inputId);
+    activeInput = input;
+    document.getElementById('keyboardTitle').textContent = input.placeholder;
     document.getElementById('customKeyboard').style.display = 'block';
-    document.body.offsetHeight;
 }
 
 // Function to hide custom keyboard
@@ -423,12 +419,6 @@ function hideCustomKeyboard() {
 
 // Function to handle key press
 function handleKeyPress(key) {
-    const now = Date.now();
-    if (now - lastKeyPressTime < KEY_PRESS_DELAY) {
-        return;
-    }
-    lastKeyPressTime = now;
-
     if (!activeInput) return;
 
     if (key.classList.contains('backspace')) {
@@ -442,59 +432,11 @@ function handleKeyPress(key) {
     }
 }
 
-// Settings Modal Functions
-function showSettings() {
-    document.getElementById('settingsModal').style.display = 'block';
-}
-
-function hideSettings() {
-    document.getElementById('settingsModal').style.display = 'none';
-}
-
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('DOM Content Loaded');
-    
     // Load word list first
     await loadWordList();
     
-    // Prevent double-tap zoom
-    document.addEventListener('touchend', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-
-    // Prevent double-tap zoom on specific elements
-    document.querySelectorAll('input, button, .key, .results-container').forEach(element => {
-        element.addEventListener('touchend', function(e) {
-            e.preventDefault();
-        }, { passive: false });
-    });
-
-    // Hide address bar on mobile
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            window.scrollTo(0, 1);
-        }, 0);
-    });
-
-    // Prevent bounce effect on iOS
-    document.body.addEventListener('touchmove', function(e) {
-        if (e.target.closest('.results-container') === null) {
-            e.preventDefault();
-        }
-    }, { passive: false });
-
-    // Close settings when clicking outside
-    window.onclick = function(event) {
-        const modal = document.getElementById('settingsModal');
-        if (event.target === modal) {
-            hideSettings();
-        }
-    }
-
-    // Settings button click handler
-    document.getElementById('settingsButton').addEventListener('click', showSettings);
-
     // Add touch handlers for all inputs
     const inputs = document.querySelectorAll('input[type="text"]');
     inputs.forEach(input => {
@@ -606,18 +548,5 @@ document.addEventListener('DOMContentLoaded', async () => {
             handleKeyPress(key);
         }, { passive: false });
     });
-
-    // Close keyboard when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.custom-keyboard') && 
-            !e.target.closest('input')) {
-            hideCustomKeyboard();
-        }
-    });
-
-    // Handle orientation changes
-    window.addEventListener('orientationchange', function() {
-        document.body.offsetHeight;
-        hideCustomKeyboard();
-    });
+}); 
 }); 
