@@ -6,7 +6,7 @@ let currentFilteredWords = [];
 let currentPosition = -1;
 let currentPosition2 = -1;
 
-// Letter shape categories
+// Letter shape categories with more comprehensive letter sets
 const letterShapes = {
     straight: new Set(['A', 'E', 'F', 'H', 'I', 'K', 'L', 'M', 'N', 'T', 'V', 'W', 'X', 'Y', 'Z', 'É', 'À', 'Â', 'Ã', 'Á', 'Ä', 'Å', 'Ă', 'Î', 'Ț', 'Ê', 'Ŵ', 'Ŷ', 'Ï', 'Í', 'È', 'Æ', 'Ë', 'Ÿ', 'Ẽ', 'Ĩ', 'Ỹ', 'Ñ']),
     mixed: new Set(['B', 'D', 'G', 'J', 'P', 'Q', 'R', 'U', 'Ú', 'Ü', 'ß', 'Û', 'Œ', 'Ù', 'Ũ', 'G̃', 'Ø']),
@@ -22,7 +22,7 @@ function getLetterShape(letter) {
     return null;
 }
 
-// Function to analyze position shapes
+// Function to analyze position shapes with improved variance calculation
 function analyzePositionShapes(words, position) {
     const shapes = {
         straight: new Set(),
@@ -30,30 +30,52 @@ function analyzePositionShapes(words, position) {
         curved: new Set()
     };
     
+    let totalLetters = 0;
+    
     words.forEach(word => {
         if (word.length > position) {
             const letter = word[position];
             const shape = getLetterShape(letter);
             if (shape) {
                 shapes[shape].add(letter);
+                totalLetters++;
             }
         }
     });
     
-    return shapes;
+    // Calculate shape distribution
+    const distribution = {
+        straight: shapes.straight.size / totalLetters,
+        mixed: shapes.mixed.size / totalLetters,
+        curved: shapes.curved.size / totalLetters
+    };
+    
+    return {
+        shapes,
+        distribution,
+        totalLetters
+    };
 }
 
 // Function to find position with least variance
 function findLeastVariancePosition(words, startPos, endPos) {
-    let minVariance = Infinity;
+    let maxVariance = -1;
     let result = -1;
     
     for (let pos = startPos; pos < endPos; pos++) {
-        const shapes = analyzePositionShapes(words, pos);
-        const totalShapes = Object.values(shapes).reduce((a, b) => a + b.size, 0);
+        const analysis = analyzePositionShapes(words, pos);
         
-        if (totalShapes > 0 && totalShapes < minVariance) {
-            minVariance = totalShapes;
+        // Skip positions with too few letters
+        if (analysis.totalLetters < 10) continue;
+        
+        // Calculate variance in distribution
+        const values = Object.values(analysis.distribution);
+        const mean = values.reduce((a, b) => a + b, 0) / values.length;
+        const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+        
+        // We want positions with high variance (more distinct distribution)
+        if (variance > maxVariance) {
+            maxVariance = variance;
             result = pos;
         }
     }
@@ -75,7 +97,7 @@ function filterWordsByShape(words, position, category) {
     });
 }
 
-// Function to update LEXICON display
+// Function to update LEXICON display with improved analysis
 function updateLexiconDisplay(words, isSecondLexicon = false) {
     const lexiconDisplay = document.getElementById('lexiconDisplay');
     
@@ -100,13 +122,14 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
         currentPosition = position;
     }
 
-    const shapes = analyzePositionShapes(words, position);
+    const analysis = analyzePositionShapes(words, position);
+    const shapes = analysis.shapes;
     
-    // Update position display
+    // Update position display with distribution information
     const positionDisplay = lexiconDisplay.querySelector('.position-display');
     positionDisplay.textContent = `Position ${position + 1}`;
     
-    // Update category buttons
+    // Update category buttons with letter counts
     const categoryButtons = lexiconDisplay.querySelector('.category-buttons');
     categoryButtons.innerHTML = '';
     
@@ -114,7 +137,8 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
         if (letters.size > 0) {
             const button = document.createElement('button');
             button.className = 'category-button';
-            button.textContent = category.toUpperCase();
+            const percentage = Math.round(analysis.distribution[category] * 100);
+            button.textContent = `${category.toUpperCase()} (${percentage}%)`;
             button.addEventListener('click', () => {
                 const filteredWords = filterWordsByShape(
                     isSecondLexicon ? currentFilteredWords : words,
