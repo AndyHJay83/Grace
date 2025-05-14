@@ -257,43 +257,68 @@ function getConsonants(str) {
     return str.toLowerCase().split('').filter(char => !vowels.has(char));
 }
 
+// Function to find next consonant after a position
+function findNextConsonant(word, startPos) {
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+    for (let i = startPos + 1; i < word.length; i++) {
+        if (!vowels.has(word[i].toLowerCase())) {
+            return i;
+        }
+    }
+    return -1; // No consonant found
+}
+
 // Function to filter words in expert mode
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
 
-    // Position 1: Check first 4 characters (consonants only)
+    // Position 1: Check characters 2-5 (consonants only)
     if (inputs[0]) {
         const inputConsonants = getConsonants(inputs[0]);
         filteredWords = filteredWords.filter(word => {
-            if (word.length < 4) return false; // Word must be at least 4 chars long
-            const firstFourChars = word.toLowerCase().substring(0, 4);
-            const firstFourConsonants = getConsonants(firstFourChars);
-            return inputConsonants.some(consonant => firstFourConsonants.includes(consonant));
+            if (word.length < 5) return false; // Word must be at least 5 chars long
+            const chars2to5 = word.toLowerCase().substring(1, 5); // Get chars 2-5
+            const consonants2to5 = getConsonants(chars2to5);
+            return inputConsonants.some(consonant => consonants2to5.includes(consonant));
         });
     }
 
-    // Position 2: Check last 4 characters (consonants only)
+    // Position 2: Check next consonant after the matched consonant from Position 1
     if (inputs[1]) {
         const inputConsonants = getConsonants(inputs[1]);
         filteredWords = filteredWords.filter(word => {
-            if (word.length < 4) return false; // Word must be at least 4 chars long
-            const lastFourChars = word.toLowerCase().slice(-4);
-            const lastFourConsonants = getConsonants(lastFourChars);
-            return inputConsonants.some(consonant => lastFourConsonants.includes(consonant));
+            if (word.length < 5) return false;
+            
+            // Find the first consonant match from Position 1
+            const chars2to5 = word.toLowerCase().substring(1, 5);
+            const consonants2to5 = getConsonants(chars2to5);
+            const firstMatch = consonants2to5.find(consonant => 
+                getConsonants(inputs[0]).includes(consonant)
+            );
+            
+            if (!firstMatch) return false;
+            
+            // Find the position of the first match
+            const firstMatchPos = word.toLowerCase().indexOf(firstMatch, 1);
+            if (firstMatchPos === -1) return false;
+            
+            // Find the next consonant after the first match
+            const nextConsonantPos = findNextConsonant(word, firstMatchPos);
+            if (nextConsonantPos === -1) return false;
+            
+            // Check if the next consonant matches any from Position 2 input
+            const nextConsonant = word[nextConsonantPos].toLowerCase();
+            return inputConsonants.includes(nextConsonant);
         });
     }
 
-    // Position 3: Check middle 4 characters (consonants only)
-    if (inputs[2]) {
-        const inputConsonants = getConsonants(inputs[2]);
-        filteredWords = filteredWords.filter(word => {
-            if (word.length < 5) return false; // Word must be at least 5 chars long for middle 4
-            const start = Math.floor((word.length - 4) / 2); // Calculate start position for middle 4
-            const middleFourChars = word.toLowerCase().substring(start, start + 4);
-            const middleFourConsonants = getConsonants(middleFourChars);
-            return inputConsonants.some(consonant => middleFourConsonants.includes(consonant));
-        });
-    }
+    // Position 3: Currently ignored
+    // if (inputs[2]) {
+    //     const inputConsonants = getConsonants(inputs[2]);
+    //     filteredWords = filteredWords.filter(word => {
+    //         // Position 3 logic here
+    //     });
+    // }
 
     return filteredWords;
 }
