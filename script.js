@@ -5,6 +5,7 @@ let isShapeMode = false;
 let currentFilteredWords = [];
 let currentPosition = -1;
 let currentPosition2 = -1;
+let activeInput = null;
 
 // Letter shape categories with more comprehensive letter sets
 const letterShapes = {
@@ -167,13 +168,35 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
 async function loadWordList() {
     try {
         console.log('Attempting to load word list...');
-        const response = await fetch('words/ENUK-Long words Noun.txt');
-        console.log('Fetch response status:', response.status);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        // Try different possible paths for the word list
+        const possiblePaths = [
+            'words/ENUK-Long words Noun.txt',
+            './words/ENUK-Long words Noun.txt',
+            '../words/ENUK-Long words Noun.txt',
+            'ENUK-Long words Noun.txt'
+        ];
+
+        let response = null;
+        let successfulPath = null;
+
+        for (const path of possiblePaths) {
+            try {
+                console.log(`Trying path: ${path}`);
+                response = await fetch(path);
+                if (response.ok) {
+                    successfulPath = path;
+                    break;
+                }
+            } catch (e) {
+                console.log(`Failed to load from ${path}: ${e.message}`);
+            }
         }
-        
+
+        if (!response || !response.ok) {
+            throw new Error(`Could not load word list from any of the attempted paths`);
+        }
+
+        console.log(`Successfully loaded from: ${successfulPath}`);
         const text = await response.text();
         console.log('Raw text length:', text.length);
         
@@ -230,19 +253,35 @@ function filterWordsStandard(searchWord) {
 
 // Function to filter words in expert mode
 function filterWordsExpert(inputs) {
-    const filteredWords = wordList.filter(word => {
-        const wordLower = word.toLowerCase();
-        for (let i = 0; i < inputs.length; i++) {
-            if (inputs[i]) {
-                const inputChars = inputs[i].toLowerCase().split('');
-                const wordChar = wordLower[i];
-                if (!inputChars.includes(wordChar)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    });
+    let filteredWords = wordList;
+
+    // Position 1: Check first 4 characters
+    if (inputs[0]) {
+        const inputChars = inputs[0].toLowerCase().split('');
+        filteredWords = filteredWords.filter(word => {
+            const firstFourChars = word.toLowerCase().substring(0, 4);
+            return inputChars.some(char => firstFourChars.includes(char));
+        });
+    }
+
+    // Position 2: Check last 4 characters
+    if (inputs[1]) {
+        const inputChars = inputs[1].toLowerCase().split('');
+        filteredWords = filteredWords.filter(word => {
+            const lastFourChars = word.toLowerCase().slice(-4);
+            return inputChars.some(char => lastFourChars.includes(char));
+        });
+    }
+
+    // Position 3: Currently ignored
+    // if (inputs[2]) {
+    //     const inputChars = inputs[2].toLowerCase().split('');
+    //     filteredWords = filteredWords.filter(word => {
+    //         const wordChars = word.toLowerCase().split('');
+    //         return inputChars.some(char => wordChars.includes(char));
+    //     });
+    // }
+
     return filteredWords;
 }
 
