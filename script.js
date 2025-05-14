@@ -194,7 +194,7 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
 async function loadWordList() {
     try {
         console.log('Attempting to load word list...');
-        const response = await fetch('./words/ENUK-Long words Noun.txt');
+        const response = await fetch('/words/ENUK-Long words Noun.txt');
         console.log('Fetch response status:', response.status);
         
         if (!response.ok) {
@@ -435,6 +435,7 @@ function handleKeyPress(key) {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM Content Loaded');
     // Load word list first
     await loadWordList();
     
