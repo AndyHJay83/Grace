@@ -27,6 +27,13 @@
                     </label>
                     <span class="mode-label">EXPERT</span>
                 </div>
+                <div class="shape-toggle">
+                    <span class="mode-label">LEXICON</span>
+                    <label class="switch">
+                        <input type="checkbox" id="shapeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
             </div>
             <button id="settingsButton" class="settings-button">
                 <i class="fas fa-cog"></i>
@@ -63,6 +70,12 @@
         <div class="word-count" id="wordCount">0</div>
         <div class="results-container" id="resultsContainer"></div>
         <div class="bottom-controls">
+            <div class="lexicon-container">
+                <div id="lexiconDisplay" class="lexicon-display">
+                    <div class="position-display"></div>
+                    <div class="category-buttons"></div>
+                </div>
+            </div>
             <button id="resetButton" class="reset-button">
                 <i class="fas fa-redo"></i>
             </button>
