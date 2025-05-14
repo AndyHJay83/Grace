@@ -137,22 +137,17 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
         if (letters.size > 0) {
             const button = document.createElement('button');
             button.className = 'category-button';
-            const percentage = Math.round(analysis.distribution[category] * 100);
-            button.textContent = `${category.toUpperCase()} (${percentage}%)`;
+            button.textContent = category.toUpperCase();
             button.addEventListener('click', () => {
                 const filteredWords = filterWordsByShape(
                     isSecondLexicon ? currentFilteredWords : words,
                     isSecondLexicon ? currentPosition2 : currentPosition,
                     category
                 );
-                if (isSecondLexicon) {
-                    displayResults(filteredWords);
-                } else {
-                    currentFilteredWords = filteredWords;
-                    displayResults(filteredWords);
-                    // Instead of showing second lexicon, update the first one with second lexicon data
-                    updateLexiconDisplay(filteredWords, true);
-                }
+                currentFilteredWords = filteredWords;
+                displayResults(filteredWords);
+                // Continue showing lexicon for further filtering
+                updateLexiconDisplay(filteredWords, false);
             });
             categoryButtons.appendChild(button);
         }
@@ -260,7 +255,11 @@ function displayResults(words) {
     });
     
     updateWordCount(words.length);
-    updateLexiconDisplay(words);
+    
+    // Always update lexicon display if shape mode is enabled
+    if (isShapeMode) {
+        updateLexiconDisplay(words);
+    }
 }
 
 // Function to reset the app
