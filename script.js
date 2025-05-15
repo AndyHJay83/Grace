@@ -424,7 +424,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const filteredWords = filterWordsByCurvedPositions(currentFilteredWords, positions);
             document.getElementById('lexiconFeature').classList.add('completed');
             displayResults(filteredWords);
-            showNextFeature();
+            // Show Position 1 feature next
+            document.getElementById('position1Feature').style.display = 'block';
+            document.getElementById('lexiconFeature').style.display = 'none';
         }
     });
     
