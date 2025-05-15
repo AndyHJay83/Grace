@@ -39,6 +39,7 @@ function analyzePositionShapes(words, position) {
         if (word.length > position) {
             const letter = word[position];
             const shape = getLetterShape(letter);
+            console.log(`Word ${word}: Position ${position + 1} has letter ${letter} which is ${shape}`);
             if (shape) {
                 shapes[shape].add(letter);
                 totalLetters++;
@@ -72,6 +73,8 @@ function findLeastVariancePosition(words, startPos, endPos) {
     let maxVariance = -1;
     let result = -1;
     
+    console.log('Finding position with most variance in words:', words);
+    
     for (let pos = startPos; pos < endPos; pos++) {
         const analysis = analyzePositionShapes(words, pos);
         
@@ -83,11 +86,12 @@ function findLeastVariancePosition(words, startPos, endPos) {
         
         // Calculate variance between the two distributions
         const variance = Math.abs(analysis.distribution.straight - analysis.distribution.curved);
-        console.log(`Position ${pos + 1} variance:`, variance);
+        console.log(`Position ${pos + 1} variance:`, variance, 'straight:', analysis.distribution.straight, 'curved:', analysis.distribution.curved);
         
         if (variance > maxVariance) {
             maxVariance = variance;
             result = pos;
+            console.log(`New best position: ${pos + 1} with variance ${variance}`);
         }
     }
     
