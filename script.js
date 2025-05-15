@@ -399,50 +399,43 @@ function hasAnyTwoConsonants(word, consonants) {
 
 // Function to show next feature
 function showNextFeature() {
-    // First check if LEXICON is enabled and not completed
+    // First hide all features
+    const allFeatures = [
+        'lexiconFeature',
+        'consonantQuestion',
+        'position1Feature',
+        'vowelFeature',
+        'shapeFeature'
+    ];
+    
+    allFeatures.forEach(featureId => {
+        document.getElementById(featureId).style.display = 'none';
+    });
+    
+    // Then show the appropriate feature based on the current state
     if (isLexiconMode && !document.getElementById('lexiconFeature').classList.contains('completed')) {
         document.getElementById('lexiconFeature').style.display = 'block';
-        document.getElementById('consonantQuestion').style.display = 'none';
-        document.getElementById('position1Feature').style.display = 'none';
-        document.getElementById('vowelFeature').style.display = 'none';
-        document.getElementById('shapeFeature').style.display = 'none';
     }
     // Then check consonant question if LEXICON is completed
     else if (document.getElementById('lexiconFeature').classList.contains('completed') && 
              hasAdjacentConsonants === null) {
-        document.getElementById('lexiconFeature').style.display = 'none';
         document.getElementById('consonantQuestion').style.display = 'block';
-        document.getElementById('position1Feature').style.display = 'none';
-        document.getElementById('vowelFeature').style.display = 'none';
-        document.getElementById('shapeFeature').style.display = 'none';
     }
     // Then check Position 1 if consonant question is answered
     else if (hasAdjacentConsonants !== null && 
              !document.getElementById('position1Feature').classList.contains('completed')) {
-        document.getElementById('lexiconFeature').style.display = 'none';
-        document.getElementById('consonantQuestion').style.display = 'none';
         document.getElementById('position1Feature').style.display = 'block';
-        document.getElementById('vowelFeature').style.display = 'none';
-        document.getElementById('shapeFeature').style.display = 'none';
     }
     // Then check VOWEL if Position 1 is completed
     else if (document.getElementById('position1Feature').classList.contains('completed') && 
              isVowelMode && 
              !document.getElementById('vowelFeature').classList.contains('completed')) {
-        document.getElementById('lexiconFeature').style.display = 'none';
-        document.getElementById('consonantQuestion').style.display = 'none';
-        document.getElementById('position1Feature').style.display = 'none';
         document.getElementById('vowelFeature').style.display = 'block';
-        document.getElementById('shapeFeature').style.display = 'none';
     }
     // Finally check SHAPE if VOWEL is completed
     else if (document.getElementById('vowelFeature').classList.contains('completed') && 
              isShapeMode && 
              !document.getElementById('shapeFeature').classList.contains('completed')) {
-        document.getElementById('lexiconFeature').style.display = 'none';
-        document.getElementById('consonantQuestion').style.display = 'none';
-        document.getElementById('position1Feature').style.display = 'none';
-        document.getElementById('vowelFeature').style.display = 'none';
         document.getElementById('shapeFeature').style.display = 'block';
         updateShapeDisplay(currentFilteredWords);
     }
