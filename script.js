@@ -276,16 +276,18 @@ function findNextConsonant(word, startPos) {
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
 
-    // Position 1: Check for consonants anywhere in the word
+    // Position 1: Check for consonants anywhere in the word except first and last positions
     if (inputs[0]) {
         const inputConsonants = getConsonants(inputs[0]);
         filteredWords = filteredWords.filter(word => {
             const wordLength = word.length;
             if (wordLength < 5) return false; // Word must be at least 5 chars long
             
-            const wordConsonants = getConsonants(word);
+            // Get consonants from the word excluding first and last positions
+            const middleWord = word.slice(1, -1);
+            const wordConsonants = getConsonants(middleWord);
             
-            // Count how many input consonants are found anywhere in the word
+            // Count how many input consonants are found in the middle section
             const matches = inputConsonants.filter(consonant => 
                 wordConsonants.includes(consonant)
             );
