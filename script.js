@@ -450,6 +450,14 @@ function displayResults(words) {
         optimalKeyword = findOptimalKeyword(currentAnagramWords);
         if (optimalKeyword) {
             remainingLetters = new Set(optimalKeyword.split('').reverse());
+            
+            // Force display to be visible
+            const anagramDisplay = document.getElementById('anagramDisplay');
+            anagramDisplay.style.display = 'block';
+            anagramDisplay.style.visibility = 'visible';
+            anagramDisplay.style.opacity = '1';
+            anagramDisplay.classList.add('visible');
+            
             showNextAnagramLetter();
         }
     }
@@ -816,11 +824,20 @@ function showNextAnagramLetter() {
         currentAnagramLetter = leastCommonLetter;
         anagramLetter.textContent = leastCommonLetter.toUpperCase();
         anagramProgress.textContent = `Letter ${optimalKeyword.length - remainingLetters.size + 1} of ${optimalKeyword.length}`;
+        
+        // Force display to be visible
         anagramDisplay.style.display = 'block';
+        anagramDisplay.style.visibility = 'visible';
+        anagramDisplay.style.opacity = '1';
+        anagramDisplay.classList.add('visible');
+        
         console.log('Showing letter:', leastCommonLetter);
+        console.log('Anagram display element:', anagramDisplay);
+        console.log('Anagram display style:', anagramDisplay.style.cssText);
     } else {
         console.log('No more letters to show');
         anagramDisplay.style.display = 'none';
+        anagramDisplay.classList.remove('visible');
         if (currentAnagramWords.length > 0) {
             displayResults(currentAnagramWords);
         }
@@ -868,15 +885,24 @@ function toggleAnagramMode() {
         if (optimalKeyword) {
             remainingLetters = new Set(optimalKeyword.split('').reverse());
             console.log('Remaining letters:', Array.from(remainingLetters));
+            
+            // Force display to be visible
+            anagramDisplay.style.display = 'block';
+            anagramDisplay.style.visibility = 'visible';
+            anagramDisplay.style.opacity = '1';
+            anagramDisplay.classList.add('visible');
+            
             showNextAnagramLetter();
         } else {
             console.log('No optimal keyword found');
             anagramDisplay.style.display = 'none';
+            anagramDisplay.classList.remove('visible');
             remainingLetters.clear();
         }
     } else {
         console.log('Hiding anagram display');
         anagramDisplay.style.display = 'none';
+        anagramDisplay.classList.remove('visible');
         remainingLetters.clear();
     }
 } 

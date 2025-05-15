@@ -652,8 +652,21 @@ input:checked + .slider:before {
     border-radius: 10px;
     padding: 15px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    z-index: 1000;
+    z-index: 2000;
     max-width: 300px;
+    border: 2px solid #007bff;
+}
+
+.anagram-display.visible {
+    display: block !important;
+    background: #fff;
+    border: 2px solid #007bff;
+}
+
+.anagram-display[style*="display: block"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .anagram-content {
