@@ -645,10 +645,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 displayResults(filteredWords);
                 
                 if (isVowelMode) {
+                    // Set up vowel feature
                     currentFilteredWordsForVowels = [...filteredWords];
                     originalFilteredWords = [...filteredWords];
                     uniqueVowels = getUniqueVowels(input);
-                    showNextFeature();
+                    console.log('Setting up vowel feature with vowels:', uniqueVowels);
+                    
+                    // Show the first vowel
+                    const vowelFeature = document.getElementById('vowelFeature');
+                    const vowelLetter = vowelFeature.querySelector('.vowel-letter');
+                    const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
+                    vowelLetter.textContent = leastCommonVowel.toUpperCase();
+                    vowelFeature.style.display = 'block';
                 } else {
                     showNextFeature();
                 }
