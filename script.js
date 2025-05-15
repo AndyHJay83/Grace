@@ -519,20 +519,4 @@ function filterWordsByCurvedPositions(words, positions) {
         
         return true;
     });
-}
-
-// Add event listener for curved filter button
-document.getElementById('curvedFilterButton').addEventListener('click', () => {
-    const positions = document.getElementById('curvedPositions').value;
-    if (positions) {
-        const filteredWords = filterWordsByCurvedPositions(currentFilteredWords, positions);
-        displayResults(filteredWords);
-    }
-});
-
-// Add enter key handler for curved positions input
-document.getElementById('curvedPositions').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        document.getElementById('curvedFilterButton').click();
-    }
-}); 
+} 
