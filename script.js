@@ -551,7 +551,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Update the display immediately
         displayResults(currentFilteredWords);
-        showNextFeature();
+        
+        // Hide consonant question and show Position 1
+        document.getElementById('consonantQuestion').style.display = 'none';
+        document.getElementById('position1Feature').style.display = 'block';
     });
 
     document.getElementById('consonantNoBtn').addEventListener('click', () => {
@@ -575,7 +578,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Update the display immediately
         displayResults(currentFilteredWords);
-        showNextFeature();
+        
+        // Hide consonant question and show Position 1
+        document.getElementById('consonantQuestion').style.display = 'none';
+        document.getElementById('position1Feature').style.display = 'block';
     });
     
     // Position 1 feature
