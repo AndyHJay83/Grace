@@ -442,6 +442,17 @@ function displayResults(words) {
     if (isVowelMode) {
         currentFilteredWordsForVowels = [...words];
     }
+    
+    // If in anagram mode and we have words, ensure anagram display is shown
+    if (isAnagramMode && words.length > 0) {
+        console.log('Updating anagram display with words:', words);
+        currentAnagramWords = [...words];
+        optimalKeyword = findOptimalKeyword(currentAnagramWords);
+        if (optimalKeyword) {
+            remainingLetters = new Set(optimalKeyword.split('').reverse());
+            showNextAnagramLetter();
+        }
+    }
 }
 
 // Function to reset the app
@@ -667,6 +678,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Add vowel button listeners
     document.querySelector('.yes-btn').addEventListener('click', () => handleVowelSelection(true));
     document.querySelector('.no-btn').addEventListener('click', () => handleVowelSelection(false));
+
+    // Add anagram toggle listener
+    const anagramToggle = document.getElementById('anagramToggle');
+    if (anagramToggle) {
+        console.log('Adding anagram toggle listener');
+        anagramToggle.addEventListener('change', toggleAnagramMode);
+    } else {
+        console.error('Anagram toggle not found!');
+    }
+    
+    // Add anagram button listeners
+    const yesBtn = document.querySelector('.anagram-btn.yes-btn');
+    const noBtn = document.querySelector('.anagram-btn.no-btn');
+    
+    if (yesBtn && noBtn) {
+        console.log('Adding anagram button listeners');
+        yesBtn.addEventListener('click', () => handleAnagramSelection(true));
+        noBtn.addEventListener('click', () => handleAnagramSelection(false));
+    } else {
+        console.error('Anagram buttons not found!');
+    }
 });
 
 // Function to find optimal keyword for anagram
@@ -774,6 +806,7 @@ function findOptimalKeyword(words) {
 
 // Function to show next anagram letter
 function showNextAnagramLetter() {
+    console.log('Showing next anagram letter');
     const anagramDisplay = document.getElementById('anagramDisplay');
     const anagramLetter = anagramDisplay.querySelector('.anagram-letter');
     const anagramProgress = anagramDisplay.querySelector('.anagram-progress');
@@ -784,7 +817,9 @@ function showNextAnagramLetter() {
         anagramLetter.textContent = leastCommonLetter.toUpperCase();
         anagramProgress.textContent = `Letter ${optimalKeyword.length - remainingLetters.size + 1} of ${optimalKeyword.length}`;
         anagramDisplay.style.display = 'block';
+        console.log('Showing letter:', leastCommonLetter);
     } else {
+        console.log('No more letters to show');
         anagramDisplay.style.display = 'none';
         if (currentAnagramWords.length > 0) {
             displayResults(currentAnagramWords);
@@ -818,21 +853,29 @@ function handleAnagramSelection(includeLetter) {
 
 // Function to toggle anagram mode
 function toggleAnagramMode() {
+    console.log('Toggling anagram mode');
     isAnagramMode = document.getElementById('anagramToggle').checked;
+    console.log('Anagram mode:', isAnagramMode);
     const anagramDisplay = document.getElementById('anagramDisplay');
     
     if (isAnagramMode && currentFilteredWords.length > 0) {
+        console.log('Starting anagram with words:', currentFilteredWords);
         currentAnagramWords = [...currentFilteredWords];
         // Find optimal keyword for the current word list
         optimalKeyword = findOptimalKeyword(currentAnagramWords);
+        console.log('Found optimal keyword:', optimalKeyword);
+        
         if (optimalKeyword) {
             remainingLetters = new Set(optimalKeyword.split('').reverse());
+            console.log('Remaining letters:', Array.from(remainingLetters));
             showNextAnagramLetter();
         } else {
+            console.log('No optimal keyword found');
             anagramDisplay.style.display = 'none';
             remainingLetters.clear();
         }
     } else {
+        console.log('Hiding anagram display');
         anagramDisplay.style.display = 'none';
         remainingLetters.clear();
     }
