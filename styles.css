@@ -114,10 +114,14 @@ body {
     border-top: 1px solid #eee;
     padding: 20px;
     min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .feature-section {
     display: none;
+    width: 100%;
 }
 
 .feature-section.active {
@@ -217,29 +221,41 @@ body {
 /* Shape Feature */
 .shape-display {
     text-align: center;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .position-display {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: #333;
 }
 
 .category-buttons {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
+    margin-top: 15px;
 }
 
 .category-button {
-    padding: 10px 20px;
-    background: #f0f0f0;
+    padding: 12px 24px;
+    background: #007bff;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.category-button:hover {
+    background: #0056b3;
 }
 
 /* Reset Button */

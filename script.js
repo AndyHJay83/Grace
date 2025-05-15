@@ -96,25 +96,33 @@ function filterWordsByShape(words, position, category) {
 
 // Function to update shape display
 function updateShapeDisplay(words) {
+    console.log('Updating shape display with words:', words.length);
     const shapeFeature = document.getElementById('shapeFeature');
     const shapeDisplay = shapeFeature.querySelector('.shape-display');
     
     if (!isShapeMode || words.length === 0) {
+        console.log('Shape mode disabled or no words to display');
         shapeFeature.style.display = 'none';
         return;
     }
 
     const startPos = 0;
     const endPos = Math.min(7, getShortestWordLength(words));
+    console.log('Analyzing positions from', startPos, 'to', endPos);
 
     const position = findLeastVariancePosition(words, startPos, endPos);
+    console.log('Found position with most variance:', position);
+    
     if (position === -1) {
+        console.log('No valid position found');
         shapeFeature.style.display = 'none';
         return;
     }
 
     currentPosition = position;
     const analysis = analyzePositionShapes(words, position);
+    console.log('Shape analysis:', analysis);
+    
     const shapes = analysis.shapes;
     
     const positionDisplay = shapeDisplay.querySelector('.position-display');
@@ -135,10 +143,12 @@ function updateShapeDisplay(words) {
                 expandWordList();
             });
             categoryButtons.appendChild(button);
+            console.log('Added button for category:', category, 'with percentage:', percentage);
         }
     });
     
     shapeFeature.style.display = 'block';
+    console.log('Shape feature display updated');
 }
 
 // Function to load word list
