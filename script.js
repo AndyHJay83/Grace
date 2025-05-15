@@ -275,11 +275,17 @@ function getAdjacentConsonants(str) {
     const word = str.toLowerCase();
     
     for (let i = 0; i < word.length - 1; i++) {
-        if (!vowels.has(word[i]) && !vowels.has(word[i + 1])) {
+        // Check if both characters are consonants (not vowels)
+        const isFirstConsonant = !vowels.has(word[i]);
+        const isSecondConsonant = !vowels.has(word[i + 1]);
+        
+        if (isFirstConsonant && isSecondConsonant) {
             consonants.push([word[i], word[i + 1]]);
+            console.log(`Found consonant pair: ${word[i]}${word[i + 1]}`);
         }
     }
     
+    console.log('All adjacent consonant pairs found:', consonants);
     return consonants;
 }
 
@@ -293,6 +299,7 @@ function consonantsAppearTogether(word, consonant1, consonant2) {
     while ((pos = wordLower.indexOf(consonant1, pos + 1)) !== -1) {
         // Check if the second consonant appears right after
         if (pos + 1 < wordLower.length && wordLower[pos + 1] === consonant2) {
+            console.log(`Found "${consonant1}${consonant2}" in "${word}" at position ${pos}`);
             return true;
         }
     }
@@ -311,29 +318,23 @@ function filterWordsExpert(inputs) {
         if (adjacentConsonantPairs.length > 0) {
             // Filter words that contain ANY of the adjacent consonant pairs
             filteredWords = filteredWords.filter(word => {
+                const wordLower = word.toLowerCase();
                 // Check if the word contains any of the consonant pairs
-                return adjacentConsonantPairs.some(([consonant1, consonant2]) => 
-                    consonantsAppearTogether(word, consonant1, consonant2)
-                );
+                const matches = adjacentConsonantPairs.some(([consonant1, consonant2]) => {
+                    const hasPair = consonantsAppearTogether(word, consonant1, consonant2);
+                    if (hasPair) {
+                        console.log(`Word "${word}" matches pair "${consonant1}${consonant2}"`);
+                    }
+                    return hasPair;
+                });
+                
+                if (matches) {
+                    console.log(`Keeping word: ${word}`);
+                }
+                return matches;
             });
         }
     }
-
-    // Position 2: Currently ignored
-    // if (inputs[1]) {
-    //     const inputConsonants = getConsonants(inputs[1]);
-    //     filteredWords = filteredWords.filter(word => {
-    //         // Position 2 logic here
-    //     });
-    // }
-
-    // Position 3: Currently ignored
-    // if (inputs[2]) {
-    //     const inputConsonants = getConsonants(inputs[2]);
-    //     filteredWords = filteredWords.filter(word => {
-    //         // Position 3 logic here
-    //     });
-    // }
 
     return filteredWords;
 }
