@@ -268,41 +268,44 @@ function findNextConsonant(word, startPos) {
     return -1; // No consonant found
 }
 
+// Function to get adjacent consonants from a string
+function getAdjacentConsonants(str) {
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+    const consonants = [];
+    const word = str.toLowerCase();
+    
+    for (let i = 0; i < word.length - 1; i++) {
+        if (!vowels.has(word[i]) && !vowels.has(word[i + 1])) {
+            consonants.push([word[i], word[i + 1]]);
+        }
+    }
+    
+    return consonants;
+}
+
 // Function to filter words in expert mode
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
 
-    // Position 1: Check for consonants in middle letters based on word length
+    // Position 1: Check for adjacent consonants from input
     if (inputs[0]) {
-        const inputConsonants = getConsonants(inputs[0]);
-        filteredWords = filteredWords.filter(word => {
-            const wordLength = word.length;
-            if (wordLength < 5) return false; // Word must be at least 5 chars long
+        const adjacentConsonantPairs = getAdjacentConsonants(inputs[0]);
+        
+        if (adjacentConsonantPairs.length > 0) {
+            // Take the first pair of adjacent consonants found
+            const [consonant1, consonant2] = adjacentConsonantPairs[0];
             
-            // Calculate middle section based on word length
-            let startPos, endPos;
-            if (wordLength % 2 === 0) { // Even length
-                // For even length, take middle 6 letters
-                startPos = (wordLength - 6) / 2;
-                endPos = startPos + 6;
-            } else { // Odd length
-                // For odd length, take middle 5 letters
-                startPos = (wordLength - 5) / 2;
-                endPos = startPos + 5;
-            }
-            
-            // Get consonants from the middle section
-            const middleWord = word.slice(startPos, endPos);
-            const wordConsonants = getConsonants(middleWord);
-            
-            // Count how many input consonants are found in the middle section
-            const matches = inputConsonants.filter(consonant => 
-                wordConsonants.includes(consonant)
-            );
-            
-            // Return true if at least 2 consonants match
-            return matches.length >= 2;
-        });
+            filteredWords = filteredWords.filter(word => {
+                const wordLower = word.toLowerCase();
+                
+                // Find the position of the first consonant
+                const pos1 = wordLower.indexOf(consonant1);
+                if (pos1 === -1) return false;
+                
+                // Check if the second consonant appears right after
+                return wordLower.indexOf(consonant2, pos1) === pos1 + 1;
+            });
+        }
     }
 
     // Position 2: Currently ignored
