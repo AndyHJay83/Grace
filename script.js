@@ -251,87 +251,46 @@ function filterWordsStandard(searchWord) {
     return filteredWords;
 }
 
-// Function to get consonants from a string
-function getConsonants(str) {
-    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
-    return str.toLowerCase().split('').filter(char => !vowels.has(char));
-}
-
-// Function to find next consonant after a position
-function findNextConsonant(word, startPos) {
-    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
-    for (let i = startPos + 1; i < word.length; i++) {
-        if (!vowels.has(word[i].toLowerCase())) {
-            return i;
-        }
-    }
-    return -1; // No consonant found
-}
-
-// Function to get adjacent consonants from a string
-function getAdjacentConsonants(str) {
+// Function to get consonants from a string in order
+function getConsonantsInOrder(str) {
     const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
     const consonants = [];
     const word = str.toLowerCase();
     
-    for (let i = 0; i < word.length - 1; i++) {
-        // Check if both characters are consonants (not vowels)
-        const isFirstConsonant = !vowels.has(word[i]);
-        const isSecondConsonant = !vowels.has(word[i + 1]);
-        
-        if (isFirstConsonant && isSecondConsonant) {
-            consonants.push([word[i], word[i + 1]]);
-            console.log(`Found consonant pair: ${word[i]}${word[i + 1]}`);
+    for (let i = 0; i < word.length; i++) {
+        if (!vowels.has(word[i])) {
+            consonants.push(word[i]);
         }
     }
     
-    console.log('All adjacent consonant pairs found:', consonants);
+    console.log('Consonants found in order:', consonants);
     return consonants;
 }
 
-// Function to check if two consonants appear together with no vowels between them
-function consonantsAppearTogether(word, consonant1, consonant2) {
-    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+// Function to check if a word contains consonants in sequence
+function hasConsonantsInSequence(word, consonants) {
     const wordLower = word.toLowerCase();
-    
-    // Find all positions of the first consonant
-    let pos = -1;
-    while ((pos = wordLower.indexOf(consonant1, pos + 1)) !== -1) {
-        // Check if the second consonant appears right after
-        if (pos + 1 < wordLower.length && wordLower[pos + 1] === consonant2) {
-            console.log(`Found "${consonant1}${consonant2}" in "${word}" at position ${pos}`);
-            return true;
-        }
-    }
-    
-    return false;
+    const sequence = consonants.join('');
+    console.log(`Looking for sequence "${sequence}" in "${wordLower}"`);
+    return wordLower.includes(sequence);
 }
 
 // Function to filter words in expert mode
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
 
-    // Position 1: Check for adjacent consonants from input
+    // Position 1: Check for consonants from input
     if (inputs[0]) {
-        const adjacentConsonantPairs = getAdjacentConsonants(inputs[0]);
+        const consonants = getConsonantsInOrder(inputs[0]);
         
-        if (adjacentConsonantPairs.length > 0) {
-            // Filter words that contain ANY of the adjacent consonant pairs
+        if (consonants.length >= 2) {
+            // Filter words that contain the consonants in sequence
             filteredWords = filteredWords.filter(word => {
-                const wordLower = word.toLowerCase();
-                // Check if the word contains any of the consonant pairs
-                const matches = adjacentConsonantPairs.some(([consonant1, consonant2]) => {
-                    const hasPair = consonantsAppearTogether(word, consonant1, consonant2);
-                    if (hasPair) {
-                        console.log(`Word "${word}" matches pair "${consonant1}${consonant2}"`);
-                    }
-                    return hasPair;
-                });
-                
-                if (matches) {
-                    console.log(`Keeping word: ${word}`);
+                const hasSequence = hasConsonantsInSequence(word, consonants);
+                if (hasSequence) {
+                    console.log(`Found match: ${word}`);
                 }
-                return matches;
+                return hasSequence;
             });
         }
     }
