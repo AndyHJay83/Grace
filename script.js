@@ -286,6 +286,24 @@ function findLeastCommonVowel(words, vowels) {
     return leastCommonVowel;
 }
 
+// Function to show next vowel
+function showNextVowel() {
+    const vowelFeature = document.getElementById('vowelFeature');
+    const vowelLetter = vowelFeature.querySelector('.vowel-letter');
+    
+    if (uniqueVowels.length > 0) {
+        const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
+        vowelLetter.textContent = leastCommonVowel.toUpperCase();
+        vowelFeature.style.display = 'block';
+        console.log('Showing vowel:', leastCommonVowel);
+        console.log('Current filtered words:', currentFilteredWordsForVowels.length);
+    } else {
+        vowelFeature.style.display = 'none';
+        currentVowelIndex = 0;
+        showNextFeature();
+    }
+}
+
 // Function to handle vowel selection
 function handleVowelSelection(includeVowel) {
     const currentVowel = uniqueVowels[currentVowelIndex];
@@ -316,24 +334,6 @@ function handleVowelSelection(includeVowel) {
     } else {
         // No more vowels to process, mark as completed and move to next feature
         document.getElementById('vowelFeature').classList.add('completed');
-        showNextFeature();
-    }
-}
-
-// Function to show next vowel
-function showNextVowel() {
-    const vowelFeature = document.getElementById('vowelFeature');
-    const vowelLetter = vowelFeature.querySelector('.vowel-letter');
-    
-    if (uniqueVowels.length > 0) {
-        const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
-        vowelLetter.textContent = leastCommonVowel.toUpperCase();
-        vowelFeature.style.display = 'block';
-        console.log('Showing vowel:', leastCommonVowel);
-        console.log('Current filtered words:', currentFilteredWordsForVowels.length);
-    } else {
-        vowelFeature.style.display = 'none';
-        currentVowelIndex = 0;
         showNextFeature();
     }
 }
