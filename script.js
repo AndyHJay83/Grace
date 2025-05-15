@@ -11,18 +11,16 @@ let uniqueVowels = [];
 let currentFilteredWordsForVowels = [];
 let originalFilteredWords = [];
 
-// Letter shape categories with more comprehensive letter sets
+// Letter shape categories with exact categorization
 const letterShapes = {
-    straight: new Set(['A', 'E', 'F', 'H', 'I', 'K', 'L', 'M', 'N', 'T', 'V', 'W', 'X', 'Y', 'Z', 'É', 'À', 'Â', 'Ã', 'Á', 'Ä', 'Å', 'Ă', 'Î', 'Ț', 'Ê', 'Ŵ', 'Ŷ', 'Ï', 'Í', 'È', 'Æ', 'Ë', 'Ÿ', 'Ẽ', 'Ĩ', 'Ỹ', 'Ñ']),
-    mixed: new Set(['B', 'D', 'G', 'J', 'P', 'Q', 'R', 'U', 'Ú', 'Ü', 'ß', 'Û', 'Œ', 'Ù', 'Ũ', 'G̃', 'Ø']),
-    curved: new Set(['C', 'O', 'S', 'G', 'O', 'Q', 'S', 'U', 'Ç', 'Ö', 'Õ', 'Ș', 'Ô', 'Ó', 'Ò', 'Ş'])
+    straight: new Set(['A', 'E', 'F', 'H', 'I', 'K', 'L', 'M', 'N', 'T', 'V', 'W', 'X', 'Y', 'Z']),
+    curved: new Set(['B', 'C', 'D', 'G', 'J', 'O', 'P', 'Q', 'R', 'S', 'U'])
 };
 
 // Function to get letter shape
 function getLetterShape(letter) {
     letter = letter.toUpperCase();
     if (letterShapes.straight.has(letter)) return 'straight';
-    if (letterShapes.mixed.has(letter)) return 'mixed';
     if (letterShapes.curved.has(letter)) return 'curved';
     return null;
 }
@@ -31,7 +29,6 @@ function getLetterShape(letter) {
 function analyzePositionShapes(words, position) {
     const shapes = {
         straight: new Set(),
-        mixed: new Set(),
         curved: new Set()
     };
     
@@ -51,7 +48,6 @@ function analyzePositionShapes(words, position) {
     // Calculate shape distribution
     const distribution = {
         straight: shapes.straight.size / totalLetters,
-        mixed: shapes.mixed.size / totalLetters,
         curved: shapes.curved.size / totalLetters
     };
     
