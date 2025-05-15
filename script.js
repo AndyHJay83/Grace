@@ -540,6 +540,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('consonantYesBtn').addEventListener('click', () => {
         console.log('Consonant question: YES selected');
         hasAdjacentConsonants = true;
+        // Filter out words with NO adjacent consonants
+        currentFilteredWords = currentFilteredWords.filter(word => hasWordAdjacentConsonants(word));
+        console.log('Filtered to only words with adjacent consonants. Remaining words:', currentFilteredWords.length);
+        displayResults(currentFilteredWords);
         showNextFeature();
     });
 
@@ -549,6 +553,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Filter out words with adjacent consonants
         currentFilteredWords = currentFilteredWords.filter(word => !hasWordAdjacentConsonants(word));
         console.log('Filtered out words with adjacent consonants. Remaining words:', currentFilteredWords.length);
+        displayResults(currentFilteredWords);
         showNextFeature();
     });
     
