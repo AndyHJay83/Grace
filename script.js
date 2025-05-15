@@ -262,16 +262,32 @@ function getConsonantsInOrder(str) {
     return consonants;
 }
 
-// Function to check for consonants in sequence
-function hasConsonantsInSequence(word, consonants) {
+// Function to check if a word has any two consonants adjacent
+function hasAdjacentConsonants(word, consonants) {
     const wordLower = word.toLowerCase();
-    const sequence = consonants.join('');
-    console.log(`Looking for sequence "${sequence}" in "${wordLower}"`);
+    console.log(`Checking word "${wordLower}" for adjacent consonants from:`, consonants);
     
-    // Check if the word contains the exact sequence of consonants
-    const hasSequence = wordLower.includes(sequence);
-    console.log(`Found sequence: ${hasSequence}`);
-    return hasSequence;
+    // Create all possible pairs of consonants from the input
+    const consonantPairs = [];
+    for (let i = 0; i < consonants.length; i++) {
+        for (let j = i + 1; j < consonants.length; j++) {
+            consonantPairs.push([consonants[i], consonants[j]]);
+        }
+    }
+    console.log('Looking for these consonant pairs:', consonantPairs);
+    
+    // Check if any of these pairs appear adjacent in the word
+    for (const [con1, con2] of consonantPairs) {
+        const pair1 = con1 + con2;
+        const pair2 = con2 + con1;
+        if (wordLower.includes(pair1) || wordLower.includes(pair2)) {
+            console.log(`Found adjacent consonants "${pair1}" or "${pair2}" in "${wordLower}"`);
+            return true;
+        }
+    }
+    
+    console.log(`No adjacent consonants found in "${wordLower}"`);
+    return false;
 }
 
 // Function to get unique vowels
@@ -517,7 +533,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             if (consonants.length >= 2) {
                 const filteredWords = currentFilteredWords.filter(word => 
-                    hasConsonantsInSequence(word, consonants)
+                    hasAdjacentConsonants(word, consonants)
                 );
                 console.log('Filtered words count:', filteredWords.length);
                 
