@@ -286,6 +286,40 @@ function findLeastCommonVowel(words, vowels) {
     return leastCommonVowel;
 }
 
+// Function to handle vowel selection
+function handleVowelSelection(includeVowel) {
+    const currentVowel = uniqueVowels[currentVowelIndex];
+    console.log('Handling vowel selection:', currentVowel, 'Include:', includeVowel);
+    console.log('Before filtering:', currentFilteredWordsForVowels.length, 'words');
+    
+    if (includeVowel) {
+        currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
+            word.toLowerCase().includes(currentVowel)
+        );
+    } else {
+        currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
+            !word.toLowerCase().includes(currentVowel)
+        );
+    }
+    
+    console.log('After filtering:', currentFilteredWordsForVowels.length, 'words');
+    
+    // Remove the processed vowel from uniqueVowels array
+    uniqueVowels = uniqueVowels.filter(v => v !== currentVowel);
+    
+    // Update the display with the filtered words
+    displayResults(currentFilteredWordsForVowels);
+    
+    // If we still have vowels to process, show the next one
+    if (uniqueVowels.length > 0) {
+        showNextVowel();
+    } else {
+        // No more vowels to process, mark as completed and move to next feature
+        document.getElementById('vowelFeature').classList.add('completed');
+        showNextFeature();
+    }
+}
+
 // Function to show next vowel
 function showNextVowel() {
     const vowelFeature = document.getElementById('vowelFeature');
