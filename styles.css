@@ -120,102 +120,105 @@ body {
 }
 
 .feature-section {
-    display: none;
-    width: 100%;
-}
-
-.feature-section.active {
-    display: block;
-}
-
-/* LEXICON Feature */
-.lexicon-input {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.lexicon-input input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.lexicon-input button {
-    padding: 12px 20px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.lexicon-help {
-    color: #666;
-    font-size: 14px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
-/* Position 1 Feature */
-.position-input {
-    display: flex;
-    gap: 10px;
-}
-
-.position-input input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.position-input button {
-    padding: 12px 20px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* Vowel Feature */
-.vowel-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-}
-
-.vowel-letter {
-    font-size: 32px;
+.feature-title {
+    font-size: 1.4em;
     font-weight: bold;
+    margin-bottom: 20px;
     color: #333;
 }
 
-.vowel-buttons {
+.button-container {
     display: flex;
+    justify-content: center;
     gap: 20px;
+    margin-top: 15px;
 }
 
-.vowel-btn {
-    padding: 12px 30px;
+.yes-btn, .no-btn {
+    padding: 12px 40px;
+    font-size: 1.2em;
     border: none;
     border-radius: 5px;
-    font-size: 16px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    min-width: 120px;
 }
 
 .yes-btn {
-    background: #4CAF50;
+    background-color: #4CAF50;
     color: white;
 }
 
 .no-btn {
-    background: #f44336;
+    background-color: #f44336;
     color: white;
+}
+
+.yes-btn:hover, .no-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.yes-btn:active, .no-btn:active {
+    transform: translateY(0);
+}
+
+/* Ensure consistent styling across all feature sections */
+#consonantQuestion, #vowelFeature, #position1Feature, #lexiconFeature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+}
+
+/* Make sure the vowel buttons match the consonant buttons */
+.vowel-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.vowel-btn {
+    padding: 12px 40px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    min-width: 120px;
+}
+
+.vowel-btn.yes-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.vowel-btn.no-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.vowel-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.vowel-btn:active {
+    transform: translateY(0);
 }
 
 /* Shape Feature */
