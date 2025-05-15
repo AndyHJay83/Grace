@@ -412,9 +412,9 @@ function showNextFeature() {
     const allFeatures = [
         'oFeature',
         'curvedFeature',
+        'position1Feature',
         'lexiconFeature',
         'consonantQuestion',
-        'position1Feature',
         'vowelFeature',
         'shapeFeature'
     ];
@@ -430,33 +430,22 @@ function showNextFeature() {
     else if (!document.getElementById('curvedFeature').classList.contains('completed')) {
         document.getElementById('curvedFeature').style.display = 'block';
     }
+    else if (hasAdjacentConsonants === null) {
+        document.getElementById('consonantQuestion').style.display = 'block';
+    }
+    else if (!document.getElementById('position1Feature').classList.contains('completed')) {
+        document.getElementById('position1Feature').style.display = 'block';
+    }
     else if (isLexiconMode && !document.getElementById('lexiconFeature').classList.contains('completed')) {
         document.getElementById('lexiconFeature').style.display = 'block';
     }
-    // Then check consonant question if LEXICON is completed
-    else if (document.getElementById('lexiconFeature').classList.contains('completed') && 
-             hasAdjacentConsonants === null) {
-        document.getElementById('consonantQuestion').style.display = 'block';
-    }
-    // Then check Position 1 if consonant question is answered
-    else if (hasAdjacentConsonants !== null && 
-             !document.getElementById('position1Feature').classList.contains('completed')) {
-        document.getElementById('position1Feature').style.display = 'block';
-    }
-    // Then check VOWEL if Position 1 is completed
-    else if (document.getElementById('position1Feature').classList.contains('completed') && 
-             isVowelMode && 
-             !document.getElementById('vowelFeature').classList.contains('completed')) {
+    else if (isVowelMode && !document.getElementById('vowelFeature').classList.contains('completed')) {
         document.getElementById('vowelFeature').style.display = 'block';
     }
-    // Finally check SHAPE if VOWEL is completed
-    else if (document.getElementById('vowelFeature').classList.contains('completed') && 
-             isShapeMode && 
-             !document.getElementById('shapeFeature').classList.contains('completed')) {
+    else if (isShapeMode && !document.getElementById('shapeFeature').classList.contains('completed')) {
         document.getElementById('shapeFeature').style.display = 'block';
         updateShapeDisplay(currentFilteredWords);
     }
-    // If all features are completed, expand the word list
     else {
         expandWordList();
     }
