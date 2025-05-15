@@ -566,4 +566,352 @@ input:checked + .slider:before {
 
 .skip-button:active {
     transform: translateY(0);
+}
+
+/* Button styles */
+button {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Feature section buttons */
+.feature-section button {
+    min-width: 120px;
+    margin: 8px;
+}
+
+/* Yes/No buttons */
+.yes-btn, .no-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.yes-btn:hover, .no-btn:hover {
+    background-color: #45a049;
+}
+
+/* Skip buttons */
+.skip-button {
+    background-color: #9e9e9e;
+    color: white;
+}
+
+.skip-button:hover {
+    background-color: #757575;
+}
+
+/* Vowel buttons */
+.vowel-btn {
+    background-color: #2196F3;
+    color: white;
+    font-size: 24px;
+    padding: 15px 30px;
+}
+
+.vowel-btn:hover {
+    background-color: #1976D2;
+}
+
+/* Category buttons */
+.category-button {
+    background-color: #673AB7;
+    color: white;
+}
+
+.category-button:hover {
+    background-color: #512DA8;
+}
+
+/* Filter buttons */
+#lexiconFilterButton, #position1Button {
+    background-color: #FF9800;
+    color: white;
+}
+
+#lexiconFilterButton:hover, #position1Button:hover {
+    background-color: #F57C00;
+}
+
+/* Button containers */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 16px 0;
+}
+
+/* Feature sections */
+.feature-section {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 16px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.feature-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+/* Vowel feature specific */
+.vowel-letter {
+    font-size: 48px;
+    font-weight: bold;
+    color: #2196F3;
+    margin: 20px 0;
+    display: inline-block;
+}
+
+/* Shape feature specific */
+.shape-display {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.position-display {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+/* Input fields */
+input[type="text"] {
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin: 8px 0;
+    width: 200px;
+    text-align: center;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+/* Help text */
+.help-text {
+    font-size: 14px;
+    color: #666;
+    margin: 8px 0;
+}
+
+/* Word list */
+.word-item {
+    padding: 8px 16px;
+    margin: 4px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+}
+
+/* Results container */
+#resultsContainer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Word count */
+#wordCount {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 16px 0;
+}
+
+/* Settings modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.close-button:hover {
+    color: #333;
+}
+
+/* Settings section */
+.settings-section {
+    margin: 20px 0;
+}
+
+.settings-section h3 {
+    margin-bottom: 16px;
+    color: #333;
+}
+
+/* Toggle switches */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Mode toggle */
+.mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.mode-toggle label {
+    margin: 0 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Reset button */
+#resetButton {
+    background-color: #f44336;
+    color: white;
+    margin: 20px auto;
+    display: block;
+}
+
+#resetButton:hover {
+    background-color: #d32f2f;
+}
+
+/* Settings button */
+#settingsButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 12px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+#settingsButton:hover {
+    background-color: #444;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Word list container */
+#wordListContainer {
+    max-height: 300px;
+    overflow-y: auto;
+    transition: max-height 0.3s ease;
+    margin: 20px 0;
+    padding: 0 20px;
+}
+
+#wordListContainer.expanded {
+    max-height: none;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 } 
