@@ -678,14 +678,25 @@ function filterWordsByCurvedPositions(words, positions) {
         // Only check first 5 characters
         const firstFive = word.slice(0, 5).toUpperCase();
         
-        // Check if each specified position has a curved letter
-        return positionArray.every(pos => {
-            // Adjust for 0-based index
-            const index = pos - 1;
-            // Check if position is within first 5 characters
-            if (index >= firstFive.length) return false;
-            return isCurvedLetter(firstFive[index]);
-        });
+        // Check each position from 1 to 5
+        for (let i = 0; i < 5; i++) {
+            const pos = i + 1; // Convert to 1-based position
+            const letter = firstFive[i];
+            
+            if (positionArray.includes(pos)) {
+                // This position should have a curved letter
+                if (!isCurvedLetter(letter)) {
+                    return false;
+                }
+            } else {
+                // This position should have a straight letter
+                if (isCurvedLetter(letter)) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
     });
 }
 
