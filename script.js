@@ -283,6 +283,23 @@ function getAdjacentConsonants(str) {
     return consonants;
 }
 
+// Function to check if two consonants appear together with no vowels between them
+function consonantsAppearTogether(word, consonant1, consonant2) {
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+    const wordLower = word.toLowerCase();
+    
+    // Find all positions of the first consonant
+    let pos = -1;
+    while ((pos = wordLower.indexOf(consonant1, pos + 1)) !== -1) {
+        // Check if the second consonant appears right after
+        if (pos + 1 < wordLower.length && wordLower[pos + 1] === consonant2) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 // Function to filter words in expert mode
 function filterWordsExpert(inputs) {
     let filteredWords = wordList;
@@ -295,16 +312,9 @@ function filterWordsExpert(inputs) {
             // Take the first pair of adjacent consonants found
             const [consonant1, consonant2] = adjacentConsonantPairs[0];
             
-            filteredWords = filteredWords.filter(word => {
-                const wordLower = word.toLowerCase();
-                
-                // Find the position of the first consonant
-                const pos1 = wordLower.indexOf(consonant1);
-                if (pos1 === -1) return false;
-                
-                // Check if the second consonant appears right after
-                return wordLower.indexOf(consonant2, pos1) === pos1 + 1;
-            });
+            filteredWords = filteredWords.filter(word => 
+                consonantsAppearTogether(word, consonant1, consonant2)
+            );
         }
     }
 
