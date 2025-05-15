@@ -65,11 +65,14 @@ function findLeastVariancePosition(words, startPos, endPos) {
     
     for (let pos = startPos; pos < endPos; pos++) {
         const analysis = analyzePositionShapes(words, pos);
-        if (analysis.totalLetters < 10) continue;
+        // Only require at least 2 letters to be present
+        if (analysis.totalLetters < 2) continue;
         
         const values = Object.values(analysis.distribution);
         const mean = values.reduce((a, b) => a + b, 0) / values.length;
         const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+        
+        console.log(`Position ${pos + 1} variance:`, variance);
         
         if (variance > maxVariance) {
             maxVariance = variance;
@@ -106,8 +109,13 @@ function updateShapeDisplay(words) {
         return;
     }
 
+    // Get the length of the shortest word to avoid out-of-bounds
+    const shortestLength = getShortestWordLength(words);
+    console.log('Shortest word length:', shortestLength);
+    
+    // Analyze all positions in the words
     const startPos = 0;
-    const endPos = Math.min(7, getShortestWordLength(words));
+    const endPos = shortestLength;
     console.log('Analyzing positions from', startPos, 'to', endPos);
 
     const position = findLeastVariancePosition(words, startPos, endPos);
