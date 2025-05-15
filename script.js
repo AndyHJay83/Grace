@@ -369,7 +369,12 @@ function hasWordAdjacentConsonants(word) {
     const wordLower = word.toLowerCase();
     
     for (let i = 0; i < wordLower.length - 1; i++) {
-        if (!vowels.has(wordLower[i]) && !vowels.has(wordLower[i + 1])) {
+        const currentChar = wordLower[i];
+        const nextChar = wordLower[i + 1];
+        
+        // Check if both current and next characters are consonants
+        if (!vowels.has(currentChar) && !vowels.has(nextChar)) {
+            console.log(`Found adjacent consonants in "${wordLower}": "${currentChar}${nextChar}" at position ${i}`);
             return true;
         }
     }
@@ -544,7 +549,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Filter to keep ONLY words that have adjacent consonants
         const filteredWords = currentFilteredWords.filter(word => {
             const hasAdjacent = hasWordAdjacentConsonants(word);
-            console.log(`Word "${word}" has adjacent consonants: ${hasAdjacent}`);
+            if (hasAdjacent) {
+                console.log(`Keeping word "${word}" - has adjacent consonants`);
+            } else {
+                console.log(`Removing word "${word}" - no adjacent consonants`);
+            }
             return hasAdjacent;
         });
         
@@ -564,7 +573,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Filter to keep ONLY words that do NOT have adjacent consonants
         const filteredWords = currentFilteredWords.filter(word => {
             const hasAdjacent = hasWordAdjacentConsonants(word);
-            console.log(`Word "${word}" has adjacent consonants: ${hasAdjacent}`);
+            if (!hasAdjacent) {
+                console.log(`Keeping word "${word}" - no adjacent consonants`);
+            } else {
+                console.log(`Removing word "${word}" - has adjacent consonants`);
+            }
             return !hasAdjacent;
         });
         
