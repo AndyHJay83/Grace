@@ -299,58 +299,43 @@ function showNextVowel() {
     }
 }
 
-// Function to handle vowel selection
-function handleVowelSelection(includeVowel) {
-    const currentVowel = uniqueVowels[currentVowelIndex];
-    console.log('Handling vowel selection:', currentVowel, 'Include:', includeVowel);
-    console.log('Before filtering:', currentFilteredWordsForVowels.length, 'words');
-    
-    if (includeVowel) {
-        currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
-            word.toLowerCase().includes(currentVowel)
-        );
-    } else {
-        currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
-            !word.toLowerCase().includes(currentVowel)
-        );
-    }
-    
-    console.log('After filtering:', currentFilteredWordsForVowels.length, 'words');
-    
-    // Remove the processed vowel from uniqueVowels array
-    uniqueVowels = uniqueVowels.filter(v => v !== currentVowel);
-    
-    // Update the display with the filtered words
-    displayResults(currentFilteredWordsForVowels);
-    
-    // If we still have vowels to process, show the next one
-    if (uniqueVowels.length > 0) {
-        showNextVowel();
-    } else {
-        // No more vowels to process, move to next feature
-        document.getElementById('vowelFeature').classList.add('completed');
-        showNextFeature();
-    }
-}
-
 // Function to show next feature
 function showNextFeature() {
+    // First check if LEXICON is enabled and not completed
     if (isLexiconMode && !document.getElementById('lexiconFeature').classList.contains('completed')) {
         document.getElementById('lexiconFeature').style.display = 'block';
         document.getElementById('position1Feature').style.display = 'none';
         document.getElementById('vowelFeature').style.display = 'none';
         document.getElementById('shapeFeature').style.display = 'none';
-    } else if (isVowelMode && !document.getElementById('vowelFeature').classList.contains('completed')) {
+    }
+    // Then check Position 1 if LEXICON is completed
+    else if (document.getElementById('lexiconFeature').classList.contains('completed') && 
+             !document.getElementById('position1Feature').classList.contains('completed')) {
+        document.getElementById('lexiconFeature').style.display = 'none';
+        document.getElementById('position1Feature').style.display = 'block';
+        document.getElementById('vowelFeature').style.display = 'none';
+        document.getElementById('shapeFeature').style.display = 'none';
+    }
+    // Then check VOWEL if Position 1 is completed
+    else if (document.getElementById('position1Feature').classList.contains('completed') && 
+             isVowelMode && 
+             !document.getElementById('vowelFeature').classList.contains('completed')) {
         document.getElementById('lexiconFeature').style.display = 'none';
         document.getElementById('position1Feature').style.display = 'none';
         document.getElementById('vowelFeature').style.display = 'block';
         document.getElementById('shapeFeature').style.display = 'none';
-    } else if (isShapeMode && !document.getElementById('shapeFeature').classList.contains('completed')) {
+    }
+    // Finally check SHAPE if VOWEL is completed
+    else if (document.getElementById('vowelFeature').classList.contains('completed') && 
+             isShapeMode && 
+             !document.getElementById('shapeFeature').classList.contains('completed')) {
         document.getElementById('lexiconFeature').style.display = 'none';
         document.getElementById('position1Feature').style.display = 'none';
         document.getElementById('vowelFeature').style.display = 'none';
         document.getElementById('shapeFeature').style.display = 'block';
-    } else {
+    }
+    // If all features are completed, expand the word list
+    else {
         expandWordList();
     }
 }
