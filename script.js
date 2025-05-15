@@ -12,6 +12,8 @@ let uniqueVowels = [];
 let currentFilteredWordsForVowels = [];
 let originalFilteredWords = [];
 let hasAdjacentConsonants = null;
+let hasO = null;
+let selectedCurvedLetter = null;
 
 // Letter shape categories with exact categorization
 const letterShapes = {
@@ -408,6 +410,8 @@ function hasAnyTwoConsonants(word, consonants) {
 function showNextFeature() {
     // First hide all features
     const allFeatures = [
+        'oFeature',
+        'curvedFeature',
         'lexiconFeature',
         'consonantQuestion',
         'position1Feature',
@@ -420,7 +424,13 @@ function showNextFeature() {
     });
     
     // Then show the appropriate feature based on the current state
-    if (isLexiconMode && !document.getElementById('lexiconFeature').classList.contains('completed')) {
+    if (!document.getElementById('oFeature').classList.contains('completed')) {
+        document.getElementById('oFeature').style.display = 'block';
+    }
+    else if (!document.getElementById('curvedFeature').classList.contains('completed')) {
+        document.getElementById('curvedFeature').style.display = 'block';
+    }
+    else if (isLexiconMode && !document.getElementById('lexiconFeature').classList.contains('completed')) {
         document.getElementById('lexiconFeature').style.display = 'block';
     }
     // Then check consonant question if LEXICON is completed
@@ -711,6 +721,98 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.key === 'Enter') {
             document.getElementById('position1Button').click();
         }
+    });
+
+    // O? feature buttons
+    document.getElementById('oYesBtn').addEventListener('click', () => {
+        console.log('O? YES selected');
+        hasO = true;
+        
+        // Filter to keep ONLY words that have 'O'
+        const filteredWords = currentFilteredWords.filter(word => {
+            const hasLetterO = word.toLowerCase().includes('o');
+            if (hasLetterO) {
+                console.log(`Keeping word "${word}" - has O`);
+            } else {
+                console.log(`Removing word "${word}" - no O`);
+            }
+            return hasLetterO;
+        });
+        
+        console.log('Before filtering:', currentFilteredWords.length, 'words');
+        currentFilteredWords = filteredWords;
+        console.log('After filtering (keeping only words with O):', currentFilteredWords.length, 'words');
+        
+        // Update the display immediately
+        displayResults(currentFilteredWords);
+        document.getElementById('oFeature').classList.add('completed');
+        showNextFeature();
+    });
+
+    document.getElementById('oNoBtn').addEventListener('click', () => {
+        console.log('O? NO selected');
+        hasO = false;
+        
+        // Filter to keep ONLY words that do NOT have 'O'
+        const filteredWords = currentFilteredWords.filter(word => {
+            const hasLetterO = word.toLowerCase().includes('o');
+            if (!hasLetterO) {
+                console.log(`Keeping word "${word}" - no O`);
+            } else {
+                console.log(`Removing word "${word}" - has O`);
+            }
+            return !hasLetterO;
+        });
+        
+        console.log('Before filtering:', currentFilteredWords.length, 'words');
+        currentFilteredWords = filteredWords;
+        console.log('After filtering (keeping only words without O):', currentFilteredWords.length, 'words');
+        
+        // Update the display immediately
+        displayResults(currentFilteredWords);
+        document.getElementById('oFeature').classList.add('completed');
+        showNextFeature();
+    });
+
+    document.getElementById('oSkipBtn').addEventListener('click', () => {
+        console.log('O? SKIP selected');
+        document.getElementById('oFeature').classList.add('completed');
+        showNextFeature();
+    });
+
+    // CURVED feature buttons
+    document.querySelectorAll('.curved-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const letter = button.textContent;
+            console.log('Curved letter selected:', letter);
+            selectedCurvedLetter = letter;
+            
+            // Filter to keep ONLY words that have the selected letter
+            const filteredWords = currentFilteredWords.filter(word => {
+                const hasLetter = word.toLowerCase().includes(letter.toLowerCase());
+                if (hasLetter) {
+                    console.log(`Keeping word "${word}" - has ${letter}`);
+                } else {
+                    console.log(`Removing word "${word}" - no ${letter}`);
+                }
+                return hasLetter;
+            });
+            
+            console.log('Before filtering:', currentFilteredWords.length, 'words');
+            currentFilteredWords = filteredWords;
+            console.log('After filtering (keeping only words with ' + letter + '):', currentFilteredWords.length, 'words');
+            
+            // Update the display immediately
+            displayResults(currentFilteredWords);
+            document.getElementById('curvedFeature').classList.add('completed');
+            showNextFeature();
+        });
+    });
+
+    document.getElementById('curvedSkipBtn').addEventListener('click', () => {
+        console.log('CURVED SKIP selected');
+        document.getElementById('curvedFeature').classList.add('completed');
+        showNextFeature();
     });
 });
 

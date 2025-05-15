@@ -145,41 +145,42 @@ body {
 .button-container {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 20px;
     margin-top: 20px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.curved-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
     width: 100%;
 }
 
-.yes-btn, .no-btn {
-    padding: 15px 50px;
+.curved-btn {
+    padding: 15px 25px;
     font-size: 1.4em;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: bold;
-    text-transform: uppercase;
-    min-width: 160px;
+    background-color: #007bff;
+    color: white;
+    min-width: 60px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.yes-btn {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.no-btn {
-    background-color: #f44336;
-    color: white;
-}
-
-.yes-btn:hover, .no-btn:hover {
+.curved-btn:hover {
     opacity: 0.9;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.yes-btn:active, .no-btn:active {
+.curved-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
