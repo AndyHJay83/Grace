@@ -334,6 +334,8 @@ function handleVowelSelection(includeVowel) {
     } else {
         // No more vowels to process, mark as completed and move to next feature
         document.getElementById('vowelFeature').classList.add('completed');
+        // Update currentFilteredWords with the vowel-filtered results
+        currentFilteredWords = [...currentFilteredWordsForVowels];
         showNextFeature();
     }
 }
@@ -372,6 +374,8 @@ function showNextFeature() {
         document.getElementById('position1Feature').style.display = 'none';
         document.getElementById('vowelFeature').style.display = 'none';
         document.getElementById('shapeFeature').style.display = 'block';
+        // Initialize shape display with current filtered words
+        updateShapeDisplay(currentFilteredWords);
     }
     // If all features are completed, expand the word list
     else {
