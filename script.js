@@ -486,6 +486,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Function to check if a letter is curved
 function isCurvedLetter(letter) {
+    if (!letter) return false;
     letter = letter.toUpperCase();
     return letterShapes.curved.has(letter);
 }
