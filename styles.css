@@ -462,4 +462,73 @@ input:checked + .slider:before {
         padding: 8px 15px;
         font-size: 12px;
     }
+}
+
+/* LEXICON Feature */
+.lexicon-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.lexicon-input input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.lexicon-input button {
+    padding: 12px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.lexicon-help {
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Position 1 Feature */
+.position-input {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.position-input input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.position-input button {
+    padding: 12px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Vowel Feature */
+.vowel-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.vowel-letter {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
 } 
