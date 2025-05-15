@@ -353,6 +353,7 @@ function handleVowelSelection(includeVowel) {
 
 // Function to show next feature
 function showNextFeature() {
+    console.log('Showing next feature...');
     // First hide all features
     const allFeatures = [
         'oFeature',
@@ -370,23 +371,29 @@ function showNextFeature() {
     
     // Then show the appropriate feature based on the current state
     if (!document.getElementById('oFeature').classList.contains('completed')) {
+        console.log('Showing O? feature');
         document.getElementById('oFeature').style.display = 'block';
     }
     else if (!document.getElementById('curvedFeature').classList.contains('completed')) {
+        console.log('Showing CURVED feature');
         document.getElementById('curvedFeature').style.display = 'block';
     }
     else if (hasAdjacentConsonants === null) {
+        console.log('Showing consonant question');
         document.getElementById('consonantQuestion').style.display = 'block';
     }
     else if (!document.getElementById('position1Feature').classList.contains('completed')) {
+        console.log('Showing Position 1 feature');
         document.getElementById('position1Feature').style.display = 'block';
     }
     else if (isVowelMode && !document.getElementById('vowelFeature').classList.contains('completed')) {
+        console.log('Showing VOWEL feature');
         const vowelFeature = document.getElementById('vowelFeature');
         vowelFeature.style.display = 'block';
         
         // Initialize vowel processing
         if (uniqueVowels.length === 0) {
+            console.log('Initializing vowels from current word list');
             // Get unique vowels from current word list
             const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
             uniqueVowels = Array.from(new Set(
@@ -404,19 +411,23 @@ function showNextFeature() {
             const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
             console.log('Setting vowel letter to:', leastCommonVowel.toUpperCase());
             vowelLetter.textContent = leastCommonVowel.toUpperCase();
-            vowelLetter.style.display = 'inline-block'; // Ensure the letter is visible
+            vowelLetter.style.display = 'inline-block';
         } else {
+            console.log('No vowels found in current word list');
             vowelLetter.style.display = 'none';
         }
     }
     else if (isLexiconMode && !document.getElementById('lexiconFeature').classList.contains('completed')) {
+        console.log('Showing LEXICON feature');
         document.getElementById('lexiconFeature').style.display = 'block';
     }
     else if (isShapeMode && !document.getElementById('shapeFeature').classList.contains('completed')) {
+        console.log('Showing SHAPE feature');
         document.getElementById('shapeFeature').style.display = 'block';
         updateShapeDisplay(currentFilteredWords);
     }
     else {
+        console.log('Expanding word list');
         expandWordList();
     }
 }
@@ -609,13 +620,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 console.log('Filtered words count:', filteredWords.length);
                 
+                // Update the current filtered words
+                currentFilteredWords = filteredWords;
+                
                 // Mark Position 1 as completed and update the display
                 document.getElementById('position1Feature').classList.add('completed');
                 document.getElementById('position1Feature').style.display = 'none';
                 displayResults(filteredWords);
                 
+                // Reset vowel processing
+                uniqueVowels = [];
+                currentFilteredWordsForVowels = [];
+                originalFilteredWords = [];
+                currentVowelIndex = 0;
+                
                 // Move to VOWEL feature
                 if (isVowelMode) {
+                    console.log('Moving to VOWEL feature');
                     const vowelFeature = document.getElementById('vowelFeature');
                     vowelFeature.style.display = 'block';
                     
@@ -627,7 +648,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ));
                     currentFilteredWordsForVowels = [...filteredWords];
                     originalFilteredWords = [...filteredWords];
-                    currentVowelIndex = 0;
                     
                     // Set up the vowel display
                     const vowelLetter = vowelFeature.querySelector('.vowel-letter');
