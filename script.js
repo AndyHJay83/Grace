@@ -10,6 +10,10 @@ let currentVowelIndex = 0;
 let uniqueVowels = [];
 let currentFilteredWordsForVowels = [];
 let originalFilteredWords = [];
+let remainingLetters = new Set();
+let currentAnagramWords = [];
+let currentAnagramLetter = '';
+let optimalKeyword = '';
 
 // Letter shape categories with more comprehensive letter sets
 const letterShapes = {
@@ -663,4 +667,173 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Add vowel button listeners
     document.querySelector('.yes-btn').addEventListener('click', () => handleVowelSelection(true));
     document.querySelector('.no-btn').addEventListener('click', () => handleVowelSelection(false));
-}); 
+});
+
+// Function to find optimal keyword for anagram
+function findOptimalKeyword(words) {
+    // Find all unique letters across all words
+    const allLetters = new Set();
+    words.forEach(word => {
+        word.split('').forEach(letter => {
+            allLetters.add(letter);
+        });
+    });
+    
+    // Create letter frequency map for each word
+    const wordLetterMap = words.map(word => {
+        const letterSet = new Set(word.split(''));
+        return Array.from(allLetters).map(letter => letterSet.has(letter) ? 1 : 0);
+    });
+    
+    // Find best separating letters
+    const letterScores = [];
+    const letterList = Array.from(allLetters);
+    
+    // Calculate how well each letter separates the words
+    letterList.forEach((letter, index) => {
+        const wordsWithLetter = wordLetterMap.filter(map => map[index] === 1).length;
+        const wordsWithoutLetter = words.length - wordsWithLetter;
+        const balanceScore = Math.min(wordsWithLetter, wordsWithoutLetter) / words.length;
+        
+        letterScores.push({
+            letter,
+            wordsWithLetter,
+            wordsWithoutLetter,
+            balanceScore
+        });
+    });
+    
+    // Sort letters by balance score (descending)
+    letterScores.sort((a, b) => b.balanceScore - a.balanceScore);
+    
+    // Take top letters to form optimal keyword
+    const topLetters = letterScores.slice(0, Math.min(15, letterScores.length)).map(item => item.letter);
+    
+    // Function to check if each word is uniquely identified
+    function ensuresOneWordPerBranch(keyword) {
+        const positionMap = {};
+        
+        for (const word of words) {
+            let position = -1;
+            
+            for (let i = 0; i < keyword.length; i++) {
+                if (!word.includes(keyword[i])) {
+                    position = i;
+                    break;
+                }
+            }
+            
+            if (position === -1) return false;
+            if (positionMap[position]) return false;
+            positionMap[position] = word;
+        }
+        
+        return Object.keys(positionMap).length === words.length;
+    }
+    
+    // Try different combinations of letters
+    let bestKeyword = null;
+    const maxKeywordLength = Math.min(15, words.length);
+    
+    function findCombinations(letters, maxLength) {
+        for (let len = Math.ceil(Math.log2(words.length)); len <= maxLength; len++) {
+            const visited = new Set();
+            
+            function backtrack(start, current) {
+                if (current.length === len) {
+                    const key = current.join('');
+                    if (!visited.has(key) && ensuresOneWordPerBranch(current)) {
+                        bestKeyword = current.slice();
+                        return true;
+                    }
+                    visited.add(key);
+                    return false;
+                }
+                
+                for (let i = start; i < letters.length; i++) {
+                    current.push(letters[i]);
+                    if (backtrack(i + 1, current)) return true;
+                    current.pop();
+                }
+                return false;
+            }
+            
+            if (backtrack(0, [])) break;
+        }
+    }
+    
+    findCombinations(topLetters, maxKeywordLength);
+    
+    // If no solution found, try with all letters
+    if (!bestKeyword && topLetters.length < letterList.length) {
+        findCombinations(letterList, maxKeywordLength);
+    }
+    
+    return bestKeyword ? bestKeyword.join('') : '';
+}
+
+// Function to show next anagram letter
+function showNextAnagramLetter() {
+    const anagramDisplay = document.getElementById('anagramDisplay');
+    const anagramLetter = anagramDisplay.querySelector('.anagram-letter');
+    const anagramProgress = anagramDisplay.querySelector('.anagram-progress');
+    
+    if (remainingLetters.size > 0) {
+        const leastCommonLetter = findLeastCommonLetter(currentAnagramWords, Array.from(remainingLetters));
+        currentAnagramLetter = leastCommonLetter;
+        anagramLetter.textContent = leastCommonLetter.toUpperCase();
+        anagramProgress.textContent = `Letter ${optimalKeyword.length - remainingLetters.size + 1} of ${optimalKeyword.length}`;
+        anagramDisplay.style.display = 'block';
+    } else {
+        anagramDisplay.style.display = 'none';
+        if (currentAnagramWords.length > 0) {
+            displayResults(currentAnagramWords);
+        }
+    }
+}
+
+// Function to handle anagram selection
+function handleAnagramSelection(includeLetter) {
+    if (includeLetter) {
+        currentAnagramWords = currentAnagramWords.filter(word => 
+            word.toLowerCase().includes(currentAnagramLetter)
+        );
+    } else {
+        currentAnagramWords = currentAnagramWords.filter(word => 
+            !word.toLowerCase().includes(currentAnagramLetter)
+        );
+    }
+    
+    remainingLetters.delete(currentAnagramLetter);
+    
+    // If we have a single word left, show it
+    if (currentAnagramWords.length === 1) {
+        const anagramWord = document.querySelector('.anagram-word');
+        anagramWord.textContent = currentAnagramWords[0].toUpperCase();
+    }
+    
+    displayResults(currentAnagramWords);
+    showNextAnagramLetter();
+}
+
+// Function to toggle anagram mode
+function toggleAnagramMode() {
+    isAnagramMode = document.getElementById('anagramToggle').checked;
+    const anagramDisplay = document.getElementById('anagramDisplay');
+    
+    if (isAnagramMode && currentFilteredWords.length > 0) {
+        currentAnagramWords = [...currentFilteredWords];
+        // Find optimal keyword for the current word list
+        optimalKeyword = findOptimalKeyword(currentAnagramWords);
+        if (optimalKeyword) {
+            remainingLetters = new Set(optimalKeyword.split('').reverse());
+            showNextAnagramLetter();
+        } else {
+            anagramDisplay.style.display = 'none';
+            remainingLetters.clear();
+        }
+    } else {
+        anagramDisplay.style.display = 'none';
+        remainingLetters.clear();
+    }
+} 
