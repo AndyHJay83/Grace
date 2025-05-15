@@ -554,18 +554,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('Setting up consonant question buttons');
     
     consonantYesBtn.addEventListener('click', () => {
-        console.log('Consonant question: YES button clicked');
+        console.log('Consonant question: YES selected');
         hasAdjacentConsonants = true;
         
         // Filter to keep ONLY words that have adjacent consonants
+        const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
         const filteredWords = currentFilteredWords.filter(word => {
-            const hasAdjacent = hasWordAdjacentConsonants(word);
-            if (hasAdjacent) {
-                console.log(`Keeping word "${word}" - has adjacent consonants`);
-            } else {
-                console.log(`Removing word "${word}" - no adjacent consonants`);
+            const wordLower = word.toLowerCase();
+            for (let i = 0; i < wordLower.length - 1; i++) {
+                const currentChar = wordLower[i];
+                const nextChar = wordLower[i + 1];
+                if (!vowels.has(currentChar) && !vowels.has(nextChar)) {
+                    console.log(`Keeping word "${word}" - has adjacent consonants "${currentChar}${nextChar}"`);
+                    return true;
+                }
             }
-            return hasAdjacent;
+            console.log(`Removing word "${word}" - no adjacent consonants`);
+            return false;
         });
         
         console.log('Before filtering:', currentFilteredWords.length, 'words');
@@ -581,18 +586,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     consonantNoBtn.addEventListener('click', () => {
-        console.log('Consonant question: NO button clicked');
+        console.log('Consonant question: NO selected');
         hasAdjacentConsonants = false;
         
         // Filter to keep ONLY words that do NOT have adjacent consonants
+        const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
         const filteredWords = currentFilteredWords.filter(word => {
-            const hasAdjacent = hasWordAdjacentConsonants(word);
-            if (!hasAdjacent) {
-                console.log(`Keeping word "${word}" - no adjacent consonants`);
-            } else {
-                console.log(`Removing word "${word}" - has adjacent consonants`);
+            const wordLower = word.toLowerCase();
+            for (let i = 0; i < wordLower.length - 1; i++) {
+                const currentChar = wordLower[i];
+                const nextChar = wordLower[i + 1];
+                if (!vowels.has(currentChar) && !vowels.has(nextChar)) {
+                    console.log(`Removing word "${word}" - has adjacent consonants "${currentChar}${nextChar}"`);
+                    return false;
+                }
             }
-            return !hasAdjacent;
+            console.log(`Keeping word "${word}" - no adjacent consonants`);
+            return true;
         });
         
         console.log('Before filtering:', currentFilteredWords.length, 'words');
