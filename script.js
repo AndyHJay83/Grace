@@ -661,4 +661,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Add vowel button listeners
     document.querySelector('.yes-btn').addEventListener('click', () => handleVowelSelection(true));
     document.querySelector('.no-btn').addEventListener('click', () => handleVowelSelection(false));
+});
+
+// Function to check if a letter is curved
+function isCurvedLetter(letter) {
+    letter = letter.toUpperCase();
+    return letterShapes.curved.has(letter);
+}
+
+// Function to filter words by curved letter positions
+function filterWordsByCurvedPositions(words, positions) {
+    // Convert positions string to array of numbers
+    const positionArray = positions.split('').map(Number);
+    
+    return words.filter(word => {
+        // Only check first 5 characters
+        const firstFive = word.slice(0, 5).toUpperCase();
+        
+        // Check if each specified position has a curved letter
+        return positionArray.every(pos => {
+            // Adjust for 0-based index
+            const index = pos - 1;
+            // Check if position is within first 5 characters
+            if (index >= firstFive.length) return false;
+            return isCurvedLetter(firstFive[index]);
+        });
+    });
+}
+
+// Add event listener for curved filter button
+document.getElementById('curvedFilterButton').addEventListener('click', () => {
+    const positions = document.getElementById('curvedPositions').value;
+    if (positions) {
+        const filteredWords = filterWordsByCurvedPositions(currentFilteredWords, positions);
+        displayResults(filteredWords);
+    }
+});
+
+// Add enter key handler for curved positions input
+document.getElementById('curvedPositions').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById('curvedFilterButton').click();
+    }
 }); 

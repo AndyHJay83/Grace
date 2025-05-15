@@ -642,4 +642,45 @@ input:checked + .slider:before {
 
 .yes-btn:hover {
     background: #45a049;
+}
+
+.curved-filter-container {
+    padding: 20px;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+.curved-filter-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.curved-filter-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.curved-filter-input button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.curved-filter-input button:hover {
+    background-color: #0056b3;
+}
+
+.curved-filter-help {
+    color: #666;
+    font-size: 14px;
+    text-align: center;
 } 
