@@ -17,86 +17,104 @@
 </head>
 <body>
     <div class="container">
+        <!-- Header with toggles -->
         <div class="header">
             <div class="toggles-container">
                 <div class="mode-toggle">
-                    <span class="mode-label">STANDARD</span>
+                    <span class="mode-label">OLD</span>
                     <label class="switch">
                         <input type="checkbox" id="modeToggle" checked>
                         <span class="slider round"></span>
                     </label>
-                    <span class="mode-label">EXPERT</span>
+                    <span class="mode-label">NEW</span>
                 </div>
-                <div class="shape-toggle">
-                    <span class="mode-label">LEXICON</span>
-                    <label class="switch">
-                        <input type="checkbox" id="shapeToggle" checked>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="toggle-container">
-                    <label class="switch">
-                        <input type="checkbox" id="vowelToggle" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <span class="toggle-label">VOWEL</span>
+                <div class="feature-toggles">
+                    <div class="toggle-container">
+                        <label class="switch">
+                            <input type="checkbox" id="lexiconToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="toggle-label">LEXICON</span>
+                    </div>
+                    <div class="toggle-container">
+                        <label class="switch">
+                            <input type="checkbox" id="vowelToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="toggle-label">VOWEL</span>
+                    </div>
+                    <div class="toggle-container">
+                        <label class="switch">
+                            <input type="checkbox" id="shapeToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="toggle-label">SHAPE</span>
+                    </div>
                 </div>
             </div>
             <button id="settingsButton" class="settings-button">
                 <i class="fas fa-cog"></i>
             </button>
         </div>
-        <div class="search-container" id="searchContainer">
-            <div class="standard-mode" id="standardMode" style="display: none;">
-                <div class="input-with-focus">
-                    <input type="text" id="searchInput" placeholder="Type a word...">
-                </div>
+
+        <!-- Word count header -->
+        <div class="word-count-header">
+            <div class="word-count" id="wordCount">0</div>
+        </div>
+
+        <!-- Main content area -->
+        <div class="main-content">
+            <!-- Word list container -->
+            <div class="word-list-container" id="wordListContainer">
+                <div class="results-container" id="resultsContainer"></div>
             </div>
-            <div class="expert-mode" id="expertMode" style="display: flex;">
-                <div class="expert-input-group">
-                    <label for="expertInput1">Position <span id="position1Label">1</span></label>
-                    <div class="input-with-focus">
-                        <input type="text" id="expertInput1" placeholder="First position...">
+
+            <!-- Feature area -->
+            <div class="feature-area" id="featureArea">
+                <!-- LEXICON feature -->
+                <div id="lexiconFeature" class="feature-section">
+                    <div class="lexicon-input">
+                        <input type="text" id="lexiconPositions" placeholder="Enter positions (e.g., 13)" maxlength="5">
+                        <button id="lexiconFilterButton">DONE</button>
+                    </div>
+                    <div class="lexicon-help">
+                        Enter positions (1-5) where curved letters appear
                     </div>
                 </div>
-                <div class="expert-input-group">
-                    <label for="expertInput2">Position <span id="position2Label">2</span></label>
-                    <div class="input-with-focus">
-                        <input type="text" id="expertInput2" placeholder="Second position...">
+
+                <!-- Position 1 feature -->
+                <div id="position1Feature" class="feature-section" style="display: none;">
+                    <div class="position-input">
+                        <input type="text" id="position1Input" placeholder="Enter a word...">
+                        <button id="position1Button">DONE</button>
                     </div>
                 </div>
-                <div class="expert-input-group">
-                    <label for="expertInput3">Position <span id="position3Label">3</span></label>
-                    <div class="input-with-focus">
-                        <input type="text" id="expertInput3" placeholder="Third position...">
+
+                <!-- Vowel feature -->
+                <div id="vowelFeature" class="feature-section" style="display: none;">
+                    <div class="vowel-content">
+                        <span class="vowel-letter"></span>
+                        <div class="vowel-buttons">
+                            <button class="vowel-btn yes-btn">YES</button>
+                            <button class="vowel-btn no-btn">NO</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shape feature -->
+                <div id="shapeFeature" class="feature-section" style="display: none;">
+                    <div class="shape-display">
+                        <div class="position-display"></div>
+                        <div class="category-buttons"></div>
                     </div>
                 </div>
             </div>
-            <button id="searchButton">SEARCH</button>
         </div>
-        <div class="word-count" id="wordCount">0</div>
-        <div class="results-container" id="resultsContainer"></div>
-        <div class="bottom-controls">
-            <div class="lexicon-container">
-                <div id="lexiconDisplay" class="lexicon-display">
-                    <div class="position-display"></div>
-                    <div class="category-buttons"></div>
-                </div>
-            </div>
-            <button id="resetButton" class="reset-button">
-                <i class="fas fa-redo"></i>
-            </button>
-        </div>
-        <!-- Add curved letter position filter -->
-        <div class="curved-filter-container">
-            <div class="curved-filter-input">
-                <input type="text" id="curvedPositions" placeholder="Enter positions (e.g., 13)" maxlength="5">
-                <button id="curvedFilterButton">DONE</button>
-            </div>
-            <div class="curved-filter-help">
-                Enter positions (1-5) where curved letters appear
-            </div>
-        </div>
+
+        <!-- Reset button -->
+        <button id="resetButton" class="reset-button">
+            <i class="fas fa-redo"></i>
+        </button>
     </div>
 
     <!-- Settings Modal -->
@@ -110,7 +128,7 @@
             </div>
             <div class="modal-body">
                 <div class="settings-section">
-                    <h3>Expert Mode Positions</h3>
+                    <h3>New Mode Positions</h3>
                     <div class="position-config">
                         <div class="position-selector">
                             <label>Position 1:</label>
@@ -153,17 +171,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add this for the vowel selection UI -->
-    <div id="vowelDisplay" class="vowel-display" style="display: none;">
-        <div class="vowel-content">
-            <span class="vowel-letter"></span>
-            <div class="vowel-buttons">
-                <button class="vowel-btn yes-btn">YES</button>
-                <button class="vowel-btn no-btn">NO</button>
             </div>
         </div>
     </div>

@@ -1,11 +1,12 @@
 let wordList = [];
 let totalWords = 0;
-let isExpertMode = true;
+let isNewMode = true;
+let isLexiconMode = true;
+let isVowelMode = true;
 let isShapeMode = true;
 let currentFilteredWords = [];
 let currentPosition = -1;
 let currentPosition2 = -1;
-let isVowelMode = true;
 let currentVowelIndex = 0;
 let uniqueVowels = [];
 let currentFilteredWordsForVowels = [];
@@ -25,7 +26,7 @@ function getLetterShape(letter) {
     return null;
 }
 
-// Function to analyze position shapes with improved variance calculation
+// Function to analyze position shapes
 function analyzePositionShapes(words, position) {
     const shapes = {
         straight: new Set(),
@@ -45,7 +46,6 @@ function analyzePositionShapes(words, position) {
         }
     });
     
-    // Calculate shape distribution
     const distribution = {
         straight: shapes.straight.size / totalLetters,
         curved: shapes.curved.size / totalLetters
@@ -65,16 +65,12 @@ function findLeastVariancePosition(words, startPos, endPos) {
     
     for (let pos = startPos; pos < endPos; pos++) {
         const analysis = analyzePositionShapes(words, pos);
-        
-        // Skip positions with too few letters
         if (analysis.totalLetters < 10) continue;
         
-        // Calculate variance in distribution
         const values = Object.values(analysis.distribution);
         const mean = values.reduce((a, b) => a + b, 0) / values.length;
         const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
         
-        // We want positions with high variance (more distinct distribution)
         if (variance > maxVariance) {
             maxVariance = variance;
             result = pos;
@@ -84,7 +80,7 @@ function findLeastVariancePosition(words, startPos, endPos) {
     return result;
 }
 
-// Function to get shortest word length in list
+// Function to get shortest word length
 function getShortestWordLength(words) {
     return Math.min(...words.map(word => word.length));
 }
@@ -98,40 +94,33 @@ function filterWordsByShape(words, position, category) {
     });
 }
 
-// Function to update LEXICON display with improved analysis
-function updateLexiconDisplay(words, isSecondLexicon = false) {
-    const lexiconDisplay = document.getElementById('lexiconDisplay');
+// Function to update shape display
+function updateShapeDisplay(words) {
+    const shapeFeature = document.getElementById('shapeFeature');
+    const shapeDisplay = shapeFeature.querySelector('.shape-display');
     
     if (!isShapeMode || words.length === 0) {
-        lexiconDisplay.style.display = 'none';
+        shapeFeature.style.display = 'none';
         return;
     }
 
-    // For second lexicon, only analyze positions 4-7 up to shortest word length
-    const startPos = isSecondLexicon ? 3 : 0;
-    const endPos = isSecondLexicon ? Math.min(7, getShortestWordLength(words)) : 3;
+    const startPos = 0;
+    const endPos = Math.min(7, getShortestWordLength(words));
 
     const position = findLeastVariancePosition(words, startPos, endPos);
     if (position === -1) {
-        lexiconDisplay.style.display = 'none';
+        shapeFeature.style.display = 'none';
         return;
     }
 
-    if (isSecondLexicon) {
-        currentPosition2 = position;
-    } else {
-        currentPosition = position;
-    }
-
+    currentPosition = position;
     const analysis = analyzePositionShapes(words, position);
     const shapes = analysis.shapes;
     
-    // Update position display with distribution information
-    const positionDisplay = lexiconDisplay.querySelector('.position-display');
+    const positionDisplay = shapeDisplay.querySelector('.position-display');
     positionDisplay.textContent = `Position ${position + 1}`;
     
-    // Update category buttons with letter counts
-    const categoryButtons = lexiconDisplay.querySelector('.category-buttons');
+    const categoryButtons = shapeDisplay.querySelector('.category-buttons');
     categoryButtons.innerHTML = '';
     
     Object.entries(shapes).forEach(([category, letters]) => {
@@ -141,34 +130,21 @@ function updateLexiconDisplay(words, isSecondLexicon = false) {
             const percentage = Math.round(analysis.distribution[category] * 100);
             button.textContent = `${category.toUpperCase()} (${percentage}%)`;
             button.addEventListener('click', () => {
-                const filteredWords = filterWordsByShape(
-                    isSecondLexicon ? currentFilteredWords : words,
-                    isSecondLexicon ? currentPosition2 : currentPosition,
-                    category
-                );
-                if (isSecondLexicon) {
-                    displayResults(filteredWords);
-                } else {
-                    currentFilteredWords = filteredWords;
-                    displayResults(filteredWords);
-                    // Instead of showing second lexicon, update the first one with second lexicon data
-                    updateLexiconDisplay(filteredWords, true);
-                }
+                const filteredWords = filterWordsByShape(words, position, category);
+                displayResults(filteredWords);
+                expandWordList();
             });
             categoryButtons.appendChild(button);
         }
     });
     
-    // Show the LEXICON display
-    lexiconDisplay.style.display = 'block';
-    lexiconDisplay.classList.add('visible');
+    shapeFeature.style.display = 'block';
 }
 
-// Function to load the word list
+// Function to load word list
 async function loadWordList() {
     try {
         console.log('Attempting to load word list...');
-        // Try different possible paths for the word list
         const possiblePaths = [
             'words/ENUK-Long words Noun.txt',
             './words/ENUK-Long words Noun.txt',
@@ -200,7 +176,6 @@ async function loadWordList() {
         const text = await response.text();
         console.log('Raw text length:', text.length);
         
-        // Split by newlines and filter out empty lines
         wordList = text.split('\n')
             .map(word => word.trim())
             .filter(word => word !== '');
@@ -214,15 +189,12 @@ async function loadWordList() {
         totalWords = wordList.length;
         console.log(`Successfully loaded ${totalWords} words`);
         updateWordCount(totalWords);
-        
-        // Log first few words for debugging
-        console.log('First few words:', wordList.slice(0, 5));
+        displayResults(wordList);
         
     } catch (error) {
         console.error('Error loading word list:', error);
         document.getElementById('wordCount').textContent = 'Error loading words';
         
-        // Show more detailed error information
         const errorDetails = document.createElement('div');
         errorDetails.style.color = 'red';
         errorDetails.style.padding = '10px';
@@ -231,27 +203,15 @@ async function loadWordList() {
     }
 }
 
-// Function to update word count display
+// Function to update word count
 function updateWordCount(count) {
     const wordCountElement = document.getElementById('wordCount');
     if (wordCountElement) {
         wordCountElement.textContent = count;
-    } else {
-        console.error('Word count element not found');
     }
 }
 
-// Function to filter words in standard mode
-function filterWordsStandard(searchWord) {
-    const searchChars = searchWord.toLowerCase().split('');
-    const filteredWords = wordList.filter(word => {
-        const firstThreeChars = word.toLowerCase().substring(0, 3);
-        return searchChars.some(char => firstThreeChars.includes(char));
-    });
-    return filteredWords;
-}
-
-// Function to get consonants from a string in order
+// Function to get consonants in order
 function getConsonantsInOrder(str) {
     const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
     const consonants = [];
@@ -267,7 +227,7 @@ function getConsonantsInOrder(str) {
     return consonants;
 }
 
-// Function to check if a word contains consonants in sequence
+// Function to check for consonants in sequence
 function hasConsonantsInSequence(word, consonants) {
     const wordLower = word.toLowerCase();
     const sequence = consonants.join('');
@@ -275,30 +235,7 @@ function hasConsonantsInSequence(word, consonants) {
     return wordLower.includes(sequence);
 }
 
-// Function to filter words in expert mode
-function filterWordsExpert(inputs) {
-    let filteredWords = wordList;
-
-    // Position 1: Check for consonants from input
-    if (inputs[0]) {
-        const consonants = getConsonantsInOrder(inputs[0]);
-        
-        if (consonants.length >= 2) {
-            // Filter words that contain the consonants in sequence
-            filteredWords = filteredWords.filter(word => {
-                const hasSequence = hasConsonantsInSequence(word, consonants);
-                if (hasSequence) {
-                    console.log(`Found match: ${word}`);
-                }
-                return hasSequence;
-            });
-        }
-    }
-
-    return filteredWords;
-}
-
-// Function to get unique vowels from a string
+// Function to get unique vowels
 function getUniqueVowels(str) {
     const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
     const uniqueVowels = new Set();
@@ -310,14 +247,13 @@ function getUniqueVowels(str) {
     return Array.from(uniqueVowels);
 }
 
-// Function to find the least common vowel in the word list
+// Function to find least common vowel
 function findLeastCommonVowel(words, vowels) {
     const vowelCounts = {};
     vowels.forEach(vowel => {
         vowelCounts[vowel] = 0;
     });
 
-    // Count occurrences of each vowel in the word list
     words.forEach(word => {
         const wordLower = word.toLowerCase();
         vowels.forEach(vowel => {
@@ -327,7 +263,6 @@ function findLeastCommonVowel(words, vowels) {
         });
     });
 
-    // Find the vowel with the lowest count
     let leastCommonVowel = vowels[0];
     let lowestCount = vowelCounts[vowels[0]];
 
@@ -343,17 +278,17 @@ function findLeastCommonVowel(words, vowels) {
 
 // Function to show next vowel
 function showNextVowel() {
-    const vowelDisplay = document.getElementById('vowelDisplay');
-    const vowelLetter = vowelDisplay.querySelector('.vowel-letter');
+    const vowelFeature = document.getElementById('vowelFeature');
+    const vowelLetter = vowelFeature.querySelector('.vowel-letter');
     
     if (uniqueVowels.length > 0) {
-        // Find the least common vowel in the original filtered word list
         const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
         vowelLetter.textContent = leastCommonVowel.toUpperCase();
-        vowelDisplay.style.display = 'block';
+        vowelFeature.style.display = 'block';
     } else {
-        vowelDisplay.style.display = 'none';
+        vowelFeature.style.display = 'none';
         currentVowelIndex = 0;
+        showNextFeature();
     }
 }
 
@@ -361,41 +296,47 @@ function showNextVowel() {
 function handleVowelSelection(includeVowel) {
     const currentVowel = uniqueVowels[currentVowelIndex];
     if (includeVowel) {
-        // Filter to only include words with the vowel
         currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
             word.toLowerCase().includes(currentVowel)
         );
     } else {
-        // Filter to exclude words with the vowel
         currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
             !word.toLowerCase().includes(currentVowel)
         );
     }
     
-    // Remove the processed vowel from uniqueVowels array
     uniqueVowels = uniqueVowels.filter(v => v !== currentVowel);
     
     displayResults(currentFilteredWordsForVowels);
     showNextVowel();
 }
 
-// Function to toggle vowel mode
-function toggleVowelMode() {
-    isVowelMode = document.getElementById('vowelToggle').checked;
-    const vowelDisplay = document.getElementById('vowelDisplay');
-    
-    if (isVowelMode && currentFilteredWords.length > 0) {
-        currentFilteredWordsForVowels = [...currentFilteredWords];
-        originalFilteredWords = [...currentFilteredWords]; // Store original filtered words
-        uniqueVowels = getUniqueVowels(document.getElementById('expertInput1').value);
-        currentVowelIndex = 0;
-        showNextVowel();
+// Function to show next feature
+function showNextFeature() {
+    if (isLexiconMode && !document.getElementById('lexiconFeature').classList.contains('completed')) {
+        document.getElementById('lexiconFeature').style.display = 'block';
+        document.getElementById('position1Feature').style.display = 'none';
+        document.getElementById('vowelFeature').style.display = 'none';
+        document.getElementById('shapeFeature').style.display = 'none';
+    } else if (isVowelMode && !document.getElementById('vowelFeature').classList.contains('completed')) {
+        document.getElementById('lexiconFeature').style.display = 'none';
+        document.getElementById('position1Feature').style.display = 'none';
+        document.getElementById('vowelFeature').style.display = 'block';
+        document.getElementById('shapeFeature').style.display = 'none';
+    } else if (isShapeMode && !document.getElementById('shapeFeature').classList.contains('completed')) {
+        document.getElementById('lexiconFeature').style.display = 'none';
+        document.getElementById('position1Feature').style.display = 'none';
+        document.getElementById('vowelFeature').style.display = 'none';
+        document.getElementById('shapeFeature').style.display = 'block';
     } else {
-        vowelDisplay.style.display = 'none';
-        currentVowelIndex = 0;
-        uniqueVowels = []; // Clear unique vowels when toggling off
-        originalFilteredWords = []; // Clear original filtered words
+        expandWordList();
     }
+}
+
+// Function to expand word list
+function expandWordList() {
+    const wordListContainer = document.getElementById('wordListContainer');
+    wordListContainer.classList.add('expanded');
 }
 
 // Function to display results
@@ -412,237 +353,135 @@ function displayResults(words) {
     });
     
     updateWordCount(words.length);
-    updateLexiconDisplay(words);
-    
-    // If in vowel mode, update the filtered words for vowel processing
-    if (isVowelMode) {
-        currentFilteredWordsForVowels = [...words];
-    }
 }
 
 // Function to reset the app
 function resetApp() {
-    document.getElementById('searchContainer').style.display = 'flex';
+    document.getElementById('wordListContainer').classList.remove('expanded');
     document.getElementById('resultsContainer').innerHTML = '';
-    document.getElementById('searchInput').value = '';
-    document.getElementById('expertInput1').value = '';
-    document.getElementById('expertInput2').value = '';
-    document.getElementById('expertInput3').value = '';
-    const lexiconDisplay = document.getElementById('lexiconDisplay');
-    lexiconDisplay.style.display = 'none';
-    lexiconDisplay.classList.remove('visible');
+    document.getElementById('lexiconPositions').value = '';
+    document.getElementById('position1Input').value = '';
+    
+    const features = document.querySelectorAll('.feature-section');
+    features.forEach(feature => {
+        feature.style.display = 'none';
+        feature.classList.remove('completed');
+    });
+    
     updateWordCount(totalWords);
     currentFilteredWords = [];
     currentPosition = -1;
     currentPosition2 = -1;
+    uniqueVowels = [];
+    
+    displayResults(wordList);
+    showNextFeature();
 }
 
-// Function to toggle between modes
+// Function to toggle mode
 function toggleMode() {
-    isExpertMode = document.getElementById('modeToggle').checked;
-    document.getElementById('standardMode').style.display = isExpertMode ? 'none' : 'flex';
-    document.getElementById('expertMode').style.display = isExpertMode ? 'flex' : 'none';
+    isNewMode = document.getElementById('modeToggle').checked;
     resetApp();
 }
 
-// Function to toggle shape mode
-function toggleShapeMode() {
-    isShapeMode = document.getElementById('shapeToggle').checked;
-    const lexiconDisplay = document.getElementById('lexiconDisplay');
+// Function to toggle features
+function toggleFeature(featureId) {
+    const feature = document.getElementById(featureId);
+    const isEnabled = document.getElementById(featureId + 'Toggle').checked;
     
-    if (isShapeMode && currentFilteredWords.length > 0) {
-        displayResults(currentFilteredWords);
+    if (isEnabled) {
+        showNextFeature();
     } else {
-        lexiconDisplay.style.display = 'none';
-        lexiconDisplay.classList.remove('visible');
+        feature.style.display = 'none';
+        feature.classList.add('completed');
+        showNextFeature();
     }
-}
-
-// Position configuration
-document.getElementById('position1').addEventListener('change', updatePositionLabels);
-document.getElementById('position2').addEventListener('change', updatePositionLabels);
-document.getElementById('position3').addEventListener('change', updatePositionLabels);
-
-function updatePositionLabels() {
-    const pos1 = document.getElementById('position1').value;
-    const pos2 = document.getElementById('position2').value;
-    const pos3 = document.getElementById('position3').value;
-
-    document.getElementById('position1Label').textContent = pos1;
-    document.getElementById('position2Label').textContent = pos2;
-    document.getElementById('position3Label').textContent = pos3;
-
-    // Update input placeholders
-    document.getElementById('expertInput1').placeholder = `${getOrdinal(pos1)} position...`;
-    document.getElementById('expertInput2').placeholder = `${getOrdinal(pos2)} position...`;
-    document.getElementById('expertInput3').placeholder = `${getOrdinal(pos3)} position...`;
-}
-
-function getOrdinal(n) {
-    const s = ['th', 'st', 'nd', 'rd'];
-    const v = n % 100;
-    return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
-
-// Update the filterWords function to use the selected positions
-function filterWords() {
-    const isExpertMode = document.getElementById('modeToggle').checked;
-    const isShapeMode = document.getElementById('shapeToggle').checked;
-    let filteredWords = [];
-
-    if (isExpertMode) {
-        const pos1 = parseInt(document.getElementById('position1').value);
-        const pos2 = parseInt(document.getElementById('position2').value);
-        const pos3 = parseInt(document.getElementById('position3').value);
-        const input1 = document.getElementById('expertInput1').value.toLowerCase();
-        const input2 = document.getElementById('expertInput2').value.toLowerCase();
-        const input3 = document.getElementById('expertInput3').value.toLowerCase();
-
-        filteredWords = wordList.filter(word => {
-            const wordLower = word.toLowerCase();
-            // Check if word is long enough for all positions
-            if (wordLower.length < Math.max(pos1, pos2, pos3)) {
-                return false;
-            }
-            // Check each position match
-            const match1 = !input1 || wordLower[pos1 - 1] === input1;
-            const match2 = !input2 || wordLower[pos2 - 1] === input2;
-            const match3 = !input3 || wordLower[pos3 - 1] === input3;
-            return match1 && match2 && match3;
-        });
-    } else {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        filteredWords = wordList.filter(word => 
-            word.toLowerCase().includes(searchInput)
-        );
-    }
-
-    currentFilteredWords = filteredWords;
-    displayResults(filteredWords);
 }
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async () => {
-    // Load word list first
     await loadWordList();
     
-    // Add touch handlers for all inputs
-    const inputs = document.querySelectorAll('input[type="text"]');
-    inputs.forEach(input => {
-        // Touch start handler
-        input.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        }, { passive: false });
-
-        // Touch end handler
-        input.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        }, { passive: false });
-
-        // Click handler
-        input.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        }, { passive: false });
-    });
-
-    // Add touch handlers for buttons
-    const buttons = document.querySelectorAll('button');
-    buttons.forEach(button => {
-        button.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            button.click();
-        }, { passive: false });
-    });
-
-    // Add touch handlers for position selects
-    const selects = document.querySelectorAll('select');
-    selects.forEach(select => {
-        select.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            select.click();
-        }, { passive: false });
-    });
-
-    // Prevent double-tap zoom on interactive elements
-    const interactiveElements = document.querySelectorAll('button, input, select');
-    interactiveElements.forEach(element => {
-        element.addEventListener('touchend', (e) => {
-            e.preventDefault();
-        }, { passive: false });
-    });
-
     // Mode toggle listener
     document.getElementById('modeToggle').addEventListener('change', toggleMode);
     
-    // Shape toggle listener
-    document.getElementById('shapeToggle').addEventListener('change', toggleShapeMode);
+    // Feature toggle listeners
+    document.getElementById('lexiconToggle').addEventListener('change', () => toggleFeature('lexiconFeature'));
+    document.getElementById('vowelToggle').addEventListener('change', () => toggleFeature('vowelFeature'));
+    document.getElementById('shapeToggle').addEventListener('change', () => toggleFeature('shapeFeature'));
     
-    // Search button listener
-    document.getElementById('searchButton').addEventListener('click', () => {
-        if (isExpertMode) {
-            const inputs = [
-                document.getElementById('expertInput1').value.trim(),
-                document.getElementById('expertInput2').value.trim(),
-                document.getElementById('expertInput3').value.trim()
-            ];
-            
-            if (inputs.some(input => input !== '')) {
-                const filteredWords = filterWordsExpert(inputs);
-                document.getElementById('searchContainer').style.display = 'none';
+    // LEXICON feature
+    document.getElementById('lexiconFilterButton').addEventListener('click', () => {
+        const positions = document.getElementById('lexiconPositions').value;
+        if (positions) {
+            const filteredWords = filterWordsByCurvedPositions(currentFilteredWords, positions);
+            document.getElementById('lexiconFeature').classList.add('completed');
+            displayResults(filteredWords);
+            showNextFeature();
+        }
+    });
+    
+    // Position 1 feature
+    document.getElementById('position1Button').addEventListener('click', () => {
+        const input = document.getElementById('position1Input').value.trim();
+        if (input) {
+            const consonants = getConsonantsInOrder(input);
+            if (consonants.length >= 2) {
+                const filteredWords = currentFilteredWords.filter(word => 
+                    hasConsonantsInSequence(word, consonants)
+                );
+                document.getElementById('position1Feature').classList.add('completed');
                 displayResults(filteredWords);
                 
-                // Show vowel selection UI if vowel mode is on
                 if (isVowelMode) {
                     currentFilteredWordsForVowels = [...filteredWords];
-                    uniqueVowels = getUniqueVowels(inputs[0]);
-                    currentVowelIndex = 0;
+                    originalFilteredWords = [...filteredWords];
+                    uniqueVowels = getUniqueVowels(input);
                     showNextVowel();
-                }
-            }
-        } else {
-            const searchWord = document.getElementById('searchInput').value.trim();
-            if (searchWord) {
-                const filteredWords = filterWordsStandard(searchWord);
-                document.getElementById('searchContainer').style.display = 'none';
-                displayResults(filteredWords);
-                
-                // Show vowel selection UI if vowel mode is on
-                if (isVowelMode) {
-                    currentFilteredWordsForVowels = [...filteredWords];
-                    uniqueVowels = getUniqueVowels(searchWord);
-                    currentVowelIndex = 0;
-                    showNextVowel();
+                } else {
+                    showNextFeature();
                 }
             }
         }
     });
     
-    // Enter key listeners for all inputs
-    const handleEnter = (e) => {
-        if (e.key === 'Enter') {
-            document.getElementById('searchButton').click();
+    // Vowel feature
+    document.querySelector('.yes-btn').addEventListener('click', () => handleVowelSelection(true));
+    document.querySelector('.no-btn').addEventListener('click', () => handleVowelSelection(false));
+    
+    // Reset button
+    document.getElementById('resetButton').addEventListener('click', resetApp);
+    
+    // Settings button
+    document.getElementById('settingsButton').addEventListener('click', () => {
+        document.getElementById('settingsModal').style.display = 'block';
+    });
+    
+    // Close settings
+    document.querySelector('.close-button').addEventListener('click', () => {
+        document.getElementById('settingsModal').style.display = 'none';
+    });
+    
+    // Close settings when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('settingsModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
         }
     };
     
-    document.getElementById('searchInput').addEventListener('keypress', handleEnter);
-    document.getElementById('expertInput1').addEventListener('keypress', handleEnter);
-    document.getElementById('expertInput2').addEventListener('keypress', handleEnter);
-    document.getElementById('expertInput3').addEventListener('keypress', handleEnter);
+    // Enter key handlers
+    document.getElementById('lexiconPositions').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('lexiconFilterButton').click();
+        }
+    });
     
-    // Reset button listener
-    document.getElementById('resetButton').addEventListener('click', resetApp);
-
-    // Add vowel toggle listener
-    document.getElementById('vowelToggle').addEventListener('change', toggleVowelMode);
-    
-    // Add vowel button listeners
-    document.querySelector('.yes-btn').addEventListener('click', () => handleVowelSelection(true));
-    document.querySelector('.no-btn').addEventListener('click', () => handleVowelSelection(false));
+    document.getElementById('position1Input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('position1Button').click();
+        }
+    });
 });
 
 // Function to check if a letter is curved
