@@ -492,17 +492,32 @@ function isCurvedLetter(letter) {
 
 // Function to filter words by curved letter positions
 function filterWordsByCurvedPositions(words, positions) {
-    // Convert positions string to array of numbers
-    const positionArray = positions.split('').map(Number);
+    // Convert positions string to array of numbers and validate
+    const positionArray = positions.split('')
+        .map(Number)
+        .filter(pos => pos >= 1 && pos <= 5); // Only allow positions 1-5
+    
+    if (positionArray.length === 0) {
+        console.log('No valid positions provided');
+        return words;
+    }
     
     return words.filter(word => {
-        // Only check first 5 characters
-        const firstFive = word.slice(0, 5).toUpperCase();
+        // Skip words shorter than the highest required position
+        const maxPosition = Math.max(...positionArray);
+        if (word.length < maxPosition) {
+            return false;
+        }
         
         // Check each position from 1 to 5
         for (let i = 0; i < 5; i++) {
             const pos = i + 1; // Convert to 1-based position
-            const letter = firstFive[i];
+            const letter = word[i];
+            
+            // Skip if we've reached the end of the word
+            if (!letter) {
+                continue;
+            }
             
             if (positionArray.includes(pos)) {
                 // This position should have a curved letter
