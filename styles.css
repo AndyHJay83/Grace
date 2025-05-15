@@ -525,12 +525,16 @@ input:checked + .slider:before {
     flex-direction: column;
     align-items: center;
     gap: 15px;
+    width: 100%;
 }
 
 .vowel-letter {
-    font-size: 32px;
+    font-size: 48px;
     font-weight: bold;
     color: #333;
+    margin: 20px 0;
+    display: block;
+    text-align: center;
 }
 
 .skip-button {
