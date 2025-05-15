@@ -667,10 +667,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('position1Feature').style.display = 'none';
                 displayResults(filteredWords);
                 
-                // Reset vowel processing
-                uniqueVowels = [];
-                currentFilteredWordsForVowels = [];
-                originalFilteredWords = [];
+                // Get vowels from the input word for vowel filtering
+                const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+                uniqueVowels = Array.from(new Set(
+                    input.toLowerCase().split('')
+                        .filter(char => vowels.has(char))
+                ));
+                console.log('Vowels from input word:', uniqueVowels);
+                
+                // Initialize vowel processing with the filtered words
+                currentFilteredWordsForVowels = [...filteredWords];
+                originalFilteredWords = [...filteredWords];
                 currentVowelIndex = 0;
                 
                 // Move to VOWEL feature
@@ -678,15 +685,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     console.log('Moving to VOWEL feature');
                     const vowelFeature = document.getElementById('vowelFeature');
                     vowelFeature.style.display = 'block';
-                    
-                    // Initialize vowel processing
-                    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
-                    uniqueVowels = Array.from(new Set(
-                        filteredWords.join('').toLowerCase().split('')
-                            .filter(char => vowels.has(char))
-                    ));
-                    currentFilteredWordsForVowels = [...filteredWords];
-                    originalFilteredWords = [...filteredWords];
                     
                     // Set up the vowel display
                     const vowelLetter = vowelFeature.querySelector('.vowel-letter');
