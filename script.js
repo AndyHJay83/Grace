@@ -11,6 +11,7 @@ let currentVowelIndex = 0;
 let uniqueVowels = [];
 let currentFilteredWordsForVowels = [];
 let originalFilteredWords = [];
+let hasAdjacentConsonants = null;
 
 // Letter shape categories with exact categorization
 const letterShapes = {
@@ -362,19 +363,59 @@ function handleVowelSelection(includeVowel) {
     }
 }
 
+// Function to check if a word has any adjacent consonants
+function hasWordAdjacentConsonants(word) {
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+    const wordLower = word.toLowerCase();
+    
+    for (let i = 0; i < wordLower.length - 1; i++) {
+        if (!vowels.has(wordLower[i]) && !vowels.has(wordLower[i + 1])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Function to check if a word contains any two consonants from a set
+function hasAnyTwoConsonants(word, consonants) {
+    const wordLower = word.toLowerCase();
+    let foundCount = 0;
+    
+    for (const consonant of consonants) {
+        if (wordLower.includes(consonant)) {
+            foundCount++;
+            if (foundCount >= 2) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 // Function to show next feature
 function showNextFeature() {
     // First check if LEXICON is enabled and not completed
     if (isLexiconMode && !document.getElementById('lexiconFeature').classList.contains('completed')) {
         document.getElementById('lexiconFeature').style.display = 'block';
+        document.getElementById('consonantQuestion').style.display = 'none';
         document.getElementById('position1Feature').style.display = 'none';
         document.getElementById('vowelFeature').style.display = 'none';
         document.getElementById('shapeFeature').style.display = 'none';
     }
-    // Then check Position 1 if LEXICON is completed
+    // Then check consonant question if LEXICON is completed
     else if (document.getElementById('lexiconFeature').classList.contains('completed') && 
+             hasAdjacentConsonants === null) {
+        document.getElementById('lexiconFeature').style.display = 'none';
+        document.getElementById('consonantQuestion').style.display = 'block';
+        document.getElementById('position1Feature').style.display = 'none';
+        document.getElementById('vowelFeature').style.display = 'none';
+        document.getElementById('shapeFeature').style.display = 'none';
+    }
+    // Then check Position 1 if consonant question is answered
+    else if (hasAdjacentConsonants !== null && 
              !document.getElementById('position1Feature').classList.contains('completed')) {
         document.getElementById('lexiconFeature').style.display = 'none';
+        document.getElementById('consonantQuestion').style.display = 'none';
         document.getElementById('position1Feature').style.display = 'block';
         document.getElementById('vowelFeature').style.display = 'none';
         document.getElementById('shapeFeature').style.display = 'none';
@@ -384,6 +425,7 @@ function showNextFeature() {
              isVowelMode && 
              !document.getElementById('vowelFeature').classList.contains('completed')) {
         document.getElementById('lexiconFeature').style.display = 'none';
+        document.getElementById('consonantQuestion').style.display = 'none';
         document.getElementById('position1Feature').style.display = 'none';
         document.getElementById('vowelFeature').style.display = 'block';
         document.getElementById('shapeFeature').style.display = 'none';
@@ -393,10 +435,10 @@ function showNextFeature() {
              isShapeMode && 
              !document.getElementById('shapeFeature').classList.contains('completed')) {
         document.getElementById('lexiconFeature').style.display = 'none';
+        document.getElementById('consonantQuestion').style.display = 'none';
         document.getElementById('position1Feature').style.display = 'none';
         document.getElementById('vowelFeature').style.display = 'none';
         document.getElementById('shapeFeature').style.display = 'block';
-        // Initialize shape display with current filtered words
         updateShapeDisplay(currentFilteredWords);
     }
     // If all features are completed, expand the word list
@@ -445,6 +487,7 @@ function resetApp() {
     currentPosition = -1;
     currentPosition2 = -1;
     uniqueVowels = [];
+    hasAdjacentConsonants = null;
     
     displayResults(wordList);
     showNextFeature();
@@ -504,28 +547,36 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('Found consonants:', consonants);
             
             if (consonants.length >= 2) {
-                // Create all possible pairs of consonants
-                const consonantPairs = [];
-                for (let i = 0; i < consonants.length; i++) {
-                    for (let j = i + 1; j < consonants.length; j++) {
-                        consonantPairs.push([consonants[i], consonants[j]]);
-                    }
-                }
-                console.log('Looking for these consonant pairs:', consonantPairs);
+                let filteredWords;
                 
-                const filteredWords = currentFilteredWords.filter(word => {
-                    const wordLower = word.toLowerCase();
-                    // Check if any pair appears adjacent in the word
-                    for (const [con1, con2] of consonantPairs) {
-                        const pair1 = con1 + con2;
-                        const pair2 = con2 + con1;
-                        if (wordLower.includes(pair1) || wordLower.includes(pair2)) {
-                            console.log(`Word "${wordLower}" matches with pair "${pair1}" or "${pair2}"`);
-                            return true;
+                if (hasAdjacentConsonants) {
+                    // Original logic: look for adjacent consonant pairs
+                    const consonantPairs = [];
+                    for (let i = 0; i < consonants.length; i++) {
+                        for (let j = i + 1; j < consonants.length; j++) {
+                            consonantPairs.push([consonants[i], consonants[j]]);
                         }
                     }
-                    return false;
-                });
+                    console.log('Looking for these consonant pairs:', consonantPairs);
+                    
+                    filteredWords = currentFilteredWords.filter(word => {
+                        const wordLower = word.toLowerCase();
+                        for (const [con1, con2] of consonantPairs) {
+                            const pair1 = con1 + con2;
+                            const pair2 = con2 + con1;
+                            if (wordLower.includes(pair1) || wordLower.includes(pair2)) {
+                                console.log(`Word "${wordLower}" matches with pair "${pair1}" or "${pair2}"`);
+                                return true;
+                            }
+                        }
+                        return false;
+                    });
+                } else {
+                    // New logic: look for any two consonants anywhere in the word
+                    filteredWords = currentFilteredWords.filter(word => 
+                        hasAnyTwoConsonants(word, consonants)
+                    );
+                }
                 
                 console.log('Filtered words count:', filteredWords.length);
                 
@@ -582,6 +633,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.key === 'Enter') {
             document.getElementById('position1Button').click();
         }
+    });
+
+    // Add event listeners for consonant question
+    document.getElementById('consonantYesBtn').addEventListener('click', () => {
+        hasAdjacentConsonants = true;
+        showNextFeature();
+    });
+
+    document.getElementById('consonantNoBtn').addEventListener('click', () => {
+        hasAdjacentConsonants = false;
+        // Filter out words with adjacent consonants
+        currentFilteredWords = currentFilteredWords.filter(word => !hasWordAdjacentConsonants(word));
+        console.log('Filtered out words with adjacent consonants. Remaining words:', currentFilteredWords.length);
+        showNextFeature();
     });
 });
 
