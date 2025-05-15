@@ -15,6 +15,24 @@ let hasAdjacentConsonants = null;
 let hasO = null;
 let selectedCurvedLetter = null;
 
+// Function to check if a word has any adjacent consonants
+function hasWordAdjacentConsonants(word) {
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+    const wordLower = word.toLowerCase();
+    
+    for (let i = 0; i < wordLower.length - 1; i++) {
+        const currentChar = wordLower[i];
+        const nextChar = wordLower[i + 1];
+        
+        // Check if both current and next characters are consonants
+        if (!vowels.has(currentChar) && !vowels.has(nextChar)) {
+            console.log(`Found adjacent consonants in "${wordLower}": "${currentChar}${nextChar}" at position ${i}`);
+            return true;
+        }
+    }
+    return false;
+}
+
 // Letter shape categories with exact categorization
 const letterShapes = {
     straight: new Set(['A', 'E', 'F', 'H', 'I', 'K', 'L', 'M', 'N', 'T', 'V', 'W', 'X', 'Y', 'Z']),
@@ -530,8 +548,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     
     // Consonant question buttons
-    document.getElementById('consonantYesBtn').addEventListener('click', () => {
-        console.log('Consonant question: YES selected');
+    const consonantYesBtn = document.getElementById('consonantYesBtn');
+    const consonantNoBtn = document.getElementById('consonantNoBtn');
+    
+    console.log('Setting up consonant question buttons');
+    
+    consonantYesBtn.addEventListener('click', () => {
+        console.log('Consonant question: YES button clicked');
         hasAdjacentConsonants = true;
         
         // Filter to keep ONLY words that have adjacent consonants
@@ -557,8 +580,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('position1Feature').style.display = 'block';
     });
 
-    document.getElementById('consonantNoBtn').addEventListener('click', () => {
-        console.log('Consonant question: NO selected');
+    consonantNoBtn.addEventListener('click', () => {
+        console.log('Consonant question: NO button clicked');
         hasAdjacentConsonants = false;
         
         // Filter to keep ONLY words that do NOT have adjacent consonants
