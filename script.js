@@ -316,6 +316,7 @@ function showNextVowel() {
     
     if (uniqueVowels.length > 0) {
         const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
+        console.log('Setting vowel letter to:', leastCommonVowel.toUpperCase());
         vowelLetter.textContent = leastCommonVowel.toUpperCase();
         // Hide all other features first
         document.getElementById('lexiconFeature').style.display = 'none';
@@ -655,6 +656,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const vowelFeature = document.getElementById('vowelFeature');
                     const vowelLetter = vowelFeature.querySelector('.vowel-letter');
                     const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
+                    console.log('Found least common vowel:', leastCommonVowel);
                     vowelLetter.textContent = leastCommonVowel.toUpperCase();
                     vowelFeature.style.display = 'block';
                 } else {
