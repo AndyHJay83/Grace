@@ -223,6 +223,7 @@ function getConsonantsInOrder(str) {
         }
     }
     
+    console.log('Input word:', word);
     console.log('Consonants found in order:', consonants);
     return consonants;
 }
@@ -232,7 +233,11 @@ function hasConsonantsInSequence(word, consonants) {
     const wordLower = word.toLowerCase();
     const sequence = consonants.join('');
     console.log(`Looking for sequence "${sequence}" in "${wordLower}"`);
-    return wordLower.includes(sequence);
+    
+    // Check if the word contains the exact sequence of consonants
+    const hasSequence = wordLower.includes(sequence);
+    console.log(`Found sequence: ${hasSequence}`);
+    return hasSequence;
 }
 
 // Function to get unique vowels
@@ -435,10 +440,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const input = document.getElementById('position1Input').value.trim();
         if (input) {
             const consonants = getConsonantsInOrder(input);
+            console.log('Processing Position 1 input:', input);
+            console.log('Found consonants:', consonants);
+            
             if (consonants.length >= 2) {
                 const filteredWords = currentFilteredWords.filter(word => 
                     hasConsonantsInSequence(word, consonants)
                 );
+                console.log('Filtered words count:', filteredWords.length);
+                
                 document.getElementById('position1Feature').classList.add('completed');
                 displayResults(filteredWords);
                 
@@ -450,6 +460,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 } else {
                     showNextFeature();
                 }
+            } else {
+                console.log('Not enough consonants found in input');
             }
         }
     });
