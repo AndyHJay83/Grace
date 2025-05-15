@@ -531,4 +531,27 @@ input:checked + .slider:before {
     font-size: 32px;
     font-weight: bold;
     color: #333;
+}
+
+.skip-button {
+    margin-top: 15px;
+    padding: 10px 30px;
+    background: #666;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.skip-button:hover {
+    background: #555;
+    transform: translateY(-2px);
+}
+
+.skip-button:active {
+    transform: translateY(0);
 } 

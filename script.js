@@ -541,6 +541,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
     
+    // Add skip button handler
+    document.getElementById('lexiconSkipButton').addEventListener('click', () => {
+        console.log('LEXICON feature skipped');
+        document.getElementById('lexiconFeature').classList.add('completed');
+        // Keep the current word list unchanged
+        showNextFeature();
+    });
+    
     // Consonant question buttons
     document.getElementById('consonantYesBtn').addEventListener('click', () => {
         console.log('Consonant question: YES selected');
