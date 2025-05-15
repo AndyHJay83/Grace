@@ -614,9 +614,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('position1Feature').style.display = 'none';
                 displayResults(filteredWords);
                 
-                // Move to LEXICON feature
-                if (isLexiconMode) {
-                    document.getElementById('lexiconFeature').style.display = 'block';
+                // Move to VOWEL feature
+                if (isVowelMode) {
+                    const vowelFeature = document.getElementById('vowelFeature');
+                    vowelFeature.style.display = 'block';
+                    
+                    // Initialize vowel processing
+                    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+                    uniqueVowels = Array.from(new Set(
+                        filteredWords.join('').toLowerCase().split('')
+                            .filter(char => vowels.has(char))
+                    ));
+                    currentFilteredWordsForVowels = [...filteredWords];
+                    originalFilteredWords = [...filteredWords];
+                    currentVowelIndex = 0;
+                    
+                    // Set up the vowel display
+                    const vowelLetter = vowelFeature.querySelector('.vowel-letter');
+                    if (uniqueVowels.length > 0) {
+                        const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
+                        console.log('Setting vowel letter to:', leastCommonVowel.toUpperCase());
+                        vowelLetter.textContent = leastCommonVowel.toUpperCase();
+                        vowelLetter.style.display = 'inline-block';
+                    }
                 } else {
                     showNextFeature();
                 }
