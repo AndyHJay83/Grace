@@ -311,101 +311,6 @@ function findLeastCommonVowel(words, vowels) {
     return leastCommonVowel;
 }
 
-// Function to show next vowel
-function showNextVowel() {
-    const vowelFeature = document.getElementById('vowelFeature');
-    const vowelLetter = vowelFeature.querySelector('.vowel-letter');
-    
-    if (uniqueVowels.length > 0) {
-        const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
-        console.log('Setting vowel letter to:', leastCommonVowel.toUpperCase());
-        vowelLetter.textContent = leastCommonVowel.toUpperCase();
-        // Hide all other features first
-        document.getElementById('lexiconFeature').style.display = 'none';
-        document.getElementById('consonantQuestion').style.display = 'none';
-        document.getElementById('position1Feature').style.display = 'none';
-        document.getElementById('shapeFeature').style.display = 'none';
-        // Then show vowel feature
-        vowelFeature.style.display = 'block';
-        console.log('Showing vowel:', leastCommonVowel);
-        console.log('Current filtered words:', currentFilteredWordsForVowels.length);
-    } else {
-        vowelFeature.style.display = 'none';
-        currentVowelIndex = 0;
-        showNextFeature();
-    }
-}
-
-// Function to handle vowel selection
-function handleVowelSelection(includeVowel) {
-    const currentVowel = uniqueVowels[currentVowelIndex];
-    console.log('Handling vowel selection:', currentVowel, 'Include:', includeVowel);
-    console.log('Before filtering:', currentFilteredWordsForVowels.length, 'words');
-    
-    if (includeVowel) {
-        currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
-            word.toLowerCase().includes(currentVowel)
-        );
-    } else {
-        currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
-            !word.toLowerCase().includes(currentVowel)
-        );
-    }
-    
-    console.log('After filtering:', currentFilteredWordsForVowels.length, 'words');
-    
-    // Remove the processed vowel from uniqueVowels array
-    uniqueVowels = uniqueVowels.filter(v => v !== currentVowel);
-    
-    // Update the display with the filtered words
-    displayResults(currentFilteredWordsForVowels);
-    
-    // If we still have vowels to process, show the next one
-    if (uniqueVowels.length > 0) {
-        showNextVowel();
-    } else {
-        // No more vowels to process, mark as completed and move to next feature
-        document.getElementById('vowelFeature').classList.add('completed');
-        // Update currentFilteredWords with the vowel-filtered results
-        currentFilteredWords = [...currentFilteredWordsForVowels];
-        showNextFeature();
-    }
-}
-
-// Function to check if a word has any adjacent consonants
-function hasWordAdjacentConsonants(word) {
-    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
-    const wordLower = word.toLowerCase();
-    
-    for (let i = 0; i < wordLower.length - 1; i++) {
-        const currentChar = wordLower[i];
-        const nextChar = wordLower[i + 1];
-        
-        // Check if both current and next characters are consonants
-        if (!vowels.has(currentChar) && !vowels.has(nextChar)) {
-            console.log(`Found adjacent consonants in "${wordLower}": "${currentChar}${nextChar}" at position ${i}`);
-            return true;
-        }
-    }
-    return false;
-}
-
-// Function to check if a word contains any two consonants from a set
-function hasAnyTwoConsonants(word, consonants) {
-    const wordLower = word.toLowerCase();
-    let foundCount = 0;
-    
-    for (const consonant of consonants) {
-        if (wordLower.includes(consonant)) {
-            foundCount++;
-            if (foundCount >= 2) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 // Function to show next feature
 function showNextFeature() {
     // First hide all features
@@ -413,9 +318,9 @@ function showNextFeature() {
         'oFeature',
         'curvedFeature',
         'position1Feature',
+        'vowelFeature',
         'lexiconFeature',
         'consonantQuestion',
-        'vowelFeature',
         'shapeFeature'
     ];
     
@@ -436,11 +341,19 @@ function showNextFeature() {
     else if (!document.getElementById('position1Feature').classList.contains('completed')) {
         document.getElementById('position1Feature').style.display = 'block';
     }
-    else if (isLexiconMode && !document.getElementById('lexiconFeature').classList.contains('completed')) {
-        document.getElementById('lexiconFeature').style.display = 'block';
-    }
     else if (isVowelMode && !document.getElementById('vowelFeature').classList.contains('completed')) {
         document.getElementById('vowelFeature').style.display = 'block';
+        // Set up the vowel display
+        const vowelFeature = document.getElementById('vowelFeature');
+        const vowelLetter = vowelFeature.querySelector('.vowel-letter');
+        if (uniqueVowels.length > 0) {
+            const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
+            console.log('Setting vowel letter to:', leastCommonVowel.toUpperCase());
+            vowelLetter.textContent = leastCommonVowel.toUpperCase();
+        }
+    }
+    else if (isLexiconMode && !document.getElementById('lexiconFeature').classList.contains('completed')) {
+        document.getElementById('lexiconFeature').style.display = 'block';
     }
     else if (isShapeMode && !document.getElementById('shapeFeature').classList.contains('completed')) {
         document.getElementById('shapeFeature').style.display = 'block';
