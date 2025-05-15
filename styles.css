@@ -577,10 +577,11 @@ button {
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: bold;
-    background-color: #007bff;
-    color: white;
-    min-width: 60px;
+    background-color: #007bff !important;
+    color: white !important;
+    min-width: 120px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
 }
 
 button:hover {
@@ -596,74 +597,46 @@ button:active {
 
 /* Yes/No buttons */
 .yes-btn, .no-btn {
-    background-color: #007bff;
-    min-width: 120px;
+    min-width: 160px;
+    font-size: 1.4em;
+    padding: 15px 30px;
 }
 
 /* Skip buttons */
 .skip-button {
-    background-color: #007bff;
-    min-width: 120px;
+    min-width: 160px;
+    font-size: 1.4em;
+    padding: 15px 30px;
 }
 
 /* Vowel buttons */
 .vowel-btn {
-    background-color: #007bff;
-    min-width: 120px;
+    min-width: 160px;
+    font-size: 1.4em;
+    padding: 15px 30px;
 }
 
 /* Category buttons */
 .category-button {
-    background-color: #007bff;
-    min-width: 120px;
+    min-width: 160px;
+    font-size: 1.4em;
+    padding: 15px 30px;
 }
 
 /* Filter buttons */
 #lexiconFilterButton, #position1Button {
-    background-color: #007bff;
-    min-width: 120px;
-}
-
-/* Button containers */
-.button-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin: 20px 0;
-    width: 100%;
-    flex-wrap: wrap;
-}
-
-/* Feature sections */
-.feature-section {
-    background-color: #f8f8f8;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.feature-title {
-    font-size: 1.8em;
-    font-weight: bold;
-    margin-bottom: 30px;
-    color: #333;
-    width: 100%;
-    text-align: center;
+    min-width: 160px;
+    font-size: 1.4em;
+    padding: 15px 30px;
 }
 
 /* Reset button */
 #resetButton {
-    background-color: #007bff;
+    min-width: 160px;
+    font-size: 1.4em;
+    padding: 15px 30px;
     margin: 20px auto;
     display: block;
-    min-width: 120px;
 }
 
 /* Settings button */
@@ -671,8 +644,8 @@ button:active {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #007bff;
-    color: white;
+    background-color: #007bff !important;
+    color: white !important;
     padding: 15px;
     border-radius: 50%;
     width: 60px;
