@@ -317,6 +317,12 @@ function showNextVowel() {
     if (uniqueVowels.length > 0) {
         const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
         vowelLetter.textContent = leastCommonVowel.toUpperCase();
+        // Hide all other features first
+        document.getElementById('lexiconFeature').style.display = 'none';
+        document.getElementById('consonantQuestion').style.display = 'none';
+        document.getElementById('position1Feature').style.display = 'none';
+        document.getElementById('shapeFeature').style.display = 'none';
+        // Then show vowel feature
         vowelFeature.style.display = 'block';
         console.log('Showing vowel:', leastCommonVowel);
         console.log('Current filtered words:', currentFilteredWordsForVowels.length);
