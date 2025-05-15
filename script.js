@@ -540,9 +540,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('consonantYesBtn').addEventListener('click', () => {
         console.log('Consonant question: YES selected');
         hasAdjacentConsonants = true;
-        // Filter out words with NO adjacent consonants
-        currentFilteredWords = currentFilteredWords.filter(word => hasWordAdjacentConsonants(word));
-        console.log('Filtered to only words with adjacent consonants. Remaining words:', currentFilteredWords.length);
+        
+        // Filter to keep ONLY words that have adjacent consonants
+        const filteredWords = currentFilteredWords.filter(word => {
+            const hasAdjacent = hasWordAdjacentConsonants(word);
+            console.log(`Word "${word}" has adjacent consonants: ${hasAdjacent}`);
+            return hasAdjacent;
+        });
+        
+        console.log('Before filtering:', currentFilteredWords.length, 'words');
+        currentFilteredWords = filteredWords;
+        console.log('After filtering (keeping only words with adjacent consonants):', currentFilteredWords.length, 'words');
+        
+        // Update the display immediately
         displayResults(currentFilteredWords);
         showNextFeature();
     });
@@ -550,9 +560,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('consonantNoBtn').addEventListener('click', () => {
         console.log('Consonant question: NO selected');
         hasAdjacentConsonants = false;
-        // Filter out words with adjacent consonants
-        currentFilteredWords = currentFilteredWords.filter(word => !hasWordAdjacentConsonants(word));
-        console.log('Filtered out words with adjacent consonants. Remaining words:', currentFilteredWords.length);
+        
+        // Filter to keep ONLY words that do NOT have adjacent consonants
+        const filteredWords = currentFilteredWords.filter(word => {
+            const hasAdjacent = hasWordAdjacentConsonants(word);
+            console.log(`Word "${word}" has adjacent consonants: ${hasAdjacent}`);
+            return !hasAdjacent;
+        });
+        
+        console.log('Before filtering:', currentFilteredWords.length, 'words');
+        currentFilteredWords = filteredWords;
+        console.log('After filtering (keeping only words without adjacent consonants):', currentFilteredWords.length, 'words');
+        
+        // Update the display immediately
         displayResults(currentFilteredWords);
         showNextFeature();
     });
