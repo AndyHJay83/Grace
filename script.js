@@ -652,9 +652,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                     });
                 } else {
                     // New logic: look for any two consonants anywhere in the word
-                    filteredWords = currentFilteredWords.filter(word => 
-                        hasAnyTwoConsonants(word, consonants)
-                    );
+                    filteredWords = currentFilteredWords.filter(word => {
+                        const wordLower = word.toLowerCase();
+                        let foundCount = 0;
+                        for (const consonant of consonants) {
+                            if (wordLower.includes(consonant)) {
+                                foundCount++;
+                                if (foundCount >= 2) {
+                                    console.log(`Word "${wordLower}" contains at least two consonants from input`);
+                                    return true;
+                                }
+                            }
+                        }
+                        console.log(`Word "${wordLower}" does not contain enough consonants from input`);
+                        return false;
+                    });
                 }
                 
                 console.log('Filtered words count:', filteredWords.length);
