@@ -309,12 +309,13 @@ function filterWordsExpert(inputs) {
         const adjacentConsonantPairs = getAdjacentConsonants(inputs[0]);
         
         if (adjacentConsonantPairs.length > 0) {
-            // Take the first pair of adjacent consonants found
-            const [consonant1, consonant2] = adjacentConsonantPairs[0];
-            
-            filteredWords = filteredWords.filter(word => 
-                consonantsAppearTogether(word, consonant1, consonant2)
-            );
+            // Filter words that contain ANY of the adjacent consonant pairs
+            filteredWords = filteredWords.filter(word => {
+                // Check if the word contains any of the consonant pairs
+                return adjacentConsonantPairs.some(([consonant1, consonant2]) => 
+                    consonantsAppearTogether(word, consonant1, consonant2)
+                );
+            });
         }
     }
 
