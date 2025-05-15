@@ -532,10 +532,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             const filteredWords = filterWordsByCurvedPositions(currentFilteredWords, positions);
             document.getElementById('lexiconFeature').classList.add('completed');
             displayResults(filteredWords);
-            // Show Position 1 feature next
-            document.getElementById('position1Feature').style.display = 'block';
-            document.getElementById('lexiconFeature').style.display = 'none';
+            showNextFeature();
         }
+    });
+    
+    // Consonant question buttons
+    document.getElementById('consonantYesBtn').addEventListener('click', () => {
+        console.log('Consonant question: YES selected');
+        hasAdjacentConsonants = true;
+        showNextFeature();
+    });
+
+    document.getElementById('consonantNoBtn').addEventListener('click', () => {
+        console.log('Consonant question: NO selected');
+        hasAdjacentConsonants = false;
+        // Filter out words with adjacent consonants
+        currentFilteredWords = currentFilteredWords.filter(word => !hasWordAdjacentConsonants(word));
+        console.log('Filtered out words with adjacent consonants. Remaining words:', currentFilteredWords.length);
+        showNextFeature();
     });
     
     // Position 1 feature
@@ -597,9 +611,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
     
-    // Vowel feature
-    document.querySelector('.yes-btn').addEventListener('click', () => handleVowelSelection(true));
-    document.querySelector('.no-btn').addEventListener('click', () => handleVowelSelection(false));
+    // Vowel feature buttons
+    document.querySelector('#vowelFeature .yes-btn').addEventListener('click', () => {
+        console.log('Vowel YES button clicked');
+        handleVowelSelection(true);
+    });
+    
+    document.querySelector('#vowelFeature .no-btn').addEventListener('click', () => {
+        console.log('Vowel NO button clicked');
+        handleVowelSelection(false);
+    });
     
     // Reset button
     document.getElementById('resetButton').addEventListener('click', resetApp);
@@ -633,20 +654,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.key === 'Enter') {
             document.getElementById('position1Button').click();
         }
-    });
-
-    // Add event listeners for consonant question
-    document.getElementById('consonantYesBtn').addEventListener('click', () => {
-        hasAdjacentConsonants = true;
-        showNextFeature();
-    });
-
-    document.getElementById('consonantNoBtn').addEventListener('click', () => {
-        hasAdjacentConsonants = false;
-        // Filter out words with adjacent consonants
-        currentFilteredWords = currentFilteredWords.filter(word => !hasWordAdjacentConsonants(word));
-        console.log('Filtered out words with adjacent consonants. Remaining words:', currentFilteredWords.length);
-        showNextFeature();
     });
 });
 
