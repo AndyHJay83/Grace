@@ -51,6 +51,15 @@ function analyzePositionShapes(words, position) {
         curved: shapes.curved.size / totalLetters
     };
     
+    console.log(`Position ${position + 1} analysis:`, {
+        shapes: {
+            straight: Array.from(shapes.straight),
+            curved: Array.from(shapes.curved)
+        },
+        distribution,
+        totalLetters
+    });
+    
     return {
         shapes,
         distribution,
@@ -65,13 +74,15 @@ function findLeastVariancePosition(words, startPos, endPos) {
     
     for (let pos = startPos; pos < endPos; pos++) {
         const analysis = analyzePositionShapes(words, pos);
-        // Only require at least 2 letters to be present
-        if (analysis.totalLetters < 2) continue;
         
-        const values = Object.values(analysis.distribution);
-        const mean = values.reduce((a, b) => a + b, 0) / values.length;
-        const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+        // Skip if we don't have at least one letter of each shape
+        if (analysis.shapes.straight.size === 0 || analysis.shapes.curved.size === 0) {
+            console.log(`Position ${pos + 1} skipped: missing one or both shapes`);
+            continue;
+        }
         
+        // Calculate variance between the two distributions
+        const variance = Math.abs(analysis.distribution.straight - analysis.distribution.curved);
         console.log(`Position ${pos + 1} variance:`, variance);
         
         if (variance > maxVariance) {
@@ -80,6 +91,7 @@ function findLeastVariancePosition(words, startPos, endPos) {
         }
     }
     
+    console.log('Selected position:', result + 1, 'with variance:', maxVariance);
     return result;
 }
 
