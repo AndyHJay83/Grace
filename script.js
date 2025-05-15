@@ -644,20 +644,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('position1Feature').style.display = 'none';
                 displayResults(filteredWords);
                 
-                if (isVowelMode) {
-                    // Set up vowel feature
-                    currentFilteredWordsForVowels = [...filteredWords];
-                    originalFilteredWords = [...filteredWords];
-                    uniqueVowels = getUniqueVowels(input);
-                    console.log('Setting up vowel feature with vowels:', uniqueVowels);
-                    
-                    // Show the first vowel
-                    const vowelFeature = document.getElementById('vowelFeature');
-                    const vowelLetter = vowelFeature.querySelector('.vowel-letter');
-                    const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
-                    console.log('Found least common vowel:', leastCommonVowel);
-                    vowelLetter.textContent = leastCommonVowel.toUpperCase();
-                    vowelFeature.style.display = 'block';
+                // Move to LEXICON feature
+                if (isLexiconMode) {
+                    document.getElementById('lexiconFeature').style.display = 'block';
                 } else {
                     showNextFeature();
                 }
@@ -794,14 +783,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Update the display immediately
             displayResults(currentFilteredWords);
             document.getElementById('curvedFeature').classList.add('completed');
-            showNextFeature();
+            document.getElementById('curvedFeature').style.display = 'none';
+            
+            // Show consonant question
+            document.getElementById('consonantQuestion').style.display = 'block';
         });
     });
 
     document.getElementById('curvedSkipBtn').addEventListener('click', () => {
         console.log('CURVED SKIP selected');
         document.getElementById('curvedFeature').classList.add('completed');
-        showNextFeature();
+        document.getElementById('curvedFeature').style.display = 'none';
+        
+        // Show consonant question
+        document.getElementById('consonantQuestion').style.display = 'block';
     });
 });
 
