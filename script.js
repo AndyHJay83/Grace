@@ -244,7 +244,9 @@ function getUniqueVowels(str) {
             uniqueVowels.add(char);
         }
     });
-    return Array.from(uniqueVowels);
+    const result = Array.from(uniqueVowels);
+    console.log('Found unique vowels:', result);
+    return result;
 }
 
 // Function to find least common vowel
@@ -263,6 +265,8 @@ function findLeastCommonVowel(words, vowels) {
         });
     });
 
+    console.log('Vowel counts:', vowelCounts);
+
     let leastCommonVowel = vowels[0];
     let lowestCount = vowelCounts[vowels[0]];
 
@@ -273,6 +277,7 @@ function findLeastCommonVowel(words, vowels) {
         }
     });
 
+    console.log('Selected least common vowel:', leastCommonVowel, 'with count:', lowestCount);
     return leastCommonVowel;
 }
 
@@ -285,6 +290,8 @@ function showNextVowel() {
         const leastCommonVowel = findLeastCommonVowel(originalFilteredWords, uniqueVowels);
         vowelLetter.textContent = leastCommonVowel.toUpperCase();
         vowelFeature.style.display = 'block';
+        console.log('Showing vowel:', leastCommonVowel);
+        console.log('Current filtered words:', currentFilteredWordsForVowels.length);
     } else {
         vowelFeature.style.display = 'none';
         currentVowelIndex = 0;
@@ -295,6 +302,9 @@ function showNextVowel() {
 // Function to handle vowel selection
 function handleVowelSelection(includeVowel) {
     const currentVowel = uniqueVowels[currentVowelIndex];
+    console.log('Handling vowel selection:', currentVowel, 'Include:', includeVowel);
+    console.log('Before filtering:', currentFilteredWordsForVowels.length, 'words');
+    
     if (includeVowel) {
         currentFilteredWordsForVowels = currentFilteredWordsForVowels.filter(word => 
             word.toLowerCase().includes(currentVowel)
@@ -305,10 +315,22 @@ function handleVowelSelection(includeVowel) {
         );
     }
     
+    console.log('After filtering:', currentFilteredWordsForVowels.length, 'words');
+    
+    // Remove the processed vowel from uniqueVowels array
     uniqueVowels = uniqueVowels.filter(v => v !== currentVowel);
     
+    // Update the display with the filtered words
     displayResults(currentFilteredWordsForVowels);
-    showNextVowel();
+    
+    // If we still have vowels to process, show the next one
+    if (uniqueVowels.length > 0) {
+        showNextVowel();
+    } else {
+        // No more vowels to process, move to next feature
+        document.getElementById('vowelFeature').classList.add('completed');
+        showNextFeature();
+    }
 }
 
 // Function to show next feature
