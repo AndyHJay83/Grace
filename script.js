@@ -633,14 +633,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 console.log('Filtered words count:', filteredWords.length);
                 
+                // Mark Position 1 as completed and update the display
                 document.getElementById('position1Feature').classList.add('completed');
+                document.getElementById('position1Feature').style.display = 'none';
                 displayResults(filteredWords);
                 
                 if (isVowelMode) {
                     currentFilteredWordsForVowels = [...filteredWords];
                     originalFilteredWords = [...filteredWords];
                     uniqueVowels = getUniqueVowels(input);
-                    showNextVowel();
+                    showNextFeature();
                 } else {
                     showNextFeature();
                 }
