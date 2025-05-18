@@ -817,45 +817,53 @@ document.addEventListener('DOMContentLoaded', async () => {
         showNextFeature();
     });
 
-    // CURVED feature buttons
-    document.querySelectorAll('.curved-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const letter = button.textContent;
-            console.log('Curved letter selected:', letter);
-            selectedCurvedLetter = letter;
-            
-            // Filter to keep ONLY words that have the selected letter
-            const filteredWords = currentFilteredWords.filter(word => {
-                const hasLetter = word.toLowerCase().includes(letter.toLowerCase());
-                if (hasLetter) {
-                    console.log(`Keeping word "${word}" - has ${letter}`);
-                } else {
-                    console.log(`Removing word "${word}" - no ${letter}`);
-                }
-                return hasLetter;
-            });
-            
-            console.log('Before filtering:', currentFilteredWords.length, 'words');
-            currentFilteredWords = filteredWords;
-            console.log('After filtering (keeping only words with ' + letter + '):', currentFilteredWords.length, 'words');
-            
-            // Update the display immediately
-            displayResults(currentFilteredWords);
-            document.getElementById('curvedFeature').classList.add('completed');
-            document.getElementById('curvedFeature').style.display = 'none';
-            
-            // Show consonant question
-            document.getElementById('consonantQuestion').style.display = 'block';
-        });
-    });
+    // CURVED feature
+    document.addEventListener('DOMContentLoaded', function() {
+        const yesBtn = document.querySelector('.yes-btn');
+        const noBtn = document.querySelector('.no-btn');
+        const curvedResults = document.getElementById('curvedResults');
 
-    document.getElementById('curvedSkipBtn').addEventListener('click', () => {
-        console.log('CURVED SKIP selected');
-        document.getElementById('curvedFeature').classList.add('completed');
-        document.getElementById('curvedFeature').style.display = 'none';
-        
-        // Show consonant question
-        document.getElementById('consonantQuestion').style.display = 'block';
+        // Define the letter groups
+        const yesLetters = ['B', 'C', 'D', 'G', 'P'];
+        const noLetters = ['J', 'O', 'Q', 'R', 'S', 'U'];
+
+        function filterWordsByLetters(letters) {
+            const filteredWords = [];
+            for (const word of currentFilteredWords) {
+                if (letters.some(letter => word.includes(letter))) {
+                    filteredWords.push(word);
+                }
+            }
+            return filteredWords;
+        }
+
+        function displayResults(words) {
+            curvedResults.innerHTML = '';
+            if (words.length === 0) {
+                curvedResults.innerHTML = '<p>No words found.</p>';
+                return;
+            }
+
+            const wordList = document.createElement('div');
+            wordList.className = 'word-list';
+            words.forEach(word => {
+                const wordElement = document.createElement('div');
+                wordElement.className = 'word-item';
+                wordElement.textContent = word;
+                wordList.appendChild(wordElement);
+            });
+            curvedResults.appendChild(wordList);
+        }
+
+        yesBtn.addEventListener('click', function() {
+            const filteredWords = filterWordsByLetters(yesLetters);
+            displayResults(filteredWords);
+        });
+
+        noBtn.addEventListener('click', function() {
+            const filteredWords = filterWordsByLetters(noLetters);
+            displayResults(filteredWords);
+        });
     });
 });
 
