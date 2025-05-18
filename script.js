@@ -858,20 +858,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         yesBtn.addEventListener('click', function() {
             const filteredWords = filterWordsByLetters(yesLetters);
-            displayResults(filteredWords);
             currentFilteredWords = filteredWords;
+            displayResults(currentFilteredWords);
             showNextFeature();
         });
 
         noBtn.addEventListener('click', function() {
             const filteredWords = filterWordsByLetters(noLetters);
-            displayResults(filteredWords);
             currentFilteredWords = filteredWords;
+            displayResults(currentFilteredWords);
             showNextFeature();
         });
 
         skipBtn.addEventListener('click', function() {
             console.log('CURVED feature skipped');
+            // Don't modify currentFilteredWords, just move to next feature
             showNextFeature();
         });
     });
