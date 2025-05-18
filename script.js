@@ -821,6 +821,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('DOMContentLoaded', function() {
         const yesBtn = document.querySelector('.yes-btn');
         const noBtn = document.querySelector('.no-btn');
+        const skipBtn = document.querySelector('.curved-btn.skip-button');
         const curvedResults = document.getElementById('curvedResults');
 
         // Define the letter groups
@@ -858,11 +859,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         yesBtn.addEventListener('click', function() {
             const filteredWords = filterWordsByLetters(yesLetters);
             displayResults(filteredWords);
+            currentFilteredWords = filteredWords;
+            showNextFeature();
         });
 
         noBtn.addEventListener('click', function() {
             const filteredWords = filterWordsByLetters(noLetters);
             displayResults(filteredWords);
+            currentFilteredWords = filteredWords;
+            showNextFeature();
+        });
+
+        skipBtn.addEventListener('click', function() {
+            console.log('CURVED feature skipped');
+            showNextFeature();
         });
     });
 });
