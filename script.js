@@ -823,6 +823,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const noBtn = document.querySelector('.no-btn');
         const skipBtn = document.querySelector('.curved-btn.skip-button');
         const curvedResults = document.getElementById('curvedResults');
+        const curvedFeature = document.querySelector('.feature-section');
 
         // Define the letter groups
         const yesLetters = ['B', 'C', 'D', 'G', 'P'];
@@ -860,6 +861,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const filteredWords = filterWordsByLetters(yesLetters);
             currentFilteredWords = filteredWords;
             displayResults(currentFilteredWords);
+            curvedFeature.classList.add('completed');
             showNextFeature();
         });
 
@@ -867,12 +869,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             const filteredWords = filterWordsByLetters(noLetters);
             currentFilteredWords = filteredWords;
             displayResults(currentFilteredWords);
+            curvedFeature.classList.add('completed');
             showNextFeature();
         });
 
         skipBtn.addEventListener('click', function() {
             console.log('CURVED feature skipped');
-            // Don't modify currentFilteredWords, just move to next feature
+            curvedFeature.classList.add('completed');
             showNextFeature();
         });
     });
